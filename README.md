@@ -17,20 +17,26 @@ small RTOS developed as an hobby project than runs on any MCU supporting ARM cor
 the SRAM is divided into various regions - Kernel Region, User region and Heap. The kernel occupies from the starting of SRAM followed user region where memory allocation for application program is done. The remaining SRAM is utilized as heap. The design of this RTOS is centered upon maximum and efficient use of MPU peripheral and hence this RTOS has maximum limit the process can be running at a time.
 
 Vector Table
+
 -------------------
 Kernel Variables
+
 --------------------
 Main Stack
+
 --------------------
 Process Stack 1st
+
 -------------------
 .
 .
 .
 --------------------
 Process Stack nth
+
 --------------------
  Heap Marker Bookeeping
+ 
 --------------------
 .bss and .dat region (Application and device driver memory region)
   
