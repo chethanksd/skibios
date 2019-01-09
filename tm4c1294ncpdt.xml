@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<device>
+  <partno>TM4C1294NCPDT</partno>
+  <gccid>PART_TM4C1294NCPDT</gccid>
+  <intcnt>139</intcnt>
+  <flash>1048576</flash>
+  <sram>262144</sram>
+</device>

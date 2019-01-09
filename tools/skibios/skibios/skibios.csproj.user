@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PublishUrlHistory>publish\</PublishUrlHistory>
+    <InstallUrlHistory />
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartArguments>
+    </StartArguments>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartArguments>-v -h -B -b"c:/ti/ccsv6/tools/compiler/gcc-arm-none-eabi-4_9-2015q3/bin" -o"../../../../proj/build" -g -d"../../../../device/tm4c1294ncpdt.xml" -DKERNEL_REGION_SIZE=12,UPPER_REGION_SIZE=3,PROCESS_PER_SEC=100 -DGHMB_REGION_SIZE=1</StartArguments>
+    <StartAction>Project</StartAction>
+    <RemoteDebugEnabled>false</RemoteDebugEnabled>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup>
+    <EnableSecurityDebugging>false</EnableSecurityDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'CCS|AnyCPU'">
+    <StartArguments>-v -h -b"c:/ti/ccsv6/tools/compiler/gcc-arm-none-eabi-4_9-2015q3/bin" -o"E:\Workspace\tivastack\gnutest4\Debug" -g -d"../../../tm4c1294ncpdt.xml" -DKERNEL_REGION_SIZE=16,UPPER_REGION_SIZE=3,GHMB_REGION_SIZE=1</StartArguments>
+  </PropertyGroup>
+</Project>
