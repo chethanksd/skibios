@@ -53,6 +53,7 @@ bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
 void svc_handler(void);
+void process_svc_request(uint32_t svc_num);
 void pendsv_handler(void);
 static void scheduler();
 static uint8_t mpu_init();
@@ -204,7 +205,9 @@ void __attribute__((naked)) svc_handler(void) {
 
     uint32_t svc_num;
 
-    /* Extract SVC number and Arguments passed. Also store the LR */
+    // extract SVC number and Arguments passed 
+    // store the LR
+    // call process_svc_request function with svc_num as argument
     __asm volatile(" TST    LR, #4                     \n"
                    " ITE    EQ                          \n"
                    " MRSEQ  %[svc_num], MSP             \n"
@@ -219,12 +222,32 @@ void __attribute__((naked)) svc_handler(void) {
                    " STR    R6, %[arg4]                 \n"
                    " LDR    %0, [%[svc_num], #24]       \n"
                    " LDRB   %0, [%[svc_num],#-2]        \n"
-                   " STR    LR, %[exc_return]          \n"
+                   " STR    LR, %[exc_return]           \n"
+                   " MOV    R0, %[svc_num]              \n"
+                   " BL     process_svc_request         \n"
                      : [svc_num] "=r" (svc_num), [exc_return] "=m" (exc_return),\
                         [arg1] "=m" (arg1), [arg2] "=m" (arg2), \
                         [arg3] "=m" (arg3), [arg4] "=m" (arg4)
                      :
                     );
+
+    // restore EXC_RETURN value
+    // return value to caller function
+    __asm volatile( " LDR       LR, %[exc_return]      \n"
+    	            " DMB			                    \n"
+                    " TST       LR, #4                 \n"
+                    " ITE       EQ                      \n"
+                    " MRSEQ     %[svc_num], MSP         \n"
+                    " MRSNE     %[svc_num], PSP         \n"
+                    " LDR       R6, %[arg1]             \n"
+                    " STR       R6, [%[svc_num], #0]    \n"
+    				" BX        LR		                \n"
+                     :: [svc_num] "r" (svc_num), [exc_return] "m"(exc_return), [arg1] "m" (arg1)
+                  );
+
+}
+
+void process_svc_request(uint32_t svc_num) {
 
     /* Process the requested service */
     switch(svc_num) {
@@ -1028,19 +1051,6 @@ void __attribute__((naked)) svc_handler(void) {
         HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
 
     }
-
-    // restore EXC_RETURN value
-    __asm volatile( " LDR       LR, %[exc_return]      \n"
-    	            " DMB			                    \n"
-                    " TST       LR, #4                 \n"
-                    " ITE       EQ                      \n"
-                    " MRSEQ     %[svc_num], MSP         \n"
-                    " MRSNE     %[svc_num], PSP         \n"
-                    " LDR       R6, %[arg1]             \n"
-                    " STR       R6, [%[svc_num], #0]    \n"
-    				" BX        LR		                \n"
-                     :: [svc_num] "r" (svc_num), [exc_return] "m"(exc_return), [arg1] "m" (arg1)
-                  );
 }
 
 /* pendsv_handler Function */
