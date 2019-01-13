@@ -1,7 +1,8 @@
 INCLUDE param.lds
 
 /* use this linker script for creating final hex
-*/ provide correct FLASH and SRAM size based on your target MCU
+ * provide correct FLASH and SRAM size based on your target MCU
+ */
 
 MEMORY
 {

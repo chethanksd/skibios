@@ -199,28 +199,29 @@ void  __attribute__((naked)) start_scheduler(void) {
 
 }
 
-/* SVCall Handler Function */
+// SVCall handler
 void __attribute__((naked)) svc_handler(void) {
 
-    uint8_t svc_num;
+    uint32_t svc_num;
 
     /* Extract SVC number and Arguments passed. Also store the LR */
-    __asm volatile(" TST    R14, #4             \n"
-                   " ITE    EQ                  \n"
-                   " MRSEQ  %0, MSP             \n"
-                   " MRSNE  %0, PSP             \n"
-                   " LDR    R6, [%0, #0]        \n"
-                   " STR    R6, %[arg1]         \n"
-                   " LDR    R6, [%0, #4]        \n"
-                   " STR    R6, %[arg2]         \n"
-                   " LDR    R6, [%0, #8]        \n"
-                   " STR    R6, %[arg3]         \n"
-                   " LDR    R6, [%0, #12]       \n"
-                   " STR    R6, %[arg4]         \n"
-                   " LDR    %0, [%0, #24]       \n"
-                   " LDRB   %0, [%0,#-2]        \n"
-                   " STR    R14, %1             \n"
-                     : "=r"(svc_num),"=m"(exc_return), [arg1] "=m" (arg1), [arg2] "=m" (arg2), \
+    __asm volatile(" TST    LR, #4                     \n"
+                   " ITE    EQ                          \n"
+                   " MRSEQ  %[svc_num], MSP             \n"
+                   " MRSNE  %[svc_num], PSP             \n"
+                   " LDR    R6, [%[svc_num], #0]        \n"
+                   " STR    R6, %[arg1]                 \n"
+                   " LDR    R6, [%[svc_num], #4]        \n"
+                   " STR    R6, %[arg2]                 \n"
+                   " LDR    R6, [%[svc_num], #8]        \n"
+                   " STR    R6, %[arg3]                 \n"
+                   " LDR    R6, [%[svc_num], #12]       \n"
+                   " STR    R6, %[arg4]                 \n"
+                   " LDR    %0, [%[svc_num], #24]       \n"
+                   " LDRB   %0, [%[svc_num],#-2]        \n"
+                   " STR    LR, %[exc_return]          \n"
+                     : [svc_num] "=r" (svc_num), [exc_return] "=m" (exc_return),\
+                        [arg1] "=m" (arg1), [arg2] "=m" (arg2), \
                         [arg3] "=m" (arg3), [arg4] "=m" (arg4)
                      :
                     );
@@ -1028,17 +1029,17 @@ void __attribute__((naked)) svc_handler(void) {
 
     }
 
-    /* Restore EXC_RETURN Value */
-    __asm volatile( " LDR   R14, %[exc_return]  \n"
-    	            " DMB			            \n"
-                    " TST   R14, #4             \n"
-                    " ITE    EQ                 \n"
-                    " MRSEQ  %0, MSP            \n"
-                    " MRSNE  %0, PSP            \n"
-                    " LDR R6, %[arg1]           \n"
-                    " STR R6, [%0, #0]          \n"
-    				" BX R14		            \n"
-                     :: "r" (svc_num), [exc_return] "m"(exc_return), [arg1] "m" (arg1)
+    // restore EXC_RETURN value
+    __asm volatile( " LDR       LR, %[exc_return]      \n"
+    	            " DMB			                    \n"
+                    " TST       LR, #4                 \n"
+                    " ITE       EQ                      \n"
+                    " MRSEQ     %[svc_num], MSP         \n"
+                    " MRSNE     %[svc_num], PSP         \n"
+                    " LDR       R6, %[arg1]             \n"
+                    " STR       R6, [%[svc_num], #0]    \n"
+    				" BX        LR		                \n"
+                     :: [svc_num] "r" (svc_num), [exc_return] "m"(exc_return), [arg1] "m" (arg1)
                   );
 }
 
