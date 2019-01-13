@@ -204,11 +204,12 @@ void  __attribute__((naked)) start_scheduler(void) {
 void __attribute__((naked)) svc_handler(void) {
 
     uint32_t svc_num;
+    uint32_t exc_return;
 
     // extract SVC number and Arguments passed 
     // store the LR
     // call process_svc_request function with svc_num as argument
-    __asm volatile(" TST    LR, #4                     \n"
+    __asm volatile(" TST    LR, #4                      \n"
                    " ITE    EQ                          \n"
                    " MRSEQ  %[svc_num], MSP             \n"
                    " MRSNE  %[svc_num], PSP             \n"
@@ -222,10 +223,10 @@ void __attribute__((naked)) svc_handler(void) {
                    " STR    R6, %[arg4]                 \n"
                    " LDR    %0, [%[svc_num], #24]       \n"
                    " LDRB   %0, [%[svc_num],#-2]        \n"
-                   " STR    LR, %[exc_return]           \n"
+                   " MOV    %[exc_return], LR           \n"
                    " MOV    R0, %[svc_num]              \n"
                    " BL     process_svc_request         \n"
-                     : [svc_num] "=r" (svc_num), [exc_return] "=m" (exc_return),\
+                     : [svc_num] "=r" (svc_num), [exc_return] "=r" (exc_return),\
                         [arg1] "=m" (arg1), [arg2] "=m" (arg2), \
                         [arg3] "=m" (arg3), [arg4] "=m" (arg4)
                      :
@@ -233,16 +234,16 @@ void __attribute__((naked)) svc_handler(void) {
 
     // restore EXC_RETURN value
     // return value to caller function
-    __asm volatile( " LDR       LR, %[exc_return]      \n"
+    __asm volatile( " MOV       LR, %[exc_return]       \n"
     	            " DMB			                    \n"
-                    " TST       LR, #4                 \n"
+                    " TST       LR, #4                  \n"
                     " ITE       EQ                      \n"
                     " MRSEQ     %[svc_num], MSP         \n"
                     " MRSNE     %[svc_num], PSP         \n"
                     " LDR       R6, %[arg1]             \n"
                     " STR       R6, [%[svc_num], #0]    \n"
     				" BX        LR		                \n"
-                     :: [svc_num] "r" (svc_num), [exc_return] "m"(exc_return), [arg1] "m" (arg1)
+                     :: [svc_num] "r" (svc_num), [exc_return] "r"(exc_return), [arg1] "m" (arg1)
                   );
 
 }

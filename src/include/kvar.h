@@ -18,7 +18,6 @@ extern volatile uint16_t process_count;
 extern volatile uint16_t total_process_count;
 extern volatile uint8_t  lstash_ptr;
 
-extern volatile uint32_t  exc_return;
 extern volatile uint32_t  value;
 extern volatile uint32_t  pstack_addr;
 extern volatile uint32_t  cpu_freq;
