@@ -182,18 +182,19 @@ uint8_t kernel_init(void) {
 
 void  __attribute__((naked)) start_scheduler(void) {
 
+    uint32_t value;
+
     current_task = 0;
     first_start = true;
 
     value = PSP_Array[current_task] + 10 * 4;
 
-    __asm volatile (" LDR R0, %0       \n"
-                    " MSR PSP, R0      \n"
-    				" LDR R0, =0x3     \n"
-    		        " MSR CONTROL, R0  \n"
-    				" ISB			   \n"
+    __asm volatile (" MSR PSP, %[value] \n"
+    				" LDR R0, =0x3      \n"
+    		        " MSR CONTROL, R0   \n"
+    				" ISB			    \n"
                     :
-                    : "m" (value)
+                    : [value] "r" (value)
                 );
 
     svc(START_SCHEDULER);
@@ -249,6 +250,8 @@ void __attribute__((naked)) svc_handler(void) {
 }
 
 void process_svc_request(uint32_t svc_num) {
+
+    uint32_t value;
 
     /* Process the requested service */
     switch(svc_num) {
