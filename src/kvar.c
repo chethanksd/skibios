@@ -23,5 +23,4 @@ volatile uint8_t   KSECTION(.kdat) lstash_ptr               = 1;
 
 volatile uint32_t  KSECTION(.kbss) pstack_addr;
 volatile uint32_t  KSECTION(.kbss) cpu_freq;
-volatile uint16_t  KSECTION(.kbss) i, j;
 

@@ -82,6 +82,7 @@ const uint32_t base_mutex = 1;
 uint8_t kernel_init(void) {
 
     uint32_t ticks;
+    uint8_t i;
 
     /* Relocate the Vector Table */
     vector_table_relocate();
@@ -252,6 +253,8 @@ void __attribute__((naked)) svc_handler(void) {
 void process_svc_request(uint32_t svc_num) {
 
     uint32_t value;
+    uint32_t i;
+    uint32_t j;
 
     /* Process the requested service */
     switch(svc_num) {
@@ -1211,6 +1214,8 @@ void scheduler(){
 }
 
 uint8_t mpu_init() {
+
+    uint8_t i;
 
      // Check if MPU Hardware is supported
     if(HWREG(MPUTYPE) == 0){
