@@ -182,7 +182,6 @@ void skibios_boot(void) {
         *pui32Dest++ = *pui32Src++;
     }
 
-    #if (ENABLE_SKIBIOS >= 1)
     pui32Src = &__kdat_load__;
     for(pui32Dest = &__kdat_start__; pui32Dest < &__kdat_end__; )
     {
@@ -199,7 +198,6 @@ void skibios_boot(void) {
         "               strlt   r2, [r0], #4            \n"
         "               blt     kloop                   "
         );
-    #endif
 
     // zero fill the bss segment.
     __asm("             ldr     r0, =__bss_start__      \n"

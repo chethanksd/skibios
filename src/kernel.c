@@ -101,8 +101,6 @@ uint8_t kernel_init(void) {
     HWREG(ACTLR) |= ACTLR_DISWBUF;
     #endif
 
-    #if(ENABLE_SKIBIOS>=1)
-
     /* Clear & Configure Reload Register of Systick timer */
     ticks = cpu_freq/PROCESS_PER_SEC;
 
@@ -159,15 +157,6 @@ uint8_t kernel_init(void) {
     //base task should have all permissions
     permissions[0] = 0xFFFF;
     current_task = 0;
-
-    #else 
-
-    // this part of code is required is skibios is disabled
-    // to ensure to access
-    permissions[0] = 0xFFFF;
-    current_task = 0;
-
-    #endif
 
     /* Initialize Heap Memory */
     heap_init(); 

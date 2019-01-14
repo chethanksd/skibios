@@ -8,7 +8,6 @@
 #
 # SKIBIOS configurations
 #
-ENABLE_SKIBIOS			=		1
 KERNEL_REGION_SIZE      = 		16
 UPPER_REGION_SIZE		=		3
 GHMB_REGION_SIZE		=		1
