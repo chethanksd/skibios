@@ -52,7 +52,6 @@ bool KSECTION(.kdat) first_start    = false;
 bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
-void svc_handler(void);
 void process_svc_request(uint32_t svc_num);
 void pendsv_handler(void);
 static void scheduler();
@@ -61,6 +60,7 @@ void mem_fault_handler();
 void bus_fault_handler();
 
 /* External Kernel Function Declarations */
+extern void svc_handler(void);
 extern void resolve_end(void);
 extern void* search_free_marker(uint32_t size);
 extern void* add_new_allocated_marker(uint32_t size);
@@ -188,54 +188,6 @@ void  __attribute__((naked)) start_scheduler(void) {
                 );
 
     svc(START_SCHEDULER);
-
-}
-
-// SVCall handler
-void __attribute__((naked)) svc_handler(void) {
-
-    uint32_t svc_num;
-    uint32_t exc_return;
-
-    // extract SVC number and Arguments passed 
-    // store the LR
-    // call process_svc_request function with svc_num as argument
-    __asm volatile(" TST    LR, #4                      \n"
-                   " ITE    EQ                          \n"
-                   " MRSEQ  %[svc_num], MSP             \n"
-                   " MRSNE  %[svc_num], PSP             \n"
-                   " LDR    R6, [%[svc_num], #0]        \n"
-                   " STR    R6, %[arg1]                 \n"
-                   " LDR    R6, [%[svc_num], #4]        \n"
-                   " STR    R6, %[arg2]                 \n"
-                   " LDR    R6, [%[svc_num], #8]        \n"
-                   " STR    R6, %[arg3]                 \n"
-                   " LDR    R6, [%[svc_num], #12]       \n"
-                   " STR    R6, %[arg4]                 \n"
-                   " LDR    %0, [%[svc_num], #24]       \n"
-                   " LDRB   %0, [%[svc_num],#-2]        \n"
-                   " MOV    %[exc_return], LR           \n"
-                   " MOV    R0, %[svc_num]              \n"
-                   " BL     process_svc_request         \n"
-                     : [svc_num] "=r" (svc_num), [exc_return] "=r" (exc_return),\
-                        [arg1] "=m" (arg1), [arg2] "=m" (arg2), \
-                        [arg3] "=m" (arg3), [arg4] "=m" (arg4)
-                     :
-                    );
-
-    // restore EXC_RETURN value
-    // return value to caller function
-    __asm volatile( " MOV       LR, %[exc_return]       \n"
-    	            " DMB			                    \n"
-                    " TST       LR, #4                  \n"
-                    " ITE       EQ                      \n"
-                    " MRSEQ     %[svc_num], MSP         \n"
-                    " MRSNE     %[svc_num], PSP         \n"
-                    " LDR       R6, %[arg1]             \n"
-                    " STR       R6, [%[svc_num], #0]    \n"
-    				" BX        LR		                \n"
-                     :: [svc_num] "r" (svc_num), [exc_return] "r"(exc_return), [arg1] "m" (arg1)
-                  );
 
 }
 
