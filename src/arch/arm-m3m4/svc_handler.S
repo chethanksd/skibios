@@ -63,12 +63,10 @@ svc_handler:
         SUB    R7, R7, #4
         MOV    SP, R7
         STR    LR, [R7, #0]
-        PUSH   {R7}
                   
         BL     process_svc_request        
 
         // restore EXC_RETURN value
-        POP       {R7}
         LDR       LR, [R7, #0]
         ADD       R7, R7, #4
         MOV       SP, R7
