@@ -38,26 +38,6 @@ svc_handler:
         LDRB   SVC_CODE, [SVC_CODE, #-2]
         PUSH   {R6, R7}
 
-        // get argument1
-        LDR    R7, =arg1      
-        LDR    R6, [ADDR, #0]        
-        STR    R6, [R7] 
-
-        // get argument2
-        LDR    R7, =arg2
-        LDR    R6, [ADDR, #4]        
-        STR    R6, [R7]    
-
-        // get argument3
-        LDR    R7, =arg3
-        LDR    R6, [ADDR, #8]        
-        STR    R6, [R7]    
-
-        // get argument4
-        LDR    R7, =arg4
-        LDR    R6, [ADDR, #12]       
-        STR    R6, [R7]
-
         // store LR to exc_return for temporary storage
         MOV    R7, SP
         SUB    R7, R7, #4
@@ -76,10 +56,8 @@ svc_handler:
         TST       LR, #4                
         ITE       EQ                    
         MRSEQ     ADDR, MSP         
-        MRSNE     ADDR, PSP
-        LDR       R7, =arg1
-        LDR       R6, [R7]           
-        STR       R6, [ADDR, #8]    
+        MRSNE     ADDR, PSP          
+        STR       R0, [ADDR, #8]    
 
         POP       {R6, R7}
         BX        LR		            

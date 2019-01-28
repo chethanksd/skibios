@@ -37,11 +37,6 @@ volatile uint32_t  KSECTION(.kbss) *op1[MAX_PROCESS_COUNT];
 volatile uint32_t  KSECTION(.kbss) *op2[MAX_PROCESS_COUNT];
 volatile uint32_t  KSECTION(.kbss) hib_value[MAX_PROCESS_COUNT];
 
-uint32_t  KSECTION(.kbss) arg1;
-uint32_t  KSECTION(.kbss) arg2;
-uint32_t  KSECTION(.kbss) arg3;
-uint32_t  KSECTION(.kbss) arg4;
-
 Process   KSECTION(.kbss) base_task;
 uint32_t  KSECTION(.kbss) invocated_task;
 uint32_t  KSECTION(.kbss) invocated_args;
@@ -52,7 +47,7 @@ bool KSECTION(.kdat) first_start    = false;
 bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
-void process_svc_request(uint32_t svc_num);
+uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 static void scheduler();
 static uint8_t mpu_init();
@@ -191,11 +186,16 @@ void  __attribute__((naked)) start_scheduler(void) {
 
 }
 
-void process_svc_request(uint32_t svc_num) {
+uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
 
     uint32_t value;
     uint32_t i;
     uint32_t j;
+
+    uint32_t arg1 = arguments[0];
+    uint32_t arg2 = arguments[1];
+    uint32_t arg3 = arguments[2];
+    uint32_t arg4 = arguments[3];
 
     /* Process the requested service */
     switch(svc_num) {
@@ -999,6 +999,9 @@ void process_svc_request(uint32_t svc_num) {
         HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
 
     }
+
+    return arg1;
+
 }
 
 /* pendsv_handler Function */
