@@ -47,7 +47,7 @@ bool KSECTION(.kdat) first_start    = false;
 bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
-uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments);
+uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 static void scheduler();
 static uint8_t mpu_init();
@@ -186,7 +186,7 @@ void  __attribute__((naked)) start_scheduler(void) {
 
 }
 
-uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
+uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t value;
     uint32_t i;
@@ -198,7 +198,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
     uint32_t arg4 = arguments[3];
 
     /* Process the requested service */
-    switch(svc_num) {
+    switch(*svc_num) {
 
         case CREATE_PROCESS:
 
@@ -412,7 +412,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
             if(arg2 == 1) {
 
                 self_kill = true;
-                svc_num = HAND_OVER;
+                *svc_num = HAND_OVER;
 
             }
         
@@ -485,7 +485,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
             invocated_args = arg1;
             arg1 = (uint32_t)&base_mutex;
 
-            svc_num = PRIORITY_PROMOTE;
+            *svc_num = PRIORITY_PROMOTE;
 
         break;
 
@@ -518,7 +518,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
             invocated_task = 0;
             invocated_args = 0;
 
-            svc_num = PRIORITY_DEMOTE;
+            *svc_num = PRIORITY_DEMOTE;
 
         break;
 
@@ -551,7 +551,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
 
     }
 
-    switch(svc_num) {
+    switch(*svc_num) {
 
         case PRIORITY_PROMOTE:
 
@@ -628,7 +628,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
             mutex_stash[current_task] = 0;
 
             /* invoke HAND_OVER service call */
-            svc_num = HAND_OVER;
+            *svc_num = HAND_OVER;
 
         break;
 
@@ -981,7 +981,7 @@ uint32_t process_svc_request(uint32_t svc_num, uint32_t *arguments) {
 
     }
 
-    if(svc_num == HAND_OVER) {
+    if(*svc_num == HAND_OVER) {
 
         /* Set the State of current process to sleep */
         if(self_kill == false) {

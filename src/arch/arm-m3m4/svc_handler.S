@@ -14,11 +14,6 @@
 SVC_CODE .req R0
 ADDR .req R1
 
-.extern arg1
-.extern arg2
-.extern arg3
-.extern arg4
-
 .extern process_svc_request
 
 .type svc_handler, %function
@@ -38,17 +33,21 @@ svc_handler:
         LDRB   SVC_CODE, [SVC_CODE, #-2]
         PUSH   {R6, R7}
 
-        // store LR to exc_return for temporary storage
+        // store LR to exc_return in stack
+        // store svc_code in stack
+        // pass pointer where svc_code is stored
         MOV    R7, SP
-        SUB    R7, R7, #4
+        SUB    R7, R7, #8
         MOV    SP, R7
-        STR    LR, [R7, #0]
+        STR    LR, [R7, #4]
+        STR    SVC_CODE, [R7, #0]
+        MOV    R0, R7
                   
         BL     process_svc_request        
 
         // restore EXC_RETURN value
-        LDR       LR, [R7, #0]
-        ADD       R7, R7, #4
+        LDR       LR, [R7, #4]
+        ADD       R7, R7, #8
         MOV       SP, R7
         DMB
 
