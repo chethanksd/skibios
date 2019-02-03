@@ -11,7 +11,7 @@
 .syntax unified
 .thumb
 
-SVC_CODE .req R0
+SVC_CODE .req R2
 ADDR .req R1
 
 .extern process_svc_request
