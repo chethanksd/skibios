@@ -48,12 +48,12 @@ bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
 uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
+void svc_service_hand_over(void);
 void pendsv_handler(void);
-static void scheduler();
-static uint8_t mpu_init();
-void mem_fault_handler();
-void bus_fault_handler();
+void mem_fault_handler(void);
+void bus_fault_handler(void);
+static void scheduler(void);
+static uint8_t mpu_init(void);
 
 /* External Kernel Function Declarations */
 extern void svc_handler(void);
@@ -981,32 +981,12 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
         break;
 
     }
-#if 0
-    if(*svc_num == HAND_OVER) {
-
-        /* Set the State of current process to sleep */
-        if(self_kill == false) {
-
-            state[current_task] = PROCESS_STATE_SLEEP;
-
-        } else {
-
-            self_kill=false;
-
-        }
-
-        normal_schedule = false;
-
-        HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
-
-    }
-#endif
 
     return arg1;
 
 }
 
-uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
+void svc_service_hand_over() {
 
     if(self_kill == false) {
         // set the State of current process to sleep
@@ -1021,8 +1001,6 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
     normal_schedule = false;
 
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
-
-    return 0;
 
 }
 

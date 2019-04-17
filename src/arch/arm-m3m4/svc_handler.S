@@ -60,9 +60,7 @@ svc_handler:
         IT      NE 
         BNE     skip_check
 
-        PUSH    {R0}
         BL      svc_service_hand_over
-        POP     {R0}
 
 skip_check:
         // restore EXC_RETURN value
