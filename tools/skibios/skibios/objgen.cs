@@ -190,7 +190,7 @@ namespace skibios
             fw.WriteLine(file);
             fw.Close();
 
-            error = CompileSource("mtable.c", true);
+            error = CompileSource("mtable", true);
 
             if (error != ecode.ERROR_NONE)
             {
@@ -251,7 +251,14 @@ namespace skibios
             {
                 return error;
             }
-            
+
+            error = CompileSource("arch/arm-m3m4/svc_handler", false, "svc_handler", "S");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
 
             if (btd == false)
             {
@@ -705,7 +712,7 @@ namespace skibios
             return ecode.ERROR_NONE;
         }
 
-        private static ecode CompileSource(string file, bool extension = false, string outfile="mtable.o")
+        private static ecode CompileSource(string file, bool build_path = false, string outfile="", string extension = "c")
         {
 
             string param = PARAM;
@@ -724,13 +731,18 @@ namespace skibios
             param += " -DPROCESS_PER_SEC=" + PROCESS_PER_SEC;
             param += " -DHEAP_BOOKEEPING_SIZE=" + (GHMB_REGION_SIZE * 256).ToString();
 
-            if (extension == false)
+            if(outfile == "")
             {
-                process.StartInfo.Arguments = CFLAGS + " " + param + " -I" + srcpath + "api " + "-I" + srcpath + "src/include " + "-I" + srcpath + "src/arch/arm-m3m4/ " + srcpath + "src/" + file + ".c -o" + outpath + "/" + file + ".o";
+                outfile = file;
+            }
+
+            if (build_path == false)
+            {
+                process.StartInfo.Arguments = CFLAGS + " " + param + " -I" + srcpath + "api " + "-I" + srcpath + "src/include " + "-I" + srcpath + "src/arch/arm-m3m4/ " + srcpath + "src/" + file + "." + extension + " -o" + outpath + "/" + outfile + ".o";
             }
             else
             {
-                process.StartInfo.Arguments = CFLAGS + " " + param + " -I" + srcpath + "api " + "-I" + srcpath + "src/include " + "-I" + srcpath + "src/arch/arm-m3m4/ " + outpath + "/" + file + " -o" + outpath + "/" + outfile;
+                process.StartInfo.Arguments = CFLAGS + " " + param + " -I" + srcpath + "api " + "-I" + srcpath + "src/include " + "-I" + srcpath + "src/arch/arm-m3m4/ " + outpath + "/" + file + "." + extension + " -o" + outpath + "/" + outfile + ".o";
             }
 
             process.StartInfo.UseShellExecute = false;
