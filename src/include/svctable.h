@@ -24,7 +24,7 @@ typedef struct {
 }svc_dispatch_table_t;
 
 
-extern svc_dispatch_table_t svc_dispatch;
+extern svc_dispatch_table_t svc_dispatch[];
 
 
 #ifdef __cplusplus

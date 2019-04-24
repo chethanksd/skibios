@@ -48,6 +48,7 @@ bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
 uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 void svc_service_hand_over(void);
 void pendsv_handler(void);
 void mem_fault_handler(void);
@@ -1001,6 +1002,24 @@ void svc_service_hand_over() {
     normal_schedule = false;
 
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+
+}
+
+uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments) {
+
+    /* Perform a software reset request.  This request causes the device to
+    reset, no further code is executed */
+
+    HWREG(APINT) = APINT_VECKEY | APINT_SYSRESETREQ;
+
+    /* The device should have reset, so this should never be reached.  Just in
+    case, loop forever. */
+
+    while(1) {
+
+    }
+
+    return ERROR_NONE;
 
 }
 
