@@ -54,6 +54,7 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -713,33 +714,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
 
             break;
-
-        case GHEAP_ALLOCATE:
 #if 0
-            /* Arugment assigments
-             * arg1 = Return Pointer
-             * arg2 = Size request
-             */
-
-            heap_remaining = heap_remaining - arg2;
-
-            if(blist_size == 0) {
-
-                arg1 =(uint32_t) add_new_allocated_marker(arg2);
-                break;
-
-            }
-        
-            arg1 = (uint32_t) search_free_marker(arg2);
-        
-            if(arg1 == NULL_POINTER) {
-        
-                arg1 = (uint32_t) add_new_allocated_marker(arg2);
-        
-            }
-#endif
-        break;
-
         case GHEAP_RELEASE:
 
             /* Argument assigments
@@ -763,6 +738,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             }
 
         break;
+#endif
 
         case INT_ENABLE:
 
@@ -980,6 +956,38 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t status;
+    uint32_t address;
+
+    /* Argument assigments
+        * arg1 = Return status
+        * arg2 = Pointer to space which is to be Released
+        */
+
+    address = arguments[1];
+
+    if(blist_size == 0) {
+
+        error = ERROR_EMPTY_HEAP;
+        goto quit_error;
+
+    }
+
+    status = release_allocated_marker(address);
+
+    if(status == 0 && blist_size != 0) {
+        error = ERROR_WRONG_HEAP_POINTER;
+    }
+
+quit_error:
+
+    return error;
+
+}
+
 uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t *allocated_address;
@@ -987,11 +995,6 @@ uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments) {
 
     allocated_address = NULL;
     size_request = arguments[1];
-
-    /* Arugment assigments
-        * arg1 = Return Pointer
-        * arg2 = Size request
-        */
 
     if(blist_size == 0) {
 
