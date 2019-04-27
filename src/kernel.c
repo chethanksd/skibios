@@ -55,6 +55,7 @@ uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -714,31 +715,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
 
             break;
-#if 0
-        case GHEAP_RELEASE:
-
-            /* Argument assigments
-             * arg1 = Return status
-             * arg2 = Pointer to space which is to be Released
-             */
-
-            if(blist_size == 0) {
-
-                arg1 = ERROR_EMPTY_HEAP;
-                break;
-
-            }
-
-            arg1 = release_allocated_marker(arg2);
-
-            if(arg1 == 0 && blist_size != 0) {
-                arg1 = ERROR_WRONG_HEAP_POINTER;
-            } else {
-                arg1 = 0;
-            }
-
-        break;
-#endif
 
         case INT_ENABLE:
 
@@ -822,7 +798,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             break;
 
         case ENABLE_UMPU:
-
+#if 0
             /* Arugment assigments
              * arg1 = Region
              * arg2 = Address
@@ -874,7 +850,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             // arg1 is return error value. set error = 0
             arg1 = 0;
-
+#endif
             break;
 
         case DISABLE_UMPU :
@@ -936,6 +912,8 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+// svc services dispatched by svc_dispatch table
+
 uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
     if(self_kill == false) {
@@ -954,6 +932,72 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
     return ERROR_NONE;
 
+}
+
+uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t region;
+    uint32_t address;
+    uint32_t attributes;
+
+    region = arguments[0];
+    address = arguments[1];
+    attributes = arguments[2];
+
+    /* Arugment assigments
+        * arg1 = Region
+        * arg2 = Address
+        * arg3 = Attributes
+        */
+
+    // Check if MPU Hardware is supported
+    if(HWREG(MPUTYPE) == 0){
+
+        error = ERROR_MPU_UNSUPPORTED ;
+        goto quit_error;
+
+    }
+
+    // check Region value passed is valid
+    if(region < 2 || region > 5) {
+
+        error = ERROR_INVALID_MPU_REGION;
+        goto quit_error;
+
+    }
+
+    if((address & 0x0000001F) != 0) {
+
+        error = ERROR_INVALID_MPU_ADDRESS;
+        goto quit_error;
+
+    }
+
+    // Make sure that pending memory transfers are done
+    __asm("DMB");
+
+    // Disable the MPU
+    HWREG(MPUCTRL) = 0;
+
+    // Setup User MPU Region
+    HWREG(MPURNR) = region;
+    HWREG(MPURBAR) = address;
+    HWREG(MPURASR) = attributes | MPU_REGION_ENABLE;
+
+    HWREG(MPURNR) = 0;
+
+    // Enable MPU and the Background Region
+    HWREG(MPUCTRL) = MPU_PRIVDEFENA | MPU_ENABLE;
+
+    __asm("DSB");
+
+    __asm("ISB");
+
+quit_error:
+    
+    return error;
+    
 }
 
 uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments) {
