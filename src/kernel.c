@@ -56,6 +56,7 @@ uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -797,109 +798,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             break;
 
-        case ENABLE_UMPU:
-#if 0
-            /* Arugment assigments
-             * arg1 = Region
-             * arg2 = Address
-             * arg3 = Attributes
-             */
-
-            // Check if MPU Hardware is supported
-            if(HWREG(MPUTYPE) == 0){
-
-                arg1 = ERROR_MPU_UNSUPPORTED ;
-                break;
-
-            }
-
-            // check Region value passed is valid
-            if(arg1 < 2 || arg1 > 5) {
-
-                arg1 = ERROR_INVALID_MPU_REGION;
-                break;
-
-            }
-
-            if((arg2 & 0x0000001F) != 0) {
-
-                arg1 = ERROR_INVALID_MPU_ADDRESS;
-                break;
-
-            }
-
-            // Make sure that pending memory transfers are done
-            __asm("DMB");
-
-            // Disable the MPU
-            HWREG(MPUCTRL) = 0;
-
-            // Setup User MPU Region
-            HWREG(MPURNR) = arg1;
-            HWREG(MPURBAR) = arg2;
-            HWREG(MPURASR) = arg3 | MPU_REGION_ENABLE;
-
-            HWREG(MPURNR) = 0;
-
-            // Enable MPU and the Background Region
-            HWREG(MPUCTRL) = MPU_PRIVDEFENA | MPU_ENABLE;
-
-            __asm("DSB");
-
-            __asm("ISB");
-
-            // arg1 is return error value. set error = 0
-            arg1 = 0;
-#endif
-            break;
-
-        case DISABLE_UMPU :
-
-            /* Arugment assigments
-             * arg1 = Region
-             */
-
-            // Check if MPU Hardware is supported
-            if(HWREG(MPUTYPE) == 0) {
-
-                arg1 = ERROR_MPU_UNSUPPORTED;
-                break;
-
-            }
-
-            // check Region value passed is valid
-            if(arg1 < 2 || arg1 > 5) {
-
-                arg1 = ERROR_INVALID_MPU_REGION;
-                break;
-
-            }
-
-            // Make sure that pending memory transfers are done
-            __asm("DMB");
-
-            // Disable the MPU
-            HWREG(MPUCTRL) = 0;
-
-            // Setup User MPU Region
-            HWREG(MPURNR) = arg1;
-            HWREG(MPURBAR) = 0;
-            HWREG(MPURASR) = 0;
-
-            HWREG(MPURNR) = 0;
-
-            // Enable MPU and the Background Region
-            HWREG(MPUCTRL) = MPU_PRIVDEFENA | MPU_ENABLE;
-
-            __asm("DSB");
-
-            __asm("ISB");
-
-            // arg1 is return error value. set error = 0
-            arg1 = 0;
-
-            break;
-
         default:
 
             //ToDo: Determine actions to be done if process issues WRONG SVC_CALL
@@ -934,6 +832,59 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t region;
+
+    region = arguments[0];
+
+    /* Arugment assigments
+        * arg1 = Region
+        */
+
+    // Check if MPU Hardware is supported
+    if(HWREG(MPUTYPE) == 0) {
+
+        error = ERROR_MPU_UNSUPPORTED;
+        goto quit_error;
+
+    }
+
+    // check Region value passed is valid
+    if(region < 2 || region > 5) {
+
+        error = ERROR_INVALID_MPU_REGION;
+        goto quit_error;
+
+    }
+
+    // Make sure that pending memory transfers are done
+    __asm("DMB");
+
+    // Disable the MPU
+    HWREG(MPUCTRL) = 0;
+
+    // Setup User MPU Region
+    HWREG(MPURNR) = region;
+    HWREG(MPURBAR) = 0;
+    HWREG(MPURASR) = 0;
+
+    HWREG(MPURNR) = 0;
+
+    // Enable MPU and the Background Region
+    HWREG(MPUCTRL) = MPU_PRIVDEFENA | MPU_ENABLE;
+
+    __asm("DSB");
+
+    __asm("ISB");
+
+quit_error:
+
+    return error;
+
+}
+
 uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
@@ -944,12 +895,6 @@ uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments) {
     region = arguments[0];
     address = arguments[1];
     attributes = arguments[2];
-
-    /* Arugment assigments
-        * arg1 = Region
-        * arg2 = Address
-        * arg3 = Attributes
-        */
 
     // Check if MPU Hardware is supported
     if(HWREG(MPUTYPE) == 0){
@@ -997,7 +942,7 @@ uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments) {
 quit_error:
     
     return error;
-    
+
 }
 
 uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments) {
