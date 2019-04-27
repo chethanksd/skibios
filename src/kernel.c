@@ -48,8 +48,9 @@ bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
 uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -933,49 +934,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             break;
 
-        case CPU_FREQ:
-
-            /* Argument assignments
-             * arg2 = CPU Frequency
-             * arg1 = error status
-             */
-
-            arg1 = 0;
-            cpu_freq = arg2;
-
-            /* Clear & Configure Reload Register of Systick timer */
-            arg2 = cpu_freq/PROCESS_PER_SEC;
-
-            if(arg2 >= 16777216) {
-
-                arg1 = ERROR_SYSTICK_TICK_VALUE_OVERFLOW;
-                break;
-
-            }
-
-            HWREG(STRELOAD) = 0x00000000;
-            HWREG(STRELOAD) = SYSTICK_RELOAD_MASK & arg2;
-
-            /* Clear Current Register of Systick timer */
-            HWREG(STCURRENT) = 0x00000000;
-
-            break;
-
-        case DEVICE_RESET:
-#if 0
-            /* Perform a software reset request.  This request causes the device to
-            reset, no further code is executed */
-
-            HWREG(APINT) = APINT_VECKEY | APINT_SYSRESETREQ;
-
-            /* The device should have reset, so this should never be reached.  Just in
-            case, loop forever. */
-
-            while(1){}
-#endif          
-            break;
-
-
         default:
 
             //ToDo: Determine actions to be done if process issues WRONG SVC_CALL
@@ -1005,6 +963,37 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
 
     return ERROR_NONE;
+
+}
+
+uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    int32_t systick_load;
+
+    uint32_t new_cpu_freq = arguments[1];
+
+    /* Clear & Configure Reload Register of Systick timer */
+    systick_load = new_cpu_freq/PROCESS_PER_SEC;
+
+    if(systick_load >= 16777216) {
+
+        error = ERROR_SYSTICK_TICK_VALUE_OVERFLOW;
+        goto quit_error;
+
+    }
+
+    cpu_freq = new_cpu_freq;
+
+    HWREG(STRELOAD) = 0x00000000;
+    HWREG(STRELOAD) = SYSTICK_RELOAD_MASK & systick_load;
+
+    /* Clear Current Register of Systick timer */
+    HWREG(STCURRENT) = 0x00000000;
+
+quit_error:
+
+    return error;
 
 }
 
