@@ -18,6 +18,7 @@ ADDR            .req R1
 
 .extern process_svc_request
 .extern svc_dispatch
+.extern svc_exec
 
 .type svc_handler, %function
 .global svc_handler
@@ -58,7 +59,13 @@ svc_handler:
 
 svc_cycle:
 
-        PUSH   {R0}
+        // temp code
+        LDR    R4, =svc_exec
+        LDR    R4, [R4]
+        CMP    R4, #1
+        IT     EQ
+        PUSHEQ   {R0}
+
 
         // SVC_STASH = SVC_CODE
         MOV    SVC_STASH, SVC_CODE
@@ -90,7 +97,12 @@ svc_again:
 
 skip_check:
 
-        POP     {R0}
+        // temp code
+        LDR    R4, =svc_exec
+        LDR    R4, [R4]
+        CMP    R4, #1
+        IT     EQ
+        POPEQ     {R0}
 
         // restore EXC_RETURN value
         LDR     LR, [R7, #4]

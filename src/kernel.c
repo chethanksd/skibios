@@ -18,6 +18,7 @@
 #include <param.h>
 #include <access.h>
 #include <regmap.h>
+#include <svctable.h>
 
 #define PROCESS_PRIO_CURRENT    0
 #define PROCESS_PRIO_STASHED    1
@@ -40,6 +41,7 @@ volatile uint32_t  KSECTION(.kbss) hib_value[MAX_PROCESS_COUNT];
 Process   KSECTION(.kbss) base_task;
 uint32_t  KSECTION(.kbss) invocated_task;
 uint32_t  KSECTION(.kbss) invocated_args;
+uint32_t  KSECTION(.kbss) svc_exec;
 
 bool KSECTION(.kdat) self_kill      = false;
 bool KSECTION(.kdat) enable_dws     = true;
@@ -51,6 +53,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -71,6 +74,8 @@ extern uint32_t blist_size;
 extern uint32_t _proc_heap_addr;
 extern uint32_t heap_remaining;
 extern const uint32_t  mpu_table[];
+extern const svc_dispatch_table_t svc_dispatch[];
+extern const uint32_t TOTAL_SVC_COUNT ;
 
 /* FLASH Constants */
 const uint32_t zero_ref = 0;
@@ -199,6 +204,15 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
     uint32_t arg2 = arguments[1];
     uint32_t arg3 = arguments[2];
     uint32_t arg4 = arguments[3];
+
+    // temp code to facilitate svc code transfer
+    svc_exec = 1;
+    for(i = 0; i < TOTAL_SVC_COUNT; i++) {
+        if(svc_dispatch[i].svc_code == *svc_num) {
+            svc_exec = 0;
+            break;
+        }
+    }
 
     /* Process the requested service */
     switch(*svc_num) {
@@ -701,7 +715,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             break;
 
         case GHEAP_ALLOCATE:
-
+#if 0
             /* Arugment assigments
              * arg1 = Return Pointer
              * arg2 = Size request
@@ -723,7 +737,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
                 arg1 = (uint32_t) add_new_allocated_marker(arg2);
         
             }
-
+#endif
         break;
 
         case GHEAP_RELEASE:
@@ -964,6 +978,44 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
     return ERROR_NONE;
 
+}
+
+uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t *allocated_address;
+    uint32_t  size_request;
+
+    allocated_address = NULL;
+    size_request = arguments[1];
+
+    /* Arugment assigments
+        * arg1 = Return Pointer
+        * arg2 = Size request
+        */
+
+    if(blist_size == 0) {
+
+        allocated_address =(uint32_t*) add_new_allocated_marker(size_request);
+        goto search_done;
+
+    }
+
+    allocated_address = (uint32_t*) search_free_marker(size_request);
+
+    if(allocated_address == NULL) {
+
+        allocated_address = (uint32_t*) add_new_allocated_marker(size_request);
+
+    }
+
+search_done:
+
+    if(allocated_address != NULL) {
+        heap_remaining = heap_remaining - size_request;
+    }
+
+    return (uint32_t)allocated_address;
+    
 }
 
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments) {

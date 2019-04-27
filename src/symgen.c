@@ -11,7 +11,7 @@
 
 #include <svctable.h>
 
-extern svc_dispatch_table_t svc_dispatch[];
+extern const svc_dispatch_table_t svc_dispatch[];
 
 void symbol_generator() {
 
