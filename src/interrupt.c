@@ -10,6 +10,7 @@
 #include <error.h>
 #include <svc.h>
 #include <share.h>
+#include <param.h>
 #include <kernel.h>
 #include <regmap.h>
 #include <kvar.h>

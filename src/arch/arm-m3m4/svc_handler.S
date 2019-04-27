@@ -6,6 +6,7 @@
  */
 
 #include <svc.h>
+#include "symgen.h"
 
 .text
 .syntax unified
@@ -16,12 +17,14 @@ SVC_CODE        .req R2
 ADDR            .req R1
 
 .extern process_svc_request
+.extern svc_dispatch
 
 .type svc_handler, %function
 .global svc_handler
 
 
 svc_handler:
+
 
         // get stack pointer
         TST    LR, #4                     
@@ -32,10 +35,9 @@ svc_handler:
         // get svc code
         LDR    SVC_CODE, [ADDR, #24]       
         LDRB   SVC_CODE, [SVC_CODE, #-2]
-        PUSH   {R6, R7}
 
-        // SVC_STASH = SVC_CODE
-        MOV SVC_STASH, SVC_CODE
+        PUSH   {R4, R5, R6, R7}
+        MOV    SVC_STASH, SVC_CODE
 
         // store LR to exc_return in stack
         // store svc_code in stack
@@ -46,35 +48,64 @@ svc_handler:
 
         STR    LR, [R7, #4]
         STR    SVC_CODE, [R7, #0]
-        MOV    R0, R7   
-
+        MOV    R0, R7
+        
+        // temp old service
+        PUSH   {R1}
         BL     process_svc_request 
+        LDR    SVC_CODE, [R7, #0]
+        POP    {R1}
 
-        // check if hand_over service needs to be executed
-        LDR     SVC_CODE, [R7, #0]
-        CMP     SVC_CODE, SVC_STASH
-        IT      EQ
-        BEQ     skip_check
+svc_cycle:
 
-        CMP     SVC_CODE, HAND_OVER
-        IT      NE 
-        BNE     skip_check
+        PUSH   {R0}
 
-        BL      svc_service_hand_over
+        // SVC_STASH = SVC_CODE
+        MOV    SVC_STASH, SVC_CODE
+        MOV    R0, R7
+        LDR    R4, =svc_dispatch
+
+svc_again:
+        LDR    R5, [R4, OFFSET_OF_SDT_SVC_CODE]
+        CMP    R5, #0
+        IT     EQ
+        BEQ    skip_check
+
+        CMP    SVC_CODE, R5
+        ITEE   EQ
+        LDREQ  R5, [R4, OFFSET_OF_SDT_SVC_SERVICE]
+        ADDNE  R4, R4, SIZE_OF_SDT
+        BNE    svc_again
+
+        PUSH   {R1, R3}
+        BLX    R5
+        POP    {R1, R3}
+    
+        LDR    SVC_CODE, [R7, #0]
+        CMP    SVC_CODE, SVC_STASH
+        IT     EQ
+        BEQ    skip_check
+
+        B      svc_cycle       
 
 skip_check:
+
+        POP     {R0}
+
         // restore EXC_RETURN value
         LDR     LR, [R7, #4]
         ADD     R7, R7, #8
         MOV     SP, R7
         DMB
 
+        POP       {R4, R5, R6, R7}
+
         // return value to caller function
         TST       LR, #4                
         ITE       EQ                    
         MRSEQ     ADDR, MSP         
         MRSNE     ADDR, PSP          
-        STR       R0, [ADDR, #8]    
+        STR       R0, [ADDR, #0]
 
-        POP       {R6, R7}
+
         BX        LR		            

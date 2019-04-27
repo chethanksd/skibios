@@ -723,10 +723,16 @@ namespace skibios
         {
 
             string param = PARAM;
+            string include_path;
 
             Process process = new Process();
             process.StartInfo.FileName = binpath + "/arm-none-eabi-gcc.exe";
 
+            include_path = "";
+            include_path += " -I" + srcpath + "api ";
+            include_path += " -I" + srcpath + "src/include ";
+            include_path += " -I" + srcpath + "src/arch/arm-m3m4/ ";
+            include_path += " -I" + outpath + " ";
 
             param += " -DNUM_OF_INTERRUPTS=" + NUM_OF_INTERRUPTS;
             param += " -DMAX_PROCESS_COUNT=" + MAX_PROCESS_COUNT;
@@ -737,19 +743,21 @@ namespace skibios
             param += " -DENABLE_SKIBIOS=" + (ENABLE_SKIBIOS >= 1 ? 1 : 0).ToString();
             param += " -DPROCESS_PER_SEC=" + PROCESS_PER_SEC;
             param += " -DHEAP_BOOKEEPING_SIZE=" + (GHMB_REGION_SIZE * 256).ToString();
+            param += include_path;
 
-            if(outfile == "")
+
+            if (outfile == "")
             {
                 outfile = file;
             }
 
             if (build_path == false)
             {
-                process.StartInfo.Arguments = CFLAGS + " " + param + " -I" + srcpath + "api " + "-I" + srcpath + "src/include " + "-I" + srcpath + "src/arch/arm-m3m4/ " + srcpath + "src/" + file + "." + extension + " -o" + outpath + "/" + outfile + ".o";
+                process.StartInfo.Arguments = CFLAGS + " " + param + srcpath + "src/" + file + "." + extension + " -o" + outpath + "/" + outfile + ".o";
             }
             else
             {
-                process.StartInfo.Arguments = CFLAGS + " " + param + " -I" + srcpath + "api " + "-I" + srcpath + "src/include " + "-I" + srcpath + "src/arch/arm-m3m4/ " + outpath + "/" + file + "." + extension + " -o" + outpath + "/" + outfile + ".o";
+                process.StartInfo.Arguments = CFLAGS + " " + param + outpath + "/" + file + "." + extension + " -o" + outpath + "/" + outfile + ".o";
             }
 
             process.StartInfo.UseShellExecute = false;

@@ -11,6 +11,8 @@
 
 #include <svctable.h>
 
+extern svc_dispatch_table_t svc_dispatch[];
+
 void symbol_generator() {
 
     OFFSETOF(SDT_SVC_CODE, svc_dispatch_table_t, svc_code);

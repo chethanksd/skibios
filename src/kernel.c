@@ -49,7 +49,7 @@ bool KSECTION(.kdat) normal_schedule = true;
 /* Local Functions */
 uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
-void svc_service_hand_over(void);
+uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -509,6 +509,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
                 if(process_id[i] == invocated_task) {
                     hib_value[i] = arg1;
                     arg1 = 0;
+                    break;
                 }
             }
 
@@ -961,7 +962,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             break;
 
         case DEVICE_RESET:
-
+#if 0
             /* Perform a software reset request.  This request causes the device to
             reset, no further code is executed */
 
@@ -971,7 +972,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             case, loop forever. */
 
             while(1){}
-            
+#endif          
             break;
 
 
@@ -987,7 +988,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
-void svc_service_hand_over() {
+uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
     if(self_kill == false) {
         // set the State of current process to sleep
@@ -1002,6 +1003,8 @@ void svc_service_hand_over() {
     normal_schedule = false;
 
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+
+    return ERROR_NONE;
 
 }
 
