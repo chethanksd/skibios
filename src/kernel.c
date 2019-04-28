@@ -61,6 +61,7 @@ uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -658,7 +659,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
         break;
 
         case HIBERNATE:
-
+#if 0
             /* Arugment assigments
              * arg1 = Hibernation current process Number | reversed state
              * arg2 = op1 argument
@@ -692,7 +693,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             normal_schedule = false;
 
             HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
-
+#endif
             break;
 
         case START_SCHEDULER:
@@ -719,46 +720,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
                             
             HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
 
-            break;
-
-        case INT_ENABLE:
-#if 0
-            /* Arugment assigments
-             * arg1 = Interrupt Number
-             */
-            
-            // check access permission of currrent_task for Interrupt control
-            if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-                arg1 = ERROR_ACCESS_DENIED;
-                break;
-            }
-        
-            /* Enable the general interrupt.*/
-            HWREG(g_pui32EnRegs[(arg1 - 16) / 32]) = 1 << ((arg1 - 16) & 31);
-
-            // return ERROR_NONE
-            arg1 = ERROR_NONE;
-#endif
-            break;
-
-        case INT_DISABLE:
-#if 0
-            /* Arugment assigments
-             * arg1 = Interrupt Number
-             */
-
-            // check access permission of currrent_task for Interrupt control
-            if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-                arg1 = ERROR_ACCESS_DENIED;
-                break;
-            }
-
-            /*  Disable the general interrupt. */
-            HWREG(g_pui32Dii16Regs[(arg1 - 16) / 32]) = 1 << ((arg1 - 16) & 31);
-
-            // return ERROR_NONE
-            arg1 = ERROR_NONE;
-#endif
             break;
 
         default:
@@ -795,6 +756,57 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t process_no;
+    uint32_t hib_op1;
+    uint32_t hib_op2;
+    uint32_t value;
+
+    process_no = arguments[0];
+    hib_op1 = arguments[1];
+    hib_op2 = arguments[2];
+    value = arguments[3];
+
+    /* Arugment assigments
+        * arg1 = Hibernation current process Number | reversed state
+        * arg2 = op1 argument
+        * arg3 = op2 argument
+        * arg4 = value
+        */
+
+
+    if((process_no & HIBEARNTE_REV_MASK) == HIBEARNTE_REV_MASK) {
+
+        process_no = process_no & ~(HIBEARNTE_REV_MASK);
+        state[current_task] = PROCESS_STATE_HIBERNATE_L;
+
+    } else {
+
+        state[current_task] = PROCESS_STATE_HIBERNATE_G;
+
+    }
+    
+    op1[current_task] = (uint32_t*)hib_op1;
+    op2[current_task] = (uint32_t*)hib_op2;
+    hib_value[current_task] = value;
+
+
+    if(priority_Array[current_task][PROCESS_PRIO_CURRENT] == max_level) {
+
+        hlc++;
+        alc--;
+
+    }
+
+    normal_schedule = false;
+
+    HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+
+    return ERROR_NONE;
+
+}
+
 uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments) {
     
     uint32_t error = ERROR_NONE;
@@ -802,10 +814,6 @@ uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments) {
 
     irq_no = arguments[0];
 
-    /* Arugment assigments
-        * arg1 = Interrupt Number
-        */
-    
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
         error = ERROR_ACCESS_DENIED;
@@ -827,10 +835,6 @@ uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments) {
     uint32_t irq_no;
 
     irq_no = arguments[0];
-
-    /* Arugment assigments
-        * arg1 = Interrupt Number
-        */
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
