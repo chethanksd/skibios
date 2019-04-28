@@ -58,6 +58,7 @@ uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -759,7 +760,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             break;
 
         case SET_PRIORITY:
-
+#if 0
             /* Arugment assigments
              * arg1 = Interrupt Number
              * arg2 = Priority
@@ -772,27 +773,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             }
 
             HWREG(prioreg[(arg1-16)/4]) |= (PRIORITY_WRITE_MASK & (uint32_t)arg2) << (8 * ((arg1-16) & 3));
-
-            // return ERROR_NONE
-            arg1 = ERROR_NONE;
-
-            break;
-
-        case INT_REGISTER:
-#if 0
-            /* Arugment assigments
-             * arg1 = Interrupt Number
-             * arg2 = Pointer to interrupt handler
-             */
-
-            // check access permission of currrent_task for Interrupt control
-            if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-                arg1 = ERROR_ACCESS_DENIED;
-                break;
-            }
-
-            /* Save the interrupt handler.*/
-            HWREG(SRAM_START_ADDRESS + (arg1 * 4)) = arg2;
 
             // return ERROR_NONE
             arg1 = ERROR_NONE;
@@ -833,6 +813,34 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t irq_no;
+    uint32_t priority;
+
+    irq_no = arguments[0];
+    priority = arguments[1];
+
+    /* Arugment assigments
+        * arg1 = Interrupt Number
+        * arg2 = Priority
+        */
+
+    // check access permission of currrent_task for Interrupt control
+    if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
+        error = ERROR_ACCESS_DENIED;
+        goto quit_error;
+    }
+
+    HWREG(prioreg[(irq_no - 16)/4]) |= (PRIORITY_WRITE_MASK & (uint32_t)priority) << (8 * ((irq_no - 16) & 3));
+
+quit_error:
+
+    return error;
+
+}
+
 uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
@@ -841,11 +849,6 @@ uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments) {
 
     irq_no = arguments[0];
     handler_address = arguments[1];
-
-    /* Arugment assigments
-        * arg1 = Interrupt Number
-        * arg2 = Pointer to interrupt handler
-        */
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
@@ -981,11 +984,6 @@ uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments) {
     uint32_t error = ERROR_NONE;
     uint32_t status;
     uint32_t address;
-
-    /* Argument assigments
-        * arg1 = Return status
-        * arg2 = Pointer to space which is to be Released
-        */
 
     address = arguments[1];
 
