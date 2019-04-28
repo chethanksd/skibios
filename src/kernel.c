@@ -59,6 +59,8 @@ uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -720,7 +722,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             break;
 
         case INT_ENABLE:
-
+#if 0
             /* Arugment assigments
              * arg1 = Interrupt Number
              */
@@ -736,11 +738,11 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             // return ERROR_NONE
             arg1 = ERROR_NONE;
-
+#endif
             break;
 
         case INT_DISABLE:
-
+#if 0
             /* Arugment assigments
              * arg1 = Interrupt Number
              */
@@ -753,26 +755,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             /*  Disable the general interrupt. */
             HWREG(g_pui32Dii16Regs[(arg1 - 16) / 32]) = 1 << ((arg1 - 16) & 31);
-
-            // return ERROR_NONE
-            arg1 = ERROR_NONE;
-
-            break;
-
-        case SET_PRIORITY:
-#if 0
-            /* Arugment assigments
-             * arg1 = Interrupt Number
-             * arg2 = Priority
-             */
-
-            // check access permission of currrent_task for Interrupt control
-            if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-                arg1 = ERROR_ACCESS_DENIED;
-                break;
-            }
-
-            HWREG(prioreg[(arg1-16)/4]) |= (PRIORITY_WRITE_MASK & (uint32_t)arg2) << (8 * ((arg1-16) & 3));
 
             // return ERROR_NONE
             arg1 = ERROR_NONE;
@@ -813,6 +795,58 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments) {
+    
+    uint32_t error = ERROR_NONE;
+    uint32_t irq_no;
+
+    irq_no = arguments[0];
+
+    /* Arugment assigments
+        * arg1 = Interrupt Number
+        */
+    
+    // check access permission of currrent_task for Interrupt control
+    if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
+        error = ERROR_ACCESS_DENIED;
+        goto quit_error;
+    }
+
+    /* Enable the general interrupt.*/
+    HWREG(g_pui32EnRegs[(irq_no - 16) / 32]) = 1 << ((irq_no - 16) & 31);
+
+ quit_error:
+
+    return error;
+
+}
+
+uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t irq_no;
+
+    irq_no = arguments[0];
+
+    /* Arugment assigments
+        * arg1 = Interrupt Number
+        */
+
+    // check access permission of currrent_task for Interrupt control
+    if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
+        error = ERROR_ACCESS_DENIED;
+        goto quit_error;
+    }
+
+    /*  Disable the general interrupt. */
+    HWREG(g_pui32Dii16Regs[(irq_no - 16) / 32]) = 1 << ((irq_no - 16) & 31);
+
+quit_error:
+
+    return error;
+
+}
+
 uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
@@ -821,11 +855,6 @@ uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments) {
 
     irq_no = arguments[0];
     priority = arguments[1];
-
-    /* Arugment assigments
-        * arg1 = Interrupt Number
-        * arg2 = Priority
-        */
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
