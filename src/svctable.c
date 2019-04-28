@@ -24,6 +24,7 @@ extern uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *argume
 extern uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
+extern uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 
 const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = HAND_OVER,         .svc_service = svc_service_hand_over        },
@@ -37,6 +38,7 @@ const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = ENABLE_UMPU,       .svc_service = svc_service_umpu_enable      },
     {.svc_code = DISABLE_UMPU,      .svc_service = svc_service_umpu_disable     },
     {.svc_code = CPU_FREQ,          .svc_service = svc_service_cpu_freq_update  },
+    {.svc_code = START_SCHEDULER,   .svc_service = svc_service_start_scheduler  },
     {.svc_code = DEVICE_RESET,      .svc_service = svc_service_device_reset     },
     {.svc_code = 0,                 .svc_service = 0                            }
 };

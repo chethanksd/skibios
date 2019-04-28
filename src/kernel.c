@@ -62,6 +62,7 @@ uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -658,46 +659,8 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
         break;
 
-        case HIBERNATE:
-#if 0
-            /* Arugment assigments
-             * arg1 = Hibernation current process Number | reversed state
-             * arg2 = op1 argument
-             * arg3 = op2 argument
-             * arg4 = value
-             */
-
-            if((arg1 & HIBEARNTE_REV_MASK) == HIBEARNTE_REV_MASK) {
-
-                arg1 = arg1 & ~(HIBEARNTE_REV_MASK);
-                state[current_task] = PROCESS_STATE_HIBERNATE_L;
-
-            } else {
-
-                state[current_task] = PROCESS_STATE_HIBERNATE_G;
-
-            }
-            
-            op1[current_task] = (uint32_t*)arg2;
-            op2[current_task] = (uint32_t*)arg3;
-            hib_value[current_task] = arg4;
-
-
-            if(priority_Array[current_task][PROCESS_PRIO_CURRENT] == max_level) {
-
-                hlc++;
-                alc--;
-
-            }
-
-            normal_schedule = false;
-
-            HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
-#endif
-            break;
-
         case START_SCHEDULER:
-
+#if 0
             maxp_level = 127;
         	value = (uint32_t)proc_obj[current_task]->pfnProcess;
 
@@ -719,7 +682,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
                 			);
                             
             HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
-
+#endif
             break;
 
         default:
@@ -756,6 +719,37 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t value;
+    uint32_t i;
+    
+    maxp_level = 127;
+    value = (uint32_t)proc_obj[current_task]->pfnProcess;
+
+    //base task should have all permissions
+    permissions[0] = 0xFFFF;
+
+    //reset of the task will have by default no permissions
+    for(i = 1; i < MAX_PROCESS_COUNT; i++) {
+        permissions[i] = 0;
+    }
+
+    __asm volatile (" MRS R0,PSP        \n"
+                    " ADD R0,R0,#24     \n"
+                    " LDR R1,%0			\n"
+                    " STR R1,[R0]		\n"
+                    " ISB"
+                    :
+                    : "m" (value)
+                    );
+                    
+    HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+    
+    return ERROR_NONE;
+
+}
+
 uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t process_no;
@@ -767,14 +761,6 @@ uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
     hib_op1 = arguments[1];
     hib_op2 = arguments[2];
     value = arguments[3];
-
-    /* Arugment assigments
-        * arg1 = Hibernation current process Number | reversed state
-        * arg2 = op1 argument
-        * arg3 = op2 argument
-        * arg4 = value
-        */
-
 
     if((process_no & HIBEARNTE_REV_MASK) == HIBEARNTE_REV_MASK) {
 
