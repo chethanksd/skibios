@@ -57,6 +57,7 @@ uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_umpu_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -778,7 +779,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             break;
 
         case INT_REGISTER:
-
+#if 0
             /* Arugment assigments
              * arg1 = Interrupt Number
              * arg2 = Pointer to interrupt handler
@@ -795,7 +796,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             // return ERROR_NONE
             arg1 = ERROR_NONE;
-
+#endif
             break;
 
         default:
@@ -831,6 +832,36 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
     return ERROR_NONE;
 
 }
+
+uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t irq_no;
+    uint32_t handler_address;
+
+    irq_no = arguments[0];
+    handler_address = arguments[1];
+
+    /* Arugment assigments
+        * arg1 = Interrupt Number
+        * arg2 = Pointer to interrupt handler
+        */
+
+    // check access permission of currrent_task for Interrupt control
+    if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
+        error = ERROR_ACCESS_DENIED;
+        goto quit_error;
+    }
+
+    /* Save the interrupt handler.*/
+    HWREG(SRAM_START_ADDRESS + (irq_no * 4)) = handler_address;
+
+quit_error:
+
+    return error;
+
+}
+
 
 uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments) {
 
