@@ -28,6 +28,7 @@ extern uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *argumen
 extern uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
+extern uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
 
 const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = HAND_OVER,         .svc_service = svc_service_hand_over        },
@@ -36,6 +37,7 @@ const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = PRIORITY_DEMOTE,   .svc_service = svc_service_priority_demote  },
     {.svc_code = GHEAP_ALLOCATE,    .svc_service = svc_service_gheap_allocate   },
     {.svc_code = GHEAP_RELEASE,     .svc_service = svc_service_gheap_release    },
+    {.svc_code = RELEASE_BASE,      .svc_service = svc_service_release_base     },
     {.svc_code = GRANT_PERMISSION,  .svc_service = svc_service_grant_permission },
     {.svc_code = INT_ENABLE,        .svc_service = svc_service_int_enable       },
     {.svc_code = INT_DISABLE,       .svc_service = svc_service_int_disable      },

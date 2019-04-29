@@ -66,6 +66,7 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -520,7 +521,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
 
         case RELEASE_BASE:
-
+#if 0
             /* Arugment assigments
              * arg1 = invocation return error
              */
@@ -549,33 +550,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             invocated_args = 0;
 
             *svc_num = PRIORITY_DEMOTE;
-
-        break;
-
-        case GRANT_PERMISSION:
-#if 0
-            /* Arugment assigments
-             * arg1 = Process ID
-             * arg2 = Permission
-             */
-
-            if(current_task != 0) {
-                arg1 = ERROR_ACCESS_DENIED;
-                break;
-            }
-
-            for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-                if(process_id[i] == arg1) {
-                    permissions[i] = arg2;
-                    break;
-                }
-            }
-
-            if(i == MAX_PROCESS_COUNT) {
-                arg1 =  ERROR_UNKNOWN_PROCESS_ID;
-            } else {
-                arg1 = 0;
-            }
 #endif
         break;
 
@@ -613,6 +587,49 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t return_error;
+    uint32_t i;
+
+    return_error = arguments[0];
+
+    /* Arugment assigments
+        * arg1 = invocation return error
+        */
+
+    // only base task can use this service
+    if(current_task != 0) {
+        error = ERROR_ACCESS_DENIED;
+        goto quit_error;
+    }
+
+    // store invocation error on hib_value of task that invocated base
+    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+        if(process_id[i] == invocated_task) {
+            hib_value[i] = return_error;
+            break;
+        }
+    }
+
+    if(i == MAX_PROCESS_COUNT) {
+        error = ERROR_UNKNOWN_PROCESS_ID;
+        goto quit_error;
+    }
+    
+    // clear invocate info and return error
+    invocated_task = 0;
+    invocated_args = 0;
+
+    *svc_num = PRIORITY_DEMOTE;
+
+quit_error:
+
+    return error;
+
+}
+
 uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
@@ -622,11 +639,6 @@ uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
 
     pid = arguments[0];
     permission = arguments[1];
-
-    /* Arugment assigments
-        * arg1 = Process ID
-        * arg2 = Permission
-        */
 
     if(current_task != 0) {
         error = ERROR_ACCESS_DENIED;
