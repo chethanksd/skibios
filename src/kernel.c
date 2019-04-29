@@ -63,6 +63,7 @@ uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -622,69 +623,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
         break;
 
-        case PRIORITY_DEMOTE:
-
-            priority_Array[current_task][PROCESS_PRIO_CURRENT] = priority_Array[current_task][PROCESS_PRIO_STASHED];
-            priority_Array[current_task][PROCESS_PRIO_STASHED] = 0;
-
-            max_level--;
-
-            if(max_level == 127) {
-
-                max_level = maxp_level;
-                maxp_level = 127;
-                alc = alcp;
-                hlc = hlcp;
-
-            }
-
-            for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-
-                if(state[i] == PROCESS_STATE_HOLD) {
-
-                    if(op1[i] == (uint32_t*)mutex_stash[current_task]){
-
-                        state[i] = PROCESS_STATE_SLEEP;
-                        break;
-
-                    }
-                }
-
-            }
-
-            mutex_stash[current_task] = 0;
-
-            /* invoke HAND_OVER service call */
-            *svc_num = HAND_OVER;
-
-        break;
-
-        case START_SCHEDULER:
-#if 0
-            maxp_level = 127;
-        	value = (uint32_t)proc_obj[current_task]->pfnProcess;
-
-            //base task should have all permissions
-            permissions[0] = 0xFFFF;
-
-            //reset of the task will have by default no permissions
-            for(i = 1; i < MAX_PROCESS_COUNT; i++) {
-                permissions[i] = 0;
-            }
-
-            __asm volatile (" MRS R0,PSP        \n"
-                            " ADD R0,R0,#24     \n"
-            				" LDR R1,%0			\n"
-            				" STR R1,[R0]		\n"
-            				" ISB"
-                    		:
-                    		: "m" (value)
-                			);
-                            
-            HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
-#endif
-            break;
-
         default:
 
             //ToDo: Determine actions to be done if process issues WRONG SVC_CALL
@@ -719,11 +657,52 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t i;
+
+    priority_Array[current_task][PROCESS_PRIO_CURRENT] = priority_Array[current_task][PROCESS_PRIO_STASHED];
+    priority_Array[current_task][PROCESS_PRIO_STASHED] = 0;
+
+    max_level--;
+
+    if(max_level == 127) {
+
+        max_level = maxp_level;
+        maxp_level = 127;
+        alc = alcp;
+        hlc = hlcp;
+
+    }
+
+    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+
+        if(state[i] == PROCESS_STATE_HOLD) {
+
+            if(op1[i] == (uint32_t*)mutex_stash[current_task]){
+
+                state[i] = PROCESS_STATE_SLEEP;
+                break;
+
+            }
+        }
+
+    }
+
+    mutex_stash[current_task] = 0;
+
+    /* invoke HAND_OVER service call */
+    *svc_num = HAND_OVER;
+
+    return ERROR_NONE;
+
+}
+
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t value;
     uint32_t i;
-    
+
     maxp_level = 127;
     value = (uint32_t)proc_obj[current_task]->pfnProcess;
 

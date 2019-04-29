@@ -25,10 +25,12 @@ extern uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
+extern uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
 
 const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = HAND_OVER,         .svc_service = svc_service_hand_over        },
     {.svc_code = HIBERNATE,         .svc_service = svc_service_hibernate        },
+    {.svc_code = PRIORITY_DEMOTE,   .svc_service = svc_service_priority_demote  },
     {.svc_code = GHEAP_ALLOCATE,    .svc_service = svc_service_gheap_allocate   },
     {.svc_code = GHEAP_RELEASE,     .svc_service = svc_service_gheap_release    },
     {.svc_code = INT_ENABLE,        .svc_service = svc_service_int_enable       },
