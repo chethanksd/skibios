@@ -64,6 +64,8 @@ uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -551,7 +553,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
         break;
 
         case GRANT_PERMISSION:
-
+#if 0
             /* Arugment assigments
              * arg1 = Process ID
              * arg2 = Permission
@@ -574,53 +576,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             } else {
                 arg1 = 0;
             }
-
-        break;
-
-    }
-
-    switch(*svc_num) {
-
-        case PRIORITY_PROMOTE:
-
-            /* Arugment assigments
-             * arg1 = mutex address
-             */
-
-            if(maxp_level == 127) {
-
-                maxp_level = max_level;
-                max_level = 127;
-                alcp = alc;
-                hlcp = hlc;
-                alc = 1;
-                hlc = 0;
-
-            }
-
-            if(max_level == 255) {
-                // ToDo : no priority level present after 255
-                // Return error
-            }
-            
-            max_level++;
-            arg2 = *((uint32_t*)arg1) >> 16;
-
-            mutex_stash[arg2] = arg1;
-
-            priority_Array[arg2][PROCESS_PRIO_STASHED] = priority_Array[arg2][PROCESS_PRIO_CURRENT];
-            priority_Array[arg2][PROCESS_PRIO_CURRENT] = max_level;
-
-            state[current_task] = PROCESS_STATE_HOLD;
-            op1[current_task] = (uint32_t*)arg1;
-
-            // clear arg1 (required for INVOKE_BASE)
-            arg1 = 0;
-
-            // Enable scheduler and set normal scheule as false
-            normal_schedule = false;
-            HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
-
+#endif
         break;
 
         default:
@@ -651,6 +607,85 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
     normal_schedule = false;
 
+    HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+
+    return ERROR_NONE;
+
+}
+
+uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t pid;
+    uint32_t permission;
+    uint32_t i;
+
+    pid = arguments[0];
+    permission = arguments[1];
+
+    /* Arugment assigments
+        * arg1 = Process ID
+        * arg2 = Permission
+        */
+
+    if(current_task != 0) {
+        error = ERROR_ACCESS_DENIED;
+        goto quit_error;
+    }
+
+    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+        if(process_id[i] == pid) {
+            permissions[i] = permission;
+            break;
+        }
+    }
+
+    if(i == MAX_PROCESS_COUNT) {
+        error =  ERROR_UNKNOWN_PROCESS_ID;
+    }
+
+quit_error:
+
+    return error;
+
+}
+
+uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t mutex_address;
+    uint32_t index;
+    
+    mutex_address = arguments[0];
+
+    if(maxp_level == 127) {
+
+        maxp_level = max_level;
+        max_level = 127;
+        alcp = alc;
+        hlcp = hlc;
+        alc = 1;
+        hlc = 0;
+
+    }
+
+    if(max_level == 255) {
+        // ToDo : no priority level present after 255
+        // Return error
+    }
+    
+    max_level++;
+    index = *((uint32_t*)mutex_address) >> 16;
+
+    mutex_stash[index] = mutex_address;
+
+    priority_Array[index][PROCESS_PRIO_STASHED] = priority_Array[index][PROCESS_PRIO_CURRENT];
+    priority_Array[index][PROCESS_PRIO_CURRENT] = max_level;
+
+    state[current_task] = PROCESS_STATE_HOLD;
+    op1[current_task] = (uint32_t*)mutex_address;
+
+    // Enable scheduler and set normal scheule as false
+    normal_schedule = false;
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
 
     return ERROR_NONE;
@@ -870,10 +905,6 @@ uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments) {
     uint32_t region;
 
     region = arguments[0];
-
-    /* Arugment assigments
-        * arg1 = Region
-        */
 
     // Check if MPU Hardware is supported
     if(HWREG(MPUTYPE) == 0) {
