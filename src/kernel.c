@@ -67,6 +67,7 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -500,7 +501,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
         break;
 
         case INVOKE_BASE:
-
+#if 0
             /* Arugment assigments
              * arg1 = Invocation argument
              */
@@ -516,40 +517,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
             arg1 = (uint32_t)&base_mutex;
 
             *svc_num = PRIORITY_PROMOTE;
-
-        break;
-
-
-        case RELEASE_BASE:
-#if 0
-            /* Arugment assigments
-             * arg1 = invocation return error
-             */
-
-            // only base task can use this service
-            if(current_task != 0) {
-                arg1 = ERROR_ACCESS_DENIED;
-                break;
-            }
-
-            // store invocation error on hib_value of task that invocated base
-            for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-                if(process_id[i] == invocated_task) {
-                    hib_value[i] = arg1;
-                    arg1 = 0;
-                    break;
-                }
-            }
-
-            if(i == MAX_PROCESS_COUNT) {
-                arg1 = ERROR_UNKNOWN_PROCESS_ID;
-            }
-            
-            // clear invocate info and return error
-            invocated_task = 0;
-            invocated_args = 0;
-
-            *svc_num = PRIORITY_DEMOTE;
 #endif
         break;
 
@@ -587,6 +554,35 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments) {
+    
+    uint32_t error = ERROR_NONE;
+    uint32_t invocation_arg;
+
+    invocation_arg = arguments[0];
+
+    /* Arugment assigments
+        * arg1 = Invocation argument
+        */
+
+    // base task cannot use this service
+    if(current_task == 0) {
+        error = ERROR_BASE_PROCESS;
+        goto quit_error;
+    }
+
+    invocated_task = process_id[current_task];
+    invocated_args = invocation_arg;
+    arguments[0] = (uint32_t)&base_mutex;
+
+    *svc_num = PRIORITY_PROMOTE;
+
+quit_error:
+
+    return error;
+
+}
+
 uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
 
     uint32_t error = ERROR_NONE;
@@ -594,10 +590,6 @@ uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
     uint32_t i;
 
     return_error = arguments[0];
-
-    /* Arugment assigments
-        * arg1 = invocation return error
-        */
 
     // only base task can use this service
     if(current_task != 0) {
