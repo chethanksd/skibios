@@ -69,6 +69,7 @@ uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -211,14 +212,7 @@ void  __attribute__((naked)) start_scheduler(void) {
 
 uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
-    uint32_t value;
     uint32_t i;
-    uint32_t j;
-
-    uint32_t arg1 = arguments[0];
-    uint32_t arg2 = arguments[1];
-    uint32_t arg3 = arguments[2];
-    uint32_t arg4 = arguments[3];
 
     // temp code to facilitate svc code transfer
     svc_exec = 1;
@@ -229,287 +223,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
         }
     }
 
-    /* Process the requested service */
-    switch(*svc_num) {
-
-        case CREATE_PROCESS:
-
-            /* Arugment assigments
-             * arg1 = New Process Pointer
-             * arg2 = New Argument
-             */
-        
-            /* Find Idle Process Objects */
-            if(process_count < MAX_PROCESS_COUNT) {
-
-                for(i=0;i<MAX_PROCESS_COUNT;i++) {
-
-                    if(state[i] == PROCESS_STATE_IDLE) {
-                        break;
-                    }
-
-                }
-
-                /* Check if priority level request is valid */
-                if(((Process*)arg1)->priority > 127) {
-
-                    ((Process*)arg1)->error = ERROR_INVALID_PRIORITY;
-                    break;
-                    
-                }
-
-                /* Check if Base process creation is attempted */
-                if(((Process*)arg1)->priority == 0 && first_start == true) {
-
-                    ((Process*)arg1)->error = ERROR_INVALID_PRIORITY;
-                    break;
-
-                }
-
-
-                /* Dynamically initialize the Process Stack & Check if it is successful */
-                if(!(PSP_Array[i] = pstack_addr + (i * PROCESS_STACK_SIZE * 4))) {
-
-                    ((Process*)arg1)->error=ERROR_OUT_OF_MEMORY;
-                    break;
-
-                }
-
-
-                /* Clear all locations of process stack */
-                for( j = 0; j < PROCESS_STACK_SIZE; j++) {
-                    *((uint32_t*)(PSP_Array[i] + j)) = 0;
-                }
-
-                /* calculation for jump list */
-                if(i == 0) {
-
-                    jmp_list[i] = 0;
-
-                } else {
-
-                    j = i - 1;
-                    jmp_list[i] = jmp_list[j] - (i - j);
-                    jmp_list[j] = i - j;
-                    
-                }
-
-                proc_obj[i] = (Process*) arg1;
-                proc_obj[i]->process_id = (i << 16) | (total_process_count + 1);
-                process_id[i] = (i << 16) | (total_process_count + 1);
-
-                /* Set Initial Process State */
-                if((proc_obj[i]->hibernate & HIBERNATE_STATE_MASK) != HIBERNATE_STATE_MASK){
-                    state[i] = PROCESS_STATE_SLEEP;
-                }
-
-                /* Set current process priority */
-                priority_Array[i][PROCESS_PRIO_CURRENT] = proc_obj[i]->priority;
-                
-                //use arg3 as binary search index
-                //use arg4 as lower pointer of binary search
-                //use j as higher pointer of binary search
-                j = lstash_ptr;
-                arg4 = 0;
-
-                while(arg4 <= j) {
-
-                    arg3 = arg4 + ((j - arg4)/2);
-
-                    if(level_stash[arg3] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
-                        goto proc_continue;
-                    }
-
-                    if(level_stash[arg3] < priority_Array[i][PROCESS_PRIO_CURRENT]) {
-                        arg4 = arg3 + 1;
-                    } else {
-                        j = arg3 - 1;
-                    }
-
-                }
-                
-                for(j = lstash_ptr; j > arg3; j--) {
-                    level_stash[j] = level_stash[j-1];
-                }
-
-                level_stash[arg3] = (uint32_t)priority_Array[i][PROCESS_PRIO_CURRENT];
-                lstash_ptr++;
-                
-                proc_continue:
-
-                PSP_Array[i] = ((unsigned int) (PSP_Array[i])) + ((PROCESS_STACK_SIZE - 1) * 4) - 18 * 4;
-
-                /* Stack Initialization */
-                HWREG(PSP_Array[i] + (10 << 2)) = (uint32_t)arg2;
-                HWREG(PSP_Array[i] + (15 << 2)) = (uint32_t)&resolve_end;
-                HWREG(PSP_Array[i] + (16 << 2)) = (unsigned int) proc_obj[i]->pfnProcess;
-                HWREG(PSP_Array[i] + (17 << 2)) = 0x01000000;
-                HWREG(PSP_Array[i] ) = 0xFFFFFFFD;
-                HWREG(PSP_Array[i] + (1 << 2)) = 0x3;
-
-
-                total_process_count++;
-                process_count++;
-
-                /* Find new max level (Priority Level) */
-                for(j=0; j < MAX_PROCESS_COUNT; j++) {
-
-                    if(priority_Array[j][PROCESS_PRIO_CURRENT] > max_level && state[j] != PROCESS_STATE_IDLE) {
-
-                        max_level = priority_Array[j][PROCESS_PRIO_CURRENT];
-                        alc=0;
-                        hlc=0;
-                        HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
-
-                    }
-
-                }
-
-                /* Update Active & Hibernation Process Level Counts */
-                if(priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
-
-                    if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
-                        hlc++;
-                    } else {
-                        alc++;
-                    }
-
-                }
-
-                /* Start scheduler if there was only one process in  & start scheduler has been already executed */
-                if((alc + hlc) == 2 && first_start == true) {
-                    HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
-                }
-
-            } else {
-
-                ((Process*)arg1)->error=ERROR_MAX_PROCESS_COUNT;
-
-            }
-            
-        break;
-
-        case KILL_PROCESS:
-#if 0
-            /* Arugment assigments
-             * arg1 = Process ID to kill
-             * arg2 = Self Kill indicator (1 -> self kill)
-             */
-
-            /* calculate index of the process to kill */
-            i = (arg1 >> 16);
-
-            /* if i == 0 ==> killing of BaseTask is attempted
-             * MCU should fault in this case
-             */
-
-            /* Re-calculate level_stash */
-            for(j = 0; j < MAX_PROCESS_COUNT; j++) {
-
-                if(i == j) {
-                    continue;
-                }
-
-                if(priority_Array[j][PROCESS_PRIO_CURRENT] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
-                    goto pkill_continue;
-                }
-
-            }
-
-            //use arg3 as found flag
-            arg3 = 0;
-
-            for(j = 0; j < lstash_ptr; j++) {
-
-                if(level_stash[j] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
-                    arg3 = 1;
-                }
-
-                if(arg3 == 1) {
-                    level_stash[j] = level_stash[j + 1];
-                    continue;
-                }
-
-            }
-
-            lstash_ptr--;
-
-            pkill_continue:
-
-            state[i] = PROCESS_STATE_IDLE;
-            proc_obj[i]->process_id = 0;
-            process_id[i] = 0;
-            proc_obj[i] = 0;
-
-            if(arg2 == 1) {
-
-                self_kill = true;
-                *svc_num = HAND_OVER;
-
-            }
-        
-            process_count--;
-
-            /* calculate jmp_list */
-            for(j = 0; j < i; j++) {
-
-                if(i == (j + jmp_list[j])) {
-                    break;
-                }
-
-            }
-
-            jmp_list[j] = jmp_list[j] + jmp_list[i];
-
-            if(self_kill == true) {
-
-                next_task = next_task + jmp_list[i];
-
-            }
-
-            jmp_list[i] = 0;
-            
-            /* Find new max level (Priority Level), alc & hlc */
-            max_level = 0;
-            alc = 0;
-            hlc = 0;
-
-            for(i=0; i < MAX_PROCESS_COUNT; i++) {
-
-                if(priority_Array[i][PROCESS_PRIO_CURRENT] >= max_level && state[i] != PROCESS_STATE_IDLE) {
-                    max_level = priority_Array[i][PROCESS_PRIO_CURRENT];
-                }
-
-            }
-
-            for(i=0; i < MAX_PROCESS_COUNT; i++) {
-
-                if(priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
-
-                    if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
-                        hlc++;
-                    } else {
-                        alc++;
-                    }
-
-                }
-
-            }  
-
-            /* Turn ON scheduler */
-            HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
-#endif
-        break;
-
-        default:
-
-            //ToDo: Determine actions to be done if process issues WRONG SVC_CALL
-
-        break;
-
-    }
-
-    return arg1;
+    return 0;
 
 }
 
@@ -535,6 +249,174 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+    uint32_t proc_obj_ptr;
+    uint32_t proc_arg;
+    uint8_t i;
+    uint8_t j;
+    uint8_t search_index;
+    uint8_t lower_index;
+
+    proc_obj_ptr = arguments[0];
+    proc_arg = arguments[1];
+
+    /* Find Idle Process Objects */
+    if(process_count < MAX_PROCESS_COUNT) {
+
+        for(i=0;i<MAX_PROCESS_COUNT;i++) {
+
+            if(state[i] == PROCESS_STATE_IDLE) {
+                break;
+            }
+
+        }
+
+        /* Check if priority level request is valid */
+        if(((Process*)proc_obj_ptr)->priority > 127) {
+
+            ((Process*)proc_obj_ptr)->error = ERROR_INVALID_PRIORITY;
+            error = ERROR_INVALID_PRIORITY;
+            goto quit_error;
+            
+        }
+
+        /* Check if Base process creation is attempted */
+        if(((Process*)proc_obj_ptr)->priority == 0 && first_start == true) {
+
+            ((Process*)proc_obj_ptr)->error = ERROR_INVALID_PRIORITY;
+            error = ERROR_INVALID_PRIORITY;
+            goto quit_error;
+
+        }
+
+
+        /* Dynamically initialize the Process Stack & Check if it is successful */
+        if(!(PSP_Array[i] = pstack_addr + (i * PROCESS_STACK_SIZE * 4))) {
+
+            ((Process*)proc_obj_ptr)->error=ERROR_OUT_OF_MEMORY;
+            error = ERROR_OUT_OF_MEMORY;
+            goto quit_error;
+
+        }
+
+
+        /* Clear all locations of process stack */
+        for( j = 0; j < PROCESS_STACK_SIZE; j++) {
+            *((uint32_t*)(PSP_Array[i] + j)) = 0;
+        }
+
+        /* calculation for jump list */
+        if(i == 0) {
+
+            jmp_list[i] = 0;
+
+        } else {
+
+            j = i - 1;
+            jmp_list[i] = jmp_list[j] - (i - j);
+            jmp_list[j] = i - j;
+            
+        }
+
+        proc_obj[i] = (Process*) proc_obj_ptr;
+        proc_obj[i]->process_id = (i << 16) | (total_process_count + 1);
+        process_id[i] = (i << 16) | (total_process_count + 1);
+
+        /* Set Initial Process State */
+        if((proc_obj[i]->hibernate & HIBERNATE_STATE_MASK) != HIBERNATE_STATE_MASK){
+            state[i] = PROCESS_STATE_SLEEP;
+        }
+
+        /* Set current process priority */
+        priority_Array[i][PROCESS_PRIO_CURRENT] = proc_obj[i]->priority;
+
+        //use j as higher pointer of binary search
+        j = lstash_ptr;
+        lower_index = 0;
+
+        while(lower_index <= j) {
+
+            search_index = lower_index + ((j - lower_index)/2);
+
+            if(level_stash[search_index] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
+                goto proc_continue;
+            }
+
+            if(level_stash[search_index] < priority_Array[i][PROCESS_PRIO_CURRENT]) {
+                lower_index = search_index + 1;
+            } else {
+                j = search_index - 1;
+            }
+
+        }
+        
+        for(j = lstash_ptr; j > search_index; j--) {
+            level_stash[j] = level_stash[j-1];
+        }
+
+        level_stash[search_index] = (uint32_t)priority_Array[i][PROCESS_PRIO_CURRENT];
+        lstash_ptr++;
+        
+        proc_continue:
+
+        PSP_Array[i] = ((unsigned int) (PSP_Array[i])) + ((PROCESS_STACK_SIZE - 1) * 4) - 18 * 4;
+
+        /* Stack Initialization */
+        HWREG(PSP_Array[i] + (10 << 2)) = (uint32_t)proc_arg;
+        HWREG(PSP_Array[i] + (15 << 2)) = (uint32_t)&resolve_end;
+        HWREG(PSP_Array[i] + (16 << 2)) = (unsigned int) proc_obj[i]->pfnProcess;
+        HWREG(PSP_Array[i] + (17 << 2)) = 0x01000000;
+        HWREG(PSP_Array[i] ) = 0xFFFFFFFD;
+        HWREG(PSP_Array[i] + (1 << 2)) = 0x3;
+
+
+        total_process_count++;
+        process_count++;
+
+        /* Find new max level (Priority Level) */
+        for(j=0; j < MAX_PROCESS_COUNT; j++) {
+
+            if(priority_Array[j][PROCESS_PRIO_CURRENT] > max_level && state[j] != PROCESS_STATE_IDLE) {
+
+                max_level = priority_Array[j][PROCESS_PRIO_CURRENT];
+                alc=0;
+                hlc=0;
+                HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+
+            }
+
+        }
+
+        /* Update Active & Hibernation Process Level Counts */
+        if(priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
+
+            if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
+                hlc++;
+            } else {
+                alc++;
+            }
+
+        }
+
+        /* Start scheduler if there was only one process in  & start scheduler has been already executed */
+        if((alc + hlc) == 2 && first_start == true) {
+            HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+        }
+
+    } else {
+
+        ((Process*)proc_obj_ptr)->error=ERROR_MAX_PROCESS_COUNT;
+        error = ERROR_MAX_PROCESS_COUNT;
+
+    }
+
+quit_error:
+
+    return error;
+}
+
 uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments) {
     
     uint32_t error = ERROR_NONE;
@@ -546,11 +428,6 @@ uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments) {
 
     pid = arguments[0];
     self_kill_flag = arguments[1];
-
-    /* Arugment assigments
-        * arg1 = Process ID to kill
-        * arg2 = Self Kill indicator (1 -> self kill)
-        */
 
     /* calculate index of the process to kill */
     i = (pid >> 16);
