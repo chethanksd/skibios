@@ -68,6 +68,7 @@ uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments);
 void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
@@ -389,7 +390,7 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
         break;
 
         case KILL_PROCESS:
-
+#if 0
             /* Arugment assigments
              * arg1 = Process ID to kill
              * arg2 = Self Kill indicator (1 -> self kill)
@@ -497,26 +498,6 @@ uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
 
             /* Turn ON scheduler */
             HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
-
-        break;
-
-        case INVOKE_BASE:
-#if 0
-            /* Arugment assigments
-             * arg1 = Invocation argument
-             */
-
-            // base task cannot use this service
-            if(current_task == 0) {
-                arg1 = ERROR_BASE_PROCESS;
-                break;
-            }
-
-            invocated_task = process_id[current_task];
-            invocated_args = arg1;
-            arg1 = (uint32_t)&base_mutex;
-
-            *svc_num = PRIORITY_PROMOTE;
 #endif
         break;
 
@@ -551,6 +532,131 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
 
     return ERROR_NONE;
+
+}
+
+uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments) {
+    
+    uint32_t error = ERROR_NONE;
+    uint32_t pid;
+    uint32_t self_kill_flag;
+    uint8_t i;
+    uint8_t j;
+    uint8_t found;
+
+    pid = arguments[0];
+    self_kill_flag = arguments[1];
+
+    /* Arugment assigments
+        * arg1 = Process ID to kill
+        * arg2 = Self Kill indicator (1 -> self kill)
+        */
+
+    /* calculate index of the process to kill */
+    i = (pid >> 16);
+
+    /* if i == 0 ==> killing of BaseTask is attempted
+        * MCU should fault in this case
+        */
+
+    /* Re-calculate level_stash */
+    for(j = 0; j < MAX_PROCESS_COUNT; j++) {
+
+        if(i == j) {
+            continue;
+        }
+
+        if(priority_Array[j][PROCESS_PRIO_CURRENT] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
+            goto pkill_continue;
+        }
+
+    }
+
+    found = 0;
+
+    for(j = 0; j < lstash_ptr; j++) {
+
+        if(level_stash[j] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
+            found = 1;
+        }
+
+        if(found == 1) {
+            level_stash[j] = level_stash[j + 1];
+            continue;
+        }
+
+    }
+
+    lstash_ptr--;
+
+pkill_continue:
+
+    state[i] = PROCESS_STATE_IDLE;
+    proc_obj[i]->process_id = 0;
+    process_id[i] = 0;
+    proc_obj[i] = 0;
+
+    if(self_kill_flag == 1) {
+
+        self_kill = true;
+        *svc_num = HAND_OVER;
+
+    }
+
+    process_count--;
+
+    /* calculate jmp_list */
+    for(j = 0; j < i; j++) {
+
+        if(i == (j + jmp_list[j])) {
+            break;
+        }
+
+    }
+
+    jmp_list[j] = jmp_list[j] + jmp_list[i];
+
+    if(self_kill == true) {
+
+        next_task = next_task + jmp_list[i];
+
+    }
+
+    jmp_list[i] = 0;
+    
+    /* Find new max level (Priority Level), alc & hlc */
+    max_level = 0;
+    alc = 0;
+    hlc = 0;
+
+    for(i=0; i < MAX_PROCESS_COUNT; i++) {
+
+        if(priority_Array[i][PROCESS_PRIO_CURRENT] >= max_level && state[i] != PROCESS_STATE_IDLE) {
+            max_level = priority_Array[i][PROCESS_PRIO_CURRENT];
+        }
+
+    }
+
+    for(i=0; i < MAX_PROCESS_COUNT; i++) {
+
+        if(priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
+
+            if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
+                hlc++;
+            } else {
+                alc++;
+            }
+
+        }
+
+    }  
+
+    /* Turn ON scheduler */
+    HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+
+quit_error:
+
+    return error;
 
 }
 
