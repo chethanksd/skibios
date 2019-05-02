@@ -41,7 +41,6 @@ volatile uint32_t  KSECTION(.kbss) hib_value[MAX_PROCESS_COUNT];
 Process   KSECTION(.kbss) base_task;
 uint32_t  KSECTION(.kbss) invocated_task;
 uint32_t  KSECTION(.kbss) invocated_args;
-uint32_t  KSECTION(.kbss) svc_exec;
 
 bool KSECTION(.kdat) self_kill      = false;
 bool KSECTION(.kdat) enable_dws     = true;
@@ -49,7 +48,6 @@ bool KSECTION(.kdat) first_start    = false;
 bool KSECTION(.kdat) normal_schedule = true;
 
 /* Local Functions */
-uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
@@ -207,23 +205,6 @@ void  __attribute__((naked)) start_scheduler(void) {
                 );
 
     svc(START_SCHEDULER);
-
-}
-
-uint32_t process_svc_request(uint32_t *svc_num, uint32_t *arguments) {
-
-    uint32_t i;
-
-    // temp code to facilitate svc code transfer
-    svc_exec = 1;
-    for(i = 0; i < TOTAL_SVC_COUNT; i++) {
-        if(svc_dispatch[i].svc_code == *svc_num) {
-            svc_exec = 0;
-            break;
-        }
-    }
-
-    return 0;
 
 }
 

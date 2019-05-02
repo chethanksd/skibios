@@ -18,7 +18,6 @@ ADDR            .req R1
 
 .extern process_svc_request
 .extern svc_dispatch
-.extern svc_exec
 
 .type svc_handler, %function
 .global svc_handler
@@ -38,7 +37,6 @@ svc_handler:
         LDRB   SVC_CODE, [SVC_CODE, #-2]
 
         PUSH   {R4, R5, R6, R7}
-        MOV    SVC_STASH, SVC_CODE
 
         // store LR to exc_return in stack
         // store svc_code in stack
@@ -49,23 +47,8 @@ svc_handler:
 
         STR    LR, [R7, #4]
         STR    SVC_CODE, [R7, #0]
-        MOV    R0, R7
-        
-        // temp old service
-        PUSH   {R1}
-        BL     process_svc_request 
-        LDR    SVC_CODE, [R7, #0]
-        POP    {R1}
 
 svc_cycle:
-
-        // temp code
-        LDR    R4, =svc_exec
-        LDR    R4, [R4]
-        CMP    R4, #1
-        IT     EQ
-        PUSHEQ   {R0}
-
 
         // SVC_STASH = SVC_CODE
         MOV    SVC_STASH, SVC_CODE
@@ -96,13 +79,6 @@ svc_again:
         B      svc_cycle       
 
 skip_check:
-
-        // temp code
-        LDR    R4, =svc_exec
-        LDR    R4, [R4]
-        CMP    R4, #1
-        IT     EQ
-        POPEQ     {R0}
 
         // restore EXC_RETURN value
         LDR     LR, [R7, #4]
