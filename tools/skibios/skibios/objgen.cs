@@ -259,6 +259,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("umpu");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
             error = CompileSource("service/svr_process", false, "svr_process");
 
             if (error != ecode.ERROR_NONE)

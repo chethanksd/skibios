@@ -29,8 +29,6 @@ extern const uint32_t zero_ref;
 extern uint8_t kernel_init();
 extern void start_scheduler(void);
 extern uint8_t device_reset();
-extern uint8_t user_mpu_enable(uint8_t region, uint32_t address, uint32_t attributes);
-extern uint8_t user_mpu_disable(uint8_t region);
 extern uint8_t cpu_freq_update(uint32_t frequency);
 extern uint8_t base_run(void *args);
 extern uint8_t base_release(uint8_t error);
