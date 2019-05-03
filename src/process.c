@@ -1,7 +1,7 @@
 /*
  *    process management API Code SKIBIOS RTOS                             
  *                               
- *    Author: chetandev.ksd@gmail.com                                                                            
+ *    author: chetandev.ksd@gmail.com                                                                            
  */
 
 #include <error.h>
@@ -24,8 +24,6 @@ extern Process *proc_obj[MAX_PROCESS_COUNT];
 extern uint8_t state[MAX_PROCESS_COUNT];
 extern uint32_t process_id[MAX_PROCESS_COUNT];
 extern uint8_t  priority_Array[MAX_PROCESS_COUNT][2];
-
-void resolve_end(void);
 
 
 uint8_t process_init(Process *myprocess) {
@@ -132,21 +130,6 @@ uint8_t process_kill(Process *myprocess) {
     svc(KILL_PROCESS);   
 
     return ERROR_NONE;
-
-}
-
-/* Process End Resolver */
-
-void resolve_end(void) {
-
-    __asm volatile (" MOV R0, %[proc_id]   \n"
-                    " MOV R1, #1           \n"
-            :
-            : [proc_id] "r" (process_id[current_task])
-            :
-    );
-
-    svc(KILL_PROCESS);
 
 }
 

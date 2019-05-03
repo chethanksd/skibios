@@ -24,3 +24,26 @@ volatile uint8_t   KSECTION(.kdat) lstash_ptr               = 1;
 volatile uint32_t  KSECTION(.kbss) pstack_addr;
 volatile uint32_t  KSECTION(.kbss) cpu_freq;
 
+volatile Process   KSECTION(.kbss) *proc_obj[MAX_PROCESS_COUNT];
+volatile uint32_t  KSECTION(.kbss) PSP_Array[MAX_PROCESS_COUNT];
+volatile uint8_t   KSECTION(.kbss) priority_Array[MAX_PROCESS_COUNT][2];
+volatile uint32_t  KSECTION(.kbss) mutex_stash[MAX_PROCESS_COUNT];
+volatile uint8_t   KSECTION(.kbss) level_stash[MAX_PROCESS_COUNT];
+volatile int8_t    KSECTION(.kbss) jmp_list[MAX_PROCESS_COUNT];
+volatile uint8_t   KSECTION(.kbss) state[MAX_PROCESS_COUNT];
+volatile uint32_t  KSECTION(.kbss) process_id[MAX_PROCESS_COUNT];
+volatile uint16_t  KSECTION(.kbss) permissions[MAX_PROCESS_COUNT];
+
+volatile uint32_t  KSECTION(.kbss) *op1[MAX_PROCESS_COUNT];
+volatile uint32_t  KSECTION(.kbss) *op2[MAX_PROCESS_COUNT];
+volatile uint32_t  KSECTION(.kbss) hib_value[MAX_PROCESS_COUNT];
+
+Process   KSECTION(.kbss) base_task;
+uint32_t  KSECTION(.kbss) invocated_task;
+uint32_t  KSECTION(.kbss) invocated_args;
+
+bool KSECTION(.kdat) self_kill      = false;
+bool KSECTION(.kdat) enable_dws     = true;
+bool KSECTION(.kdat) first_start    = false;
+bool KSECTION(.kdat) normal_schedule = true;
+

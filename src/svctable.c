@@ -11,6 +11,8 @@
 #include <svctable.h>
 #include <svc.h>
 
+#include <svr_process.h>
+
 // extern svc service functions
 extern uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
@@ -30,8 +32,7 @@ extern uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *argume
 extern uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments);
+
 
 const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = HAND_OVER,         .svc_service = svc_service_hand_over        },

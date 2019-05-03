@@ -259,6 +259,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("service/svr_process", false, "svr_process");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
             error = CompileSource("arch/arm-m3m4/svc_handler", false, "svc_handler", "S");
 
             if (error != ecode.ERROR_NONE)
@@ -731,6 +738,7 @@ namespace skibios
             include_path = "";
             include_path += " -I" + srcpath + "api ";
             include_path += " -I" + srcpath + "src/include ";
+            include_path += " -I" + srcpath + "src/service";
             include_path += " -I" + srcpath + "src/arch/arm-m3m4/ ";
             include_path += " -I" + outpath + " ";
 
