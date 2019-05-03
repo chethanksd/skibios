@@ -25,10 +25,7 @@ extern uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments)
 extern uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments);

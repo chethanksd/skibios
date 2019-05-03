@@ -308,6 +308,134 @@ quit_error:
 
 }
 
+
+uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t process_no;
+    uint32_t hib_op1;
+    uint32_t hib_op2;
+    uint32_t value;
+
+    process_no = arguments[0];
+    hib_op1 = arguments[1];
+    hib_op2 = arguments[2];
+    value = arguments[3];
+
+    if((process_no & HIBEARNTE_REV_MASK) == HIBEARNTE_REV_MASK) {
+
+        process_no = process_no & ~(HIBEARNTE_REV_MASK);
+        state[current_task] = PROCESS_STATE_HIBERNATE_L;
+
+    } else {
+
+        state[current_task] = PROCESS_STATE_HIBERNATE_G;
+
+    }
+    
+    op1[current_task] = (uint32_t*)hib_op1;
+    op2[current_task] = (uint32_t*)hib_op2;
+    hib_value[current_task] = value;
+
+
+    if(priority_Array[current_task][PROCESS_PRIO_CURRENT] == max_level) {
+
+        hlc++;
+        alc--;
+
+    }
+
+    normal_schedule = false;
+
+    HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+
+    return ERROR_NONE;
+
+}
+
+uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t mutex_address;
+    uint32_t index;
+    
+    mutex_address = arguments[0];
+
+    if(maxp_level == 127) {
+
+        maxp_level = max_level;
+        max_level = 127;
+        alcp = alc;
+        hlcp = hlc;
+        alc = 1;
+        hlc = 0;
+
+    }
+
+    if(max_level == 255) {
+        // ToDo : no priority level present after 255
+        // Return error
+    }
+    
+    max_level++;
+    index = *((uint32_t*)mutex_address) >> 16;
+
+    mutex_stash[index] = mutex_address;
+
+    priority_Array[index][PROCESS_PRIO_STASHED] = priority_Array[index][PROCESS_PRIO_CURRENT];
+    priority_Array[index][PROCESS_PRIO_CURRENT] = max_level;
+
+    state[current_task] = PROCESS_STATE_HOLD;
+    op1[current_task] = (uint32_t*)mutex_address;
+
+    // Enable scheduler and set normal scheule as false
+    normal_schedule = false;
+    HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+
+    return ERROR_NONE;
+
+}
+
+uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t i;
+
+    priority_Array[current_task][PROCESS_PRIO_CURRENT] = priority_Array[current_task][PROCESS_PRIO_STASHED];
+    priority_Array[current_task][PROCESS_PRIO_STASHED] = 0;
+
+    max_level--;
+
+    if(max_level == 127) {
+
+        max_level = maxp_level;
+        maxp_level = 127;
+        alc = alcp;
+        hlc = hlcp;
+
+    }
+
+    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+
+        if(state[i] == PROCESS_STATE_HOLD) {
+
+            if(op1[i] == (uint32_t*)mutex_stash[current_task]){
+
+                state[i] = PROCESS_STATE_SLEEP;
+                break;
+
+            }
+        }
+
+    }
+
+    mutex_stash[current_task] = 0;
+
+    /* invoke HAND_OVER service call */
+    *svc_num = HAND_OVER;
+
+    return ERROR_NONE;
+
+}
+
+
 /* Process End Resolver */
 
 void resolve_end(void) {
