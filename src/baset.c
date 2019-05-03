@@ -8,6 +8,7 @@
 
 #include <process.h>
 #include <kernel.h>
+#include <permissions.h>
 
 extern uint32_t invocated_task;
 

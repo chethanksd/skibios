@@ -294,6 +294,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("service/svr_interrupts", false, "svr_interrupts");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
             error = CompileSource("arch/arm-m3m4/svc_handler", false, "svc_handler", "S");
 
             if (error != ecode.ERROR_NONE)

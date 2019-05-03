@@ -12,6 +12,7 @@
 #include <svc.h>
 
 #include <svr_permissions.h>
+#include <svr_interrupts.h>
 #include <svr_process.h>
 #include <svr_umpu.h>
 
@@ -21,10 +22,6 @@ extern uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
-extern uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 extern uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 
 
