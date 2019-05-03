@@ -273,6 +273,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("service/svr_umpu", false, "svr_umpu");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
             error = CompileSource("arch/arm-m3m4/svc_handler", false, "svc_handler", "S");
 
             if (error != ecode.ERROR_NONE)
