@@ -266,6 +266,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("permissions");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
             error = CompileSource("service/svr_process", false, "svr_process");
 
             if (error != ecode.ERROR_NONE)
@@ -274,6 +281,13 @@ namespace skibios
             }
 
             error = CompileSource("service/svr_umpu", false, "svr_umpu");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
+            error = CompileSource("service/svr_permissions", false, "svr_permissions");
 
             if (error != ecode.ERROR_NONE)
             {

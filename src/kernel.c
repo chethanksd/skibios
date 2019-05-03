@@ -12,6 +12,7 @@
 #include <share.h>
 #include <process.h>
 #include <interrupt.h>
+#include <permissions.h>
 #include <svc.h>
 #include <mpu.h>
 #include <kvar.h>
@@ -35,9 +36,6 @@ uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments);
 
 void pendsv_handler(void);
 void mem_fault_handler(void);
@@ -198,106 +196,6 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
     HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
 
     return ERROR_NONE;
-
-}
-
-uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments) {
-    
-    uint32_t error = ERROR_NONE;
-    uint32_t invocation_arg;
-
-    invocation_arg = arguments[0];
-
-    /* Arugment assigments
-        * arg1 = Invocation argument
-        */
-
-    // base task cannot use this service
-    if(current_task == 0) {
-        error = ERROR_BASE_PROCESS;
-        goto quit_error;
-    }
-
-    invocated_task = process_id[current_task];
-    invocated_args = invocation_arg;
-    arguments[0] = (uint32_t)&base_mutex;
-
-    *svc_num = PRIORITY_PROMOTE;
-
-quit_error:
-
-    return error;
-
-}
-
-uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
-
-    uint32_t error = ERROR_NONE;
-    uint32_t return_error;
-    uint32_t i;
-
-    return_error = arguments[0];
-
-    // only base task can use this service
-    if(current_task != 0) {
-        error = ERROR_ACCESS_DENIED;
-        goto quit_error;
-    }
-
-    // store invocation error on hib_value of task that invocated base
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-        if(process_id[i] == invocated_task) {
-            hib_value[i] = return_error;
-            break;
-        }
-    }
-
-    if(i == MAX_PROCESS_COUNT) {
-        error = ERROR_UNKNOWN_PROCESS_ID;
-        goto quit_error;
-    }
-    
-    // clear invocate info and return error
-    invocated_task = 0;
-    invocated_args = 0;
-
-    *svc_num = PRIORITY_DEMOTE;
-
-quit_error:
-
-    return error;
-
-}
-
-uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
-
-    uint32_t error = ERROR_NONE;
-    uint32_t pid;
-    uint32_t permission;
-    uint32_t i;
-
-    pid = arguments[0];
-    permission = arguments[1];
-
-    if(current_task != 0) {
-        error = ERROR_ACCESS_DENIED;
-        goto quit_error;
-    }
-
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-        if(process_id[i] == pid) {
-            permissions[i] = permission;
-            break;
-        }
-    }
-
-    if(i == MAX_PROCESS_COUNT) {
-        error =  ERROR_UNKNOWN_PROCESS_ID;
-    }
-
-quit_error:
-
-    return error;
 
 }
 
@@ -812,103 +710,5 @@ uint8_t device_reset() {
     svc(DEVICE_RESET);
 
     return ERROR_NONE;
-
-}
-
-uint8_t base_run(void *args) {
-
-    uint8_t error;
-
-    if(current_task == 0) {
-        return ERROR_BASE_PROCESS;
-    }
-
-    __asm volatile (" LDR R0, %[args] \n"
-        : 
-        :[args] "m" (args)
-        :
-    );
-
-    svc(INVOKE_BASE);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
-
-    if(error == ERROR_NONE) {
-        error = hib_value[current_task];
-    }
-
-    return error;
-
-}
-
-uint8_t base_release(uint8_t error) {
-
-    if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
-    }
-
-    __asm volatile (" LDR R0, %[err] \n"
-        : 
-        :[err] "m" (error)
-        :
-    );
-
-    svc(RELEASE_BASE);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
-
-    return error;
-    
-}
-
-uint8_t get_invocation_args(uint32_t *pid, void **args) {
-
-    if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
-    }
-
-    if(invocated_task == 0) {
-        return ERROR_NO_INVOCATION;
-    }
-
-    *pid = invocated_task;
-    *args = (void*)invocated_args;
-
-    return ERROR_NONE;
-
-}
-
-uint8_t grant_permission(uint32_t pid, uint16_t permission) {
-
-    uint8_t error = ERROR_NONE;
-
-    if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
-    }
-
-    __asm volatile (" LDR   R0, %[proc_id]  \n"
-                    " LDRH  R1, %[prm]      \n"
-        : 
-        :[proc_id] "m" (pid), [prm] "m" (permission)
-        :
-    );
-
-    svc(GRANT_PERMISSION);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
-
-    return error;
 
 }
