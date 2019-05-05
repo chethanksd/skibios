@@ -29,12 +29,6 @@
 uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments);
-uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 
 void pendsv_handler(void);
@@ -46,19 +40,12 @@ static uint8_t mpu_init(void);
 /* External Kernel Function Declarations */
 extern void svc_handler(void);
 extern void resolve_end(void);
-extern void* search_free_marker(uint32_t size);
-extern void* add_new_allocated_marker(uint32_t size);
-extern uint32_t release_allocated_marker(uint32_t address);
 extern void vector_table_relocate(void);
 extern void BaseTask();
 
 /* External Kernel Variables */
-extern uint32_t blist_size;
 extern uint32_t _proc_heap_addr;
-extern uint32_t heap_remaining;
 extern const uint32_t  mpu_table[];
-extern const svc_dispatch_table_t svc_dispatch[];
-extern const uint32_t TOTAL_SVC_COUNT ;
 
 /* FLASH Constants */
 const uint32_t zero_ref = 0;
@@ -228,66 +215,6 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
     
     return ERROR_NONE;
 
-}
-
-uint32_t svc_service_gheap_release(uint32_t *svc_num, uint32_t *arguments) {
-
-    uint32_t error = ERROR_NONE;
-    uint32_t status;
-    uint32_t address;
-
-    address = arguments[1];
-
-    if(blist_size == 0) {
-
-        error = ERROR_EMPTY_HEAP;
-        goto quit_error;
-
-    }
-
-    status = release_allocated_marker(address);
-
-    if(status == 0 && blist_size != 0) {
-        error = ERROR_WRONG_HEAP_POINTER;
-    }
-
-quit_error:
-
-    return error;
-
-}
-
-uint32_t svc_service_gheap_allocate(uint32_t *svc_num, uint32_t *arguments) {
-
-    uint32_t *allocated_address;
-    uint32_t  size_request;
-
-    allocated_address = NULL;
-    size_request = arguments[1];
-
-    if(blist_size == 0) {
-
-        allocated_address =(uint32_t*) add_new_allocated_marker(size_request);
-        goto search_done;
-
-    }
-
-    allocated_address = (uint32_t*) search_free_marker(size_request);
-
-    if(allocated_address == NULL) {
-
-        allocated_address = (uint32_t*) add_new_allocated_marker(size_request);
-
-    }
-
-search_done:
-
-    if(allocated_address != NULL) {
-        heap_remaining = heap_remaining - size_request;
-    }
-
-    return (uint32_t)allocated_address;
-    
 }
 
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments) {
