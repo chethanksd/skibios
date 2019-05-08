@@ -31,7 +31,6 @@ uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 
-void pendsv_handler(void);
 void mem_fault_handler(void);
 void bus_fault_handler(void);
 static void scheduler(void);
@@ -40,6 +39,7 @@ static uint8_t mpu_init(void);
 /* External Kernel Function Declarations */
 extern void svc_handler(void);
 extern void resolve_end(void);
+extern void pendsv_handler(void);
 extern void vector_table_relocate(void);
 extern void BaseTask();
 
@@ -263,55 +263,6 @@ uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments) {
     }
 
     return ERROR_NONE;
-
-}
-
-/* pendsv_handler Function */
-void __attribute__((naked)) pendsv_handler(void) {
-
-    __asm volatile(
-        " MRS R0, PSP             \n"           // Obtain PSP of current process
-        " TST LR, #0x10           \n"
-        " IT EQ                   \n"
-        " VSTMDBEQ R0!, {S16-S31} \n"
-        " MOV R2, LR              \n"
-        " MRS R3, CONTROL         \n"
-        " STMDB R0!,{R2-R11}      \n"
-    	" LDR R1,=%[ct_task]	  \n"
-        " LDR R2,[R1]             \n"
-        " LDR R3,=%[psp_ptr]      \n"
-        " STR R0,[R3,R2, LSL#2]   \n"
-        " LDR R4,=%[nx_task]      \n"
-    	" LDR R4,[R4]			  \n"
-        " STR R4,[R1]             \n"
-        " LDR R0,[R3,R4, LSL#2]   \n"
-        " LDR R1, =0xE000ED94     \n"           //Disbale MPU
-        " MOV R2, #0              \n"
-        " STR R2, [R1]            \n"
-        " LDR R2, =0xE000ED9C     \n"           //Load Next Process MPU settings from mpu_table (Assum R4 = nx_task)
-        " LDR R4,=%[nx_task]      \n"
-        " LDR R4, [R4]			  \n"
-        " LDR R3, =%[mpu_table]   \n"
-        " ADD R3, R3, R4, LSL #3  \n"
-        " LDM R3, {R4-R5}         \n"
-        " STM R2, {R4-R5}         \n"
-        " MOV R2, #5              \n"           //Enable MPU (and Background Region)
-        " STR R2, [R1]            \n"           
-        " LDMIA R0!,{R2-R11}      \n"
-        " MOV LR, R2              \n"
-        " MSR CONTROL,R3          \n"
-        " TST LR,#0x10            \n"
-        " IT EQ                   \n"
-        " VLDMIAEQ R0!,{S16-S31}  \n"
-        " MSR PSP, R0             \n"
-    	" DSB					  \n"
-        " ISB                     \n"
-    	" BX LR					  \n"
-        : 
-        : [psp_ptr] "i" (&PSP_Array[0]), [nx_task] "i" (&next_task), [ct_task] "i" (&current_task), \
-            [psz] "i" (PROCESS_STACK_SIZE), [ps_addr] "i" (&pstack_addr), [mpu_table] "i" (&mpu_table[0])
-		: "r0","r1","r2","r3","r4","lr"
-    );
 
 }
 

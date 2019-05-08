@@ -315,6 +315,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("arch/arm-m3m4/pendsv_handler", false, "pendsv_handler", "S");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
 
             if (btd == false)
             {
