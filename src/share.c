@@ -20,6 +20,7 @@ extern uint8_t  state[MAX_PROCESS_COUNT];
 extern uint32_t current_task;
 extern uint8_t  max_level;
 
+#if 0
 uint8_t mutex_lock(uint32_t *mutex_st) {
 
     uint8_t state = 0;
@@ -49,6 +50,7 @@ uint8_t mutex_lock(uint32_t *mutex_st) {
     return state;
 }
 
+
 void mutex_unlock(uint32_t *mutex_st) {
 
     __asm volatile(
@@ -66,6 +68,8 @@ void mutex_unlock(uint32_t *mutex_st) {
 
     }
 }
+
+#endif
 
 uint8_t spin_lock(uint32_t *mutex_st, uint16_t retry){
 
