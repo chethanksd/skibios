@@ -16,4 +16,6 @@
 #define PROCESS_TIME_SHARE_MEDIUM   4
 #define PROCESS_TIME_SHARE_HIGH     8
 
+#define MAX_SEMAPHORE_COUNT         1000
+
 #endif
