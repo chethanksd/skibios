@@ -7,7 +7,6 @@
 
 #include <stdint.h>
 #include <kvar.h>
-#include <svc.h>
 
 volatile uint32_t  KSECTION(.kdat) current_task             = 0;
 volatile uint32_t  KSECTION(.kdat) next_task                = 0;

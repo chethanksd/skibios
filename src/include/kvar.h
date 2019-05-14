@@ -3,6 +3,8 @@
 
 #include <process.h>
 
+#define KSECTION(str) __attribute__ ((section ("" #str "")))
+
 extern const uint32_t g_pui32Priority[];
 extern const uint32_t prioreg[];
 extern const uint32_t g_pui32Dii16Regs[];

@@ -13,6 +13,7 @@
 #include <process.h>
 #include <error.h>
 #include <access.h>
+#include <kvar.h>
 
 #define FREE_HEADER_MASK        0x00008000
 
@@ -25,7 +26,6 @@
 
 extern void* __heap_start__;
 extern void* _ghmb_addr;
-extern Process *proc_obj[MAX_PROCESS_COUNT];
 
 uint32_t  KSECTION(.kbss) hstart_addr;
 uint32_t  KSECTION(.kbss) bstart_addr;

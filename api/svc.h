@@ -4,15 +4,6 @@
 // inline assembler helper directive: call SVC with the given immediate
 #define svc(code) __asm("svc %[immediate]"::[immediate] "I" (code));
 
-// stack push iniline assembly code
-#define svc_push(arg) __asm(" PUSH  {%[pushval]}            \n" \
-                            :                                   \
-                            :[pushval] "r" (arg)                \
-                            :                                   \
-                        );
-
-#define KSECTION(str) __attribute__ ((section ("" #str "")))
-
 // SVCall service codes
 #define CREATE_PROCESS      10
 #define HAND_OVER           11
