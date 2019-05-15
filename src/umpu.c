@@ -8,7 +8,7 @@
 #include <mpu.h>
 #include <access.h>
 #include <error.h>
-#include <svc.h>
+#include <kernel.h>
 #include <kvar.h>
 #include <umpu.h>
 

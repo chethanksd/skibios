@@ -9,6 +9,7 @@
 #include <param.h>
 #include <svc.h>
 #include <kvar.h>
+#include <kernel.h>
 #include <permissions.h>
 
 

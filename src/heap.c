@@ -8,6 +8,7 @@
 
 #include <heap.h>
 #include <svc.h>
+#include <kernel.h>
 #include <share.h>
 #include <param.h>
 #include <process.h>

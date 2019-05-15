@@ -1,9 +1,6 @@
 #ifndef SVC_H
 #define SVC_H
 
-// inline assembler helper directive: call SVC with the given immediate
-#define svc(code) __asm("svc %[immediate]"::[immediate] "I" (code));
-
 // SVCall service codes
 #define CREATE_PROCESS      10
 #define HAND_OVER           11
