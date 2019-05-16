@@ -14,9 +14,7 @@
 #include <process.h>
 #include <access.h>
 #include <regmap.h>
-
-#define PROCESS_PRIO_CURRENT    0
-#define PROCESS_PRIO_STASHED    1
+#include <defines.h>
 
 extern void resolve_end(void);
 

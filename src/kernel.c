@@ -20,6 +20,7 @@
 #include <access.h>
 #include <regmap.h>
 #include <svctable.h>
+#include <defines.h>
 
 #define PROCESS_PRIO_CURRENT    0
 #define PROCESS_PRIO_STASHED    1

@@ -12,6 +12,7 @@
 #include <svc.h>
 #include <param.h>
 #include <access.h>
+#include <defines.h>
 
 #define PROCESS_PRIO_CURRENT    0
 #define PROCESS_PRIO_STASHED    1
