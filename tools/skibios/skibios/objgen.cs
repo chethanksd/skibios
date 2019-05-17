@@ -798,7 +798,7 @@ namespace skibios
             process.StartInfo.FileName = binpath + "/arm-none-eabi-gcc.exe";
 
             include_path = "";
-            include_path += " -I" + srcpath + "api ";
+            include_path += " -I" + srcpath + "src/api ";
             include_path += " -I" + srcpath + "src/include ";
             include_path += " -I" + srcpath + "src/service";
             include_path += " -I" + srcpath + "src/arch/arm-m3m4/ ";

@@ -12,19 +12,8 @@
 #include <svc.h>
 #include <param.h>
 #include <access.h>
+#include <kvar.h>
 #include <defines.h>
-
-#define PROCESS_PRIO_CURRENT    0
-#define PROCESS_PRIO_STASHED    1
-
-extern bool enable_dws;
-extern uint8_t max_level;
-extern uint32_t current_task;
-extern uint16_t process_count;
-extern Process *proc_obj[MAX_PROCESS_COUNT];
-extern uint8_t state[MAX_PROCESS_COUNT];
-extern uint32_t process_id[MAX_PROCESS_COUNT];
-extern uint8_t  priority_Array[MAX_PROCESS_COUNT][2];
 
 
 uint8_t process_init(Process *myprocess) {

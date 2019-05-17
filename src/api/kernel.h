@@ -3,11 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <../src/include/svc.h>
-
-// systick reload register mask
-#define SYSTICK_RELOAD_MASK     0x00FFFFFF
-#define SRAM_START_ADDRESS      0x20000000
+#include <svc.h>
 
 // inline assembler helper directive: call SVC with the given immediate
 #define svc(code) __asm("svc %[immediate]"::[immediate] "I" (code));

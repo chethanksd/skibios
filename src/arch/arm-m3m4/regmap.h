@@ -14,6 +14,10 @@
 #define SYSTICK_DISABLE         0xFFFFFFFE
 #define SYSTICK_INT_DISABLE     0xFFFFFFFD
 
+// systick reload register mask
+#define SYSTICK_RELOAD_MASK     0x00FFFFFF
+#define SRAM_START_ADDRESS      0x20000000
+
 // mpu registers
 #define MPUTYPE         0xE000ED90
 #define MPUCTRL         0xE000ED94
