@@ -1,7 +1,7 @@
 #ifndef _PROC_OBJ_H
 #define _PROC_OBJ_H
 
-typedef struct{
+typedef struct {
 
     uint8_t error;
     uint32_t process_id;
@@ -14,7 +14,7 @@ typedef struct{
     uint32_t *op2;
     uint32_t value;
 
-} Process;
+} process_t;
 
 
 #endif

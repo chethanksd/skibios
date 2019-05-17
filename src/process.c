@@ -16,7 +16,7 @@
 #include <defines.h>
 
 
-uint8_t process_init(Process *myprocess) {
+uint8_t process_init(process_t *myprocess) {
     
     uint8_t i;
 
@@ -39,7 +39,7 @@ uint8_t process_init(Process *myprocess) {
 
 }
     
-uint8_t process_start(Process *myprocess) {
+uint8_t process_start(process_t *myprocess) {
 
     uint8_t i;
 
@@ -65,7 +65,7 @@ uint8_t process_start(Process *myprocess) {
 
 }
     
-uint8_t process_start_arg(Process *myprocess, void *arg) {
+uint8_t process_start_arg(process_t *myprocess, void *arg) {
 
     uint8_t i;
 
@@ -91,7 +91,7 @@ uint8_t process_start_arg(Process *myprocess, void *arg) {
 
 }
 
-uint8_t process_kill(Process *myprocess) {
+uint8_t process_kill(process_t *myprocess) {
     
     uint8_t i;
 
