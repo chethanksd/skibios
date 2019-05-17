@@ -3,26 +3,12 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <proc_obj.h>
 
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
-
-typedef struct{
-
-    uint8_t error;
-    uint32_t process_id;
-    uint8_t priority;
-    void *pfnProcess;
-    
-    // hibernate variables
-    uint8_t hibernate;
-    uint32_t *op1;
-    uint32_t *op2;
-    uint32_t value;
-
-} Process;
 
 extern uint8_t process_init(Process *myprocess);
 extern uint8_t process_start(Process *myprocess);
