@@ -21,6 +21,7 @@
 #include <regmap.h>
 #include <svctable.h>
 #include <defines.h>
+#include <os_timer.h>
 
 #define PROCESS_PRIO_CURRENT    0
 #define PROCESS_PRIO_STASHED    1
@@ -53,8 +54,9 @@ const uint32_t zero_ref = 0;
 const uint32_t base_mutex = 1;
 
 
-uint8_t kernel_init(void) {
+uint32_t kernel_init(void) {
 
+    uint32_t error;
     uint32_t ticks;
     uint8_t i;
 
@@ -75,18 +77,11 @@ uint8_t kernel_init(void) {
     HWREG(ACTLR) |= ACTLR_DISWBUF;
     #endif
 
-    /* Clear & Configure Reload Register of Systick timer */
-    ticks = cpu_freq/PROCESS_PER_SEC;
+    error = os_timer_init(cpu_freq);
 
-    if(ticks >= 16777216) {
-        return ERROR_SYSTICK_TICK_VALUE_OVERFLOW;
+    if(error) {
+        goto quit_error;
     }
-
-    HWREG(STRELOAD) = 0x00000000;
-    HWREG(STRELOAD) = SYSTICK_RELOAD_MASK & ticks;
-
-    /* Clear Current Register of Systick timer */
-    HWREG(STCURRENT) = 0x00000000;
 
     /* Set System Clock source for Systick timer */
     HWREG(STCTRL) |= SYSTICK_SYS_CLK;
@@ -124,7 +119,7 @@ uint8_t kernel_init(void) {
      * is in active state
      */
     process_init(&base_task);
-    base_task.pfnProcess = (void*)&BaseTask;
+    base_task.ptr_func = (void*)&BaseTask;
     base_task.priority = 0;
     process_start(&base_task);
     
@@ -139,6 +134,8 @@ uint8_t kernel_init(void) {
     for(i = 16; i < NUM_OF_INTERRUPTS; i++) {
         interrupt_set_priority(i, 0x20);
     }
+
+quit_error:
 
     return ERROR_NONE;
 
@@ -193,7 +190,7 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
     uint32_t i;
 
     maxp_level = 127;
-    value = (uint32_t)proc_obj[current_task]->pfnProcess;
+    value = (uint32_t)proc_obj[current_task]->ptr_func;
 
     //base task should have all permissions
     permissions[0] = 0xFFFF;
@@ -221,29 +218,10 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
-    int32_t systick_load;
 
     uint32_t new_cpu_freq = arguments[1];
 
-    /* Clear & Configure Reload Register of Systick timer */
-    systick_load = new_cpu_freq/PROCESS_PER_SEC;
-
-    if(systick_load >= 16777216) {
-
-        error = ERROR_SYSTICK_TICK_VALUE_OVERFLOW;
-        goto quit_error;
-
-    }
-
-    cpu_freq = new_cpu_freq;
-
-    HWREG(STRELOAD) = 0x00000000;
-    HWREG(STRELOAD) = SYSTICK_RELOAD_MASK & systick_load;
-
-    /* Clear Current Register of Systick timer */
-    HWREG(STCURRENT) = 0x00000000;
-
-quit_error:
+    error = os_timer_init(new_cpu_freq);
 
     return error;
 

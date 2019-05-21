@@ -135,7 +135,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         /* Stack Initialization */
         HWREG(PSP_Array[i] + (10 << 2)) = (uint32_t)proc_arg;
         HWREG(PSP_Array[i] + (15 << 2)) = (uint32_t)&resolve_end;
-        HWREG(PSP_Array[i] + (16 << 2)) = (unsigned int) proc_obj[i]->pfnProcess;
+        HWREG(PSP_Array[i] + (16 << 2)) = (unsigned int) proc_obj[i]->ptr_func;
         HWREG(PSP_Array[i] + (17 << 2)) = 0x01000000;
         HWREG(PSP_Array[i] ) = 0xFFFFFFFD;
         HWREG(PSP_Array[i] + (1 << 2)) = 0x3;

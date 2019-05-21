@@ -336,6 +336,13 @@ namespace skibios
                 return error;
             }
 
+            error = CompileSource("arch/arm-m3m4/os_timer", false, "os_timer", "c");
+
+            if (error != ecode.ERROR_NONE)
+            {
+                return error;
+            }
+
             if (btd == false)
             {
 
