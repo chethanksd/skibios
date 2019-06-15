@@ -35,7 +35,7 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
 
 void mem_fault_handler(void);
 void bus_fault_handler(void);
-static void scheduler(void);
+void scheduler(void);
 static uint8_t mpu_init(void);
 
 /* External Kernel Function Declarations */
@@ -82,12 +82,6 @@ uint32_t kernel_init(void) {
     if(error) {
         goto quit_error;
     }
-
-    /* Set System Clock source for Systick timer */
-    HWREG(STCTRL) |= SYSTICK_SYS_CLK;
-
-    /* Register Systick Interrupt Handler */
-    HWREG(SRAM_START_ADDRESS + (INT_NUM_SYSTICK * 4)) = (uint32_t) scheduler;
 
     /* Register PendSV Interrupt Handler */
     HWREG(SRAM_START_ADDRESS + (INT_NUM_PENDSV * 4)) = (uint32_t) pendsv_handler;
@@ -221,7 +215,7 @@ uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t new_cpu_freq = arguments[1];
 
-    error = os_timer_init(new_cpu_freq);
+    error = os_timer_config(new_cpu_freq);
 
     return error;
 

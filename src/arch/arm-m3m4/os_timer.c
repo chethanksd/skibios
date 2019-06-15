@@ -11,7 +11,31 @@
 #include <regmap.h>
 #include <kvar.h>
 
+extern void scheduler(void);
+
 uint32_t os_timer_init(uint32_t new_cpu_freq) {
+
+    uint32_t error = ERROR_NONE;
+
+    error = os_timer_config(new_cpu_freq);
+
+    if(error) {
+        goto quit_error;
+    }
+
+    /* Set System Clock source for Systick timer */
+    HWREG(STCTRL) |= SYSTICK_SYS_CLK;
+
+    /* Register Systick Interrupt Handler */
+    HWREG(SRAM_START_ADDRESS + (INT_NUM_SYSTICK * 4)) = (uint32_t) scheduler;
+
+quit_error:
+
+    return error; 
+
+}
+
+uint32_t os_timer_config(uint32_t new_cpu_freq) {
 
     uint32_t error = ERROR_NONE;
     uint32_t systick_load;
@@ -36,6 +60,5 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
 
 quit_error:
 
-    return error; 
-
+    return error;
 }

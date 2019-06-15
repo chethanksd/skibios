@@ -9,6 +9,7 @@ extern "C" {
 #endif
 
 extern uint32_t os_timer_init(uint32_t new_cpu_freq);
+extern uint32_t os_timer_config(uint32_t new_cpu_freq);
 
 #ifdef __cplusplus
 }
