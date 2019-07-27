@@ -3,7 +3,11 @@
 
 #include <process.h>
 
+#ifndef NO_KERNEL_SECTION
 #define KSECTION(str) __attribute__ ((section ("" #str "")))
+#else
+#define KSECTION(str)
+#endif
 
 extern const uint32_t g_pui32Priority[];
 extern const uint32_t prioreg[];
