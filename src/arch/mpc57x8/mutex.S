@@ -3,13 +3,13 @@
  *
  * author: chetandev.ksd@gmail.com
  *
- * Note: stwcx instruction is not available forr MPC5 devices. Executing this 
+ * Note: stwcx instruction is not available for MPC5 devices. Executing this 
  * instruction will yield illegal instruction exception. lharx is available
- * in these devices. lharx provides same operation as lwarx but on a half word data type.
- * Since skibios uses 4byte mutex locks, we need to ensure atomicity of mutex
- * locking using lharx - sthcx on 4 bytes mutex lock. We only need to ensure that
- * LSB part of mutex is locked using lharx -sthcx pair. Once the LSB part is
- * sucessfully locked. We can perform simple write on MSB part.
+ * in these devices. lharx provides same operation as lwarx but on a half word 
+ * data type. Since skibios uses 4byte mutex locks, we need to ensure atomicity
+ * of mutex  locking using lharx - sthcx on 4 bytes mutex lock. We only need 
+ * to ensure that LSB part of mutex is locked using lharx - sthcx pair. Once the 
+ * LSB part is sucessfully locked. We can perform simple write on MSB part.
  *
  */
 
@@ -44,14 +44,27 @@ mutex_lock:
        e_bne    exit
 
        // attempt locking the mutex
-       e_li     r6, 1
+       e_lis    r6, current_task@h
+       e_or2i   r6, current_task@l
+       se_lwz   r4, 0(r6)
+       e_slwi   r4, r4, 2
+
+       e_lis    r6, process_id@h
+       e_or2i   r6, process_id@l
+       e_addi   r6, r6, 2
+       lhax     r6, r6, r4
+
        sthcx.   r6, 0, r3
        e_bne    exit
 
        // locking is sucessful
-       // write remaining msb bytes
+       // write remaining msb
+       e_lis    r6, process_id@h
+       e_or2i   r6, process_id@l
+       lhax     r6, r6, r4
+
        e_addi   r3, r3, -2
-       se_stw   r4, 0(r3)  
+       se_sth   r6, 0(r3)
        e_lis    r5, 0
 
 exit:
