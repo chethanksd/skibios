@@ -9,17 +9,26 @@ import sys, os
 import subprocess
 import time
 
+import diagnostics
+import ecode
+import svar
+import device
 
 
+def run_pregen():
 
-#
-# PREGEN STAGE1: Device file parsing
-#
-#
+    #
+    # PREGEN STAGE1: Device file parsing
+    #
+    #
+    diagnostics.pregen_stage = 1
+
+    device.parse_device_file()
 
 
-#
-# PREGEN STAGE2: 
-#
-#
+    #
+    # PREGEN STAGE2: 
+    #
+    #
+    diagnostics.pregen_stage = 2
 

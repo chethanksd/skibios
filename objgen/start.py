@@ -12,6 +12,7 @@ import time
 
 import ecode
 import diagnostics
+import pregen
 import svar
 
 
@@ -22,9 +23,13 @@ import svar
 
 def exit_handler():
 
-    if(error != ecode.ERROR_NONE):
-        print('objgen error: ', error)
-        print('ERROR!', ecode.error_description[error])
+    if(diagnostics.error != ecode.ERROR_NONE):
+        print('ERROR!', ecode.error_description[diagnostics.error])
+        print('objgen error: ', diagnostics.error)
+        
+        if(diagnostics.error_message != ''):
+            print(diagnostics.error_message)
+
         diagnostics.run_diagnostics()
 
 atexit.register(exit_handler)
@@ -49,13 +54,13 @@ diagnostics.start_stage = 2
 try:
     svar.dfile_path = sys.argv[1]
 except IndexError:
-    error = ecode.ERROR_DEVICE_FILE_NOT_PROVIDED
+    diagnostics.error = ecode.ERROR_DEVICE_FILE_NOT_PROVIDED
     exit(1)
 
 
 dfile_exists = os.path.isfile(svar.dfile_path)
 if not dfile_exists:
-    error = ecode.ERROR_DEVICE_FILE_NOT_FOUND
+    diagnostics.error = ecode.ERROR_DEVICE_FILE_NOT_FOUND
     exit(1)
 
 #
@@ -67,14 +72,21 @@ diagnostics.start_stage = 3
 try:
     svar.build_path = sys.argv[2]
 except IndexError:
-    error = ecode.ERROR_BUILD_PATH_NOT_PROVIDED
+    diagnostics.error = ecode.ERROR_BUILD_PATH_NOT_PROVIDED
     exit(1)
 
 
-bpath_exists = os.path.isfile(svar.build_path)
+bpath_exists = os.path.isdir(svar.build_path)
 if not bpath_exists:
-    error = ecode.ERROR_BUILD_PATH_NOT_FOUND
+    diagnostics.error = ecode.ERROR_BUILD_PATH_NOT_FOUND
     exit(1)
 
+#
+# Run Pregen
+#
+#
+diagnostics.start_stage = diagnostics.STAGE_DONE
+
+pregen.run_pregen()
 
 print('Done!')

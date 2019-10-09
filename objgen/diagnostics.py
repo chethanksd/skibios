@@ -15,6 +15,7 @@ postgen_stage   = 0
 STAGE_DONE    = 20
 
 error = ecode.ERROR_NONE
+error_message = ''
 
 def run_diagnostics():
 
