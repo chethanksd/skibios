@@ -38,10 +38,8 @@ atexit.register(exit_handler)
 # START STAGE 1: Get repository path      
 #
 #
-diagnostics.start_stage = 1
-svar.repo_path = os.path.dirname(sys.argv[0])  
-svar.repo_path = os.path.abspath(svar.repo_path)  
-svar.repo_path = os.path.relpath(svar.repo_path, 'skibios') 
+diagnostics.start_stage = 1 
+svar.repo_path =os.path.abspath(svar.repo_path) 
 
 print('repopath :', svar.repo_path)
 

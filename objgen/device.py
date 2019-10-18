@@ -9,7 +9,9 @@ import svar
 import ecode
 import diagnostics
 
+import sys, os
 import xml.dom.minidom
+import importlib
 
 sram_size = 0
 sram_addr = 0
@@ -17,9 +19,10 @@ flash_size = 0
 flash_addr = 0
 
 intvec_size = 0
-core_count  = 0
+core_count = 0
 
 arch = ''
+devattrb_module = 0
 
 def parse_device_file():
 
@@ -75,4 +78,34 @@ def parse_device_file():
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <sram_addr> tag'
+        exit(1)
+
+    try:
+        arch = (dfile_tree.getElementsByTagName("arch")[0]).firstChild.data
+    except:
+        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
+        diagnostics.error_message = 'error retriving <arch> tag'
+        exit(1)        
+
+    #
+    # Parse device attribute
+    #
+    #
+    
+    devattrb_path = 'src\\arch\\' + arch + '\\script\\devattrb'
+    devattrb_dir = os.path.dirname(devattrb_path)
+    modname = os.path.basename(devattrb_path)
+    sys.path.append(devattrb_dir)
+
+    try:
+        module = __import__(modname)
+    except:
+        diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_NOT_FOUND
+        exit(1)
+
+    try:
+        process_devattrb = getattr(module, 'process_devattrb')
+        process_devattrb()
+    except:
+        diagnostics.error = ecode.ERROR_PROCESS_DEVATTRIB_NOT_DEFINED
         exit(1)

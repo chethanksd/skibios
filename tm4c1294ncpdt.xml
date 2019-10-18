@@ -2,7 +2,10 @@
 <device>
   <partno>TM4C1294NCPDT</partno>
   <gccid>PART_TM4C1294NCPDT</gccid>
+  <arch>arm-m3m4</arch>
   <intcnt>139</intcnt>
-  <flash>1048576</flash>
-  <sram>262144</sram>
+  <flash_size>1048576</flash_size>
+  <sram_size>262144</sram_size>
+  <flash_addr>1000</flash_addr>
+  <sram_addr>536870912</sram_addr>
 </device>
