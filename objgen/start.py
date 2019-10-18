@@ -62,13 +62,31 @@ if not dfile_exists:
     exit(1)
 
 #
-# START STAGE 3: Check if build path exists
+# START STAGE 3: Get param file argument
 #
 #
 diagnostics.start_stage = 3
 
 try:
-    svar.build_path = sys.argv[2]
+    svar.pfile_path = sys.argv[2]
+except IndexError:
+    diagnostics.error = ecode.ERROR_PARAM_FILE_NOT_PROVIDED
+    exit(1)
+
+
+pfile_exists = os.path.isfile(svar.pfile_path)
+if not pfile_exists:
+    diagnostics.error = ecode.ERROR_PARAM_FILE_NOT_FOUND
+    exit(1)
+
+#
+# START STAGE 3: Check if build path exists
+#
+#
+diagnostics.start_stage = 4
+
+try:
+    svar.build_path = sys.argv[3]
 except IndexError:
     diagnostics.error = ecode.ERROR_BUILD_PATH_NOT_PROVIDED
     exit(1)
@@ -78,6 +96,7 @@ bpath_exists = os.path.isdir(svar.build_path)
 if not bpath_exists:
     diagnostics.error = ecode.ERROR_BUILD_PATH_NOT_FOUND
     exit(1)
+
 
 #
 # Run Pregen

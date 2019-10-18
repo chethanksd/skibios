@@ -13,6 +13,7 @@ import diagnostics
 import ecode
 import svar
 import device
+import sparam
 
 
 def run_pregen():
@@ -33,4 +34,14 @@ def run_pregen():
     diagnostics.pregen_stage = 2
     
     device.validate_device_params()
+
+    
+    #
+    # PREGEN STAGE3: Param file parsing
+    #
+    #
+    diagnostics.pregen_stage = 3
+
+    sparam.parse_param_file()
+
 

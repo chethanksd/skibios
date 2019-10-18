@@ -20,6 +20,8 @@ ERROR_PROCESS_DEVATTRIB_NOT_DEFINED         =   104
 ERROR_DEVICE_PARAM_BAD                      =   105
 ERROR_BUILD_PATH_NOT_PROVIDED               =   106
 ERROR_BUILD_PATH_NOT_FOUND                  =   107
+ERROR_PARAM_FILE_NOT_PROVIDED               =   108
+ERROR_PARAM_FILE_NOT_FOUND                  =   109
 
 #
 # Error description
@@ -44,7 +46,13 @@ error_description[ERROR_DEVICE_PARAM_BAD] = 'Bad device parameter. \
 Please define proper value for device parameters. See Documentation SD-1000'
 
 error_description[ERROR_BUILD_PATH_NOT_PROVIDED] = 'Build path not provided. \
-Please provide Build path as 3rd argument'
+Please provide Build path as 4th argument'
 
 error_description[ERROR_BUILD_PATH_NOT_FOUND] = 'Build path not found in path provided. \
 Please provide correct Build path'
+
+error_description[ERROR_PARAM_FILE_NOT_PROVIDED] = 'Param File path not provided. \
+Please provide Param File path as 3rd argument'
+
+error_description[ERROR_PARAM_FILE_NOT_FOUND] = 'Param File path not found in path provided. \
+Please provide correct Param File path'
