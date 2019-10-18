@@ -27,8 +27,10 @@ def run_pregen():
 
 
     #
-    # PREGEN STAGE2: 
+    # PREGEN STAGE2: Device parameters validation
     #
     #
     diagnostics.pregen_stage = 2
+    
+    device.validate_device_params()
 

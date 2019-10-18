@@ -13,18 +13,19 @@ import sys, os
 import xml.dom.minidom
 import importlib
 
-sram_size = 0
-sram_addr = 0
-flash_size = 0
-flash_addr = 0
-
-intvec_size = 0
-core_count = 0
-
-arch = ''
-devattrb_module = 0
 
 def parse_device_file():
+
+    global sram_size
+    global sram_addr
+    global flash_size
+    global flash_addr
+
+    global intvec_size
+    global core_count
+
+    global arch
+    global devattrb_module
 
     #
     # Try creating device tree
@@ -97,6 +98,8 @@ def parse_device_file():
     modname = os.path.basename(devattrb_path)
     sys.path.append(devattrb_dir)
 
+    # device attributes processing modules are dynamically loaded
+    # the devattrb script is present script folder of each architechture
     try:
         module = __import__(modname)
     except:
@@ -108,4 +111,42 @@ def parse_device_file():
         process_devattrb()
     except:
         diagnostics.error = ecode.ERROR_PROCESS_DEVATTRIB_NOT_DEFINED
+        exit(1)
+
+
+def validate_device_params():
+
+    try:
+        int(sram_size)
+    except ValueError:
+        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
+        diagnostics.error_message = 'sram size provided in device file is not valid'
+        exit(1)
+    
+    try:
+        int(flash_size)
+    except ValueError:
+        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
+        diagnostics.error_message = 'flash size provided in device file is not valid'
+        exit(1)
+
+    try:
+        int(sram_addr)
+    except ValueError:
+        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
+        diagnostics.error_message = 'sram address provided in device file is not valid'
+        exit(1)
+
+    try:
+        int(flash_addr)
+    except ValueError:
+        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
+        diagnostics.error_message = 'flash address provided in device file is not valid'
+        exit(1)
+
+    try:
+        int(intvec_size)
+    except ValueError:
+        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
+        diagnostics.error_message = 'interrupt count provided in device file is not valid'
         exit(1)
