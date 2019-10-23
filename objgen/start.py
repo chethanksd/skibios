@@ -13,6 +13,7 @@ import time
 import ecode
 import diagnostics
 import pregen
+import objgen
 import svar
 
 
@@ -105,5 +106,12 @@ if not bpath_exists:
 diagnostics.start_stage = diagnostics.STAGE_DONE
 
 pregen.run_pregen()
+
+#
+# Run objgen
+#
+#
+
+
 
 print('Done!')

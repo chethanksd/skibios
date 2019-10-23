@@ -22,6 +22,7 @@ ERROR_BUILD_PATH_NOT_PROVIDED               =   106
 ERROR_BUILD_PATH_NOT_FOUND                  =   107
 ERROR_PARAM_FILE_NOT_PROVIDED               =   108
 ERROR_PARAM_FILE_NOT_FOUND                  =   109
+ERROR_PARAM_FILE_BAD                        =   110
 
 #
 # Error description
@@ -56,3 +57,6 @@ Please provide Param File path as 3rd argument'
 
 error_description[ERROR_PARAM_FILE_NOT_FOUND] = 'Param File path not found in path provided. \
 Please provide correct Param File path'
+
+error_description[ERROR_PARAM_FILE_BAD] = 'Bad param file. \
+Please define proper value for skibios parameters. See Documentation SD-1000'

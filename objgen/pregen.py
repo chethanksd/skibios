@@ -45,3 +45,18 @@ def run_pregen():
     sparam.parse_param_file()
 
 
+    #
+    # PREGEN STAGE4: SKIBIOS Param validation
+    #
+    #
+    diagnostics.pregen_stage = 4
+    
+    sparam.validate_skibios_param()
+
+
+
+    #
+    # PREGEN STAGE: DONE
+    #
+    #
+    diagnostics.pregen_stage = diagnostics.STAGE_DONE

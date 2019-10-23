@@ -41,6 +41,7 @@ def parse_device_file():
     #
     if(dfile_tree.firstChild.tagName != 'device'):
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
+        diagnostics.error_message = '<device> tag not found'
         exit(1)
     
     #
