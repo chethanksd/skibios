@@ -8,6 +8,10 @@
 # $(GCC)    - Name of the GCC compilier
 # $(BUILD)  - Output Build path
 
+BIN    = C:\NXP\S32DS_Power_v2017.R1\Cross_Tools\powerpc-eabivle-4_9\bin
+PYTHON = E:\software\python.exe
+BUILD ?= .\..\proj\build
+
 #
 # SKIBIOS Parameters
 #
@@ -34,3 +38,7 @@ skibios:
 	grep "SIZE_OF" $(BUILD)/symgen.S >> $(BUILD)/symgen.txt
 	cat $(BUILD)/symgen.S | awk '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(BUILD)/symgen.h
 	./skibios.exe -b$(BIN) -o$(BUILD) -d./tm4c1294ncpdt.xml $(SKIBIOS_PARAM) -g
+
+.PHONY: objgen
+objgen:
+	$(PYTHON) ./objgen/start.py ./tm4c1294ncpdt.xml ./param.xml $(BUILD) $(BIN)

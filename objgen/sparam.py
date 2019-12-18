@@ -104,4 +104,4 @@ def parse_param_file():
 
     
 def validate_skibios_param():
-    print('executed skibios param validation')
+    print('Todo: define skibios param validation')

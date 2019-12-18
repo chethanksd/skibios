@@ -23,6 +23,8 @@ ERROR_BUILD_PATH_NOT_FOUND                  =   107
 ERROR_PARAM_FILE_NOT_PROVIDED               =   108
 ERROR_PARAM_FILE_NOT_FOUND                  =   109
 ERROR_PARAM_FILE_BAD                        =   110
+ERROR_BIN_PATH_NOT_PROVIDED                 =   111
+ERROR_BIN_PATH_NOT_FOUND                    =   112
 
 #
 # Error description
@@ -60,3 +62,9 @@ Please provide correct Param File path'
 
 error_description[ERROR_PARAM_FILE_BAD] = 'Bad param file. \
 Please define proper value for skibios parameters. See Documentation SD-1000'
+
+error_description[ERROR_BIN_PATH_NOT_PROVIDED] = 'Bin tool path not provided. \
+Please provide Binary tool path as 4th argument'
+
+error_description[ERROR_BIN_PATH_NOT_FOUND] = 'Bin tool path not found in path provided. \
+Please provide correct Bin tool path'

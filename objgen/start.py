@@ -98,6 +98,25 @@ if not bpath_exists:
     diagnostics.error = ecode.ERROR_BUILD_PATH_NOT_FOUND
     exit(1)
 
+#
+# START STAGE 4: Check if bin path exists
+#
+#
+diagnostics.start_stage = 5
+
+try:
+    svar.bin_path = sys.argv[4]
+except IndexError:
+    diagnostics.error = ecode.ERROR_BIN_PATH_NOT_PROVIDED
+    exit(1)
+
+
+binpath_exists = os.path.isdir(svar.bin_path)
+if not binpath_exists:
+    diagnostics.error = ecode.ERROR_BIN_PATH_NOT_FOUND
+    exit(1)
+
+
 
 #
 # Run Pregen
@@ -112,6 +131,7 @@ pregen.run_pregen()
 #
 #
 
+objgen.run_objgen()
 
 
 print('Done!')
