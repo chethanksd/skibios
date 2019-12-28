@@ -6,6 +6,11 @@
 
 MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_DIR   := $(notdir $(patsubst %/,%,$(dir $(MAKEFILE_PATH))))
+ROOT_DIR	  := $(CURRENT_DIR)/..
+
+GRP_TOOL	  := $(ROOT_DIR)/tools/misc/grep.exe
+CAT_TOOL	  := $(ROOT_DIR)/tools/misc/cat.exe
+AWK_TOOL	  := $(ROOT_DIR)/tools/misc/awk.exe
 
 include $(CURRENT_DIR)/common.mak
 include $(ARCH_PATH)/script/arch_def.mak
@@ -35,6 +40,6 @@ endif
 
 symgen: arg_check
 	$(BIN_PATH)/$(CC) -S -I./src/include $(COMMON_CFLAGS) $(ARCH_CFLAGS) ./src/symgen.c -o$(BUILD_PATH)/symgen.S
-	grep "OFFSET_OF" $(BUILD_PATH)/symgen.S > $(BUILD_PATH)/symgen.txt
-	grep "SIZE_OF" $(BUILD_PATH)/symgen.S >> $(BUILD_PATH)/symgen.txt
-	cat $(BUILD_PATH)/symgen.S | awk '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(BUILD_PATH)/symgen.h
+	$(GRP_TOOL) "OFFSET_OF" $(BUILD_PATH)/symgen.S > $(BUILD_PATH)/symgen.txt
+	$(GRP_TOOL) "SIZE_OF" $(BUILD_PATH)/symgen.S >> $(BUILD_PATH)/symgen.txt
+	$(CAT_TOOL) $(BUILD_PATH)/symgen.S | $(AWK_TOOL) '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(BUILD_PATH)/symgen.h
