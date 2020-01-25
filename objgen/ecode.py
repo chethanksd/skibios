@@ -25,6 +25,7 @@ ERROR_PARAM_FILE_NOT_FOUND                  =   109
 ERROR_PARAM_FILE_BAD                        =   110
 ERROR_BIN_PATH_NOT_PROVIDED                 =   111
 ERROR_BIN_PATH_NOT_FOUND                    =   112
+ERROR_SYMBOL_GEN_FAILED                     =   113
 
 #
 # Error description
@@ -68,3 +69,6 @@ Please provide Binary tool path as 4th argument'
 
 error_description[ERROR_BIN_PATH_NOT_FOUND] = 'Bin tool path not found in path provided. \
 Please provide correct Bin tool path'
+
+error_description[ERROR_SYMBOL_GEN_FAILED] = 'Symbol header generation failed. \
+See Documentation SD-1001'
