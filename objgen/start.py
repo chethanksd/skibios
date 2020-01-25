@@ -40,7 +40,9 @@ atexit.register(exit_handler)
 #
 #
 diagnostics.start_stage = 1 
-svar.repo_path =os.path.abspath(svar.repo_path) 
+svar.repo_path = os.path.abspath(__file__)
+svar.repo_path = svar.repo_path.replace("objgen\start.py", "")
+svar.repo_path = svar.repo_path.replace("\\","/") 
 
 print('repopath :', svar.repo_path)
 

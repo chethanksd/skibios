@@ -94,7 +94,7 @@ def parse_device_file():
     #
     #
     
-    devattrb_path = 'src\\arch\\' + arch + '\\script\\devattrb'
+    devattrb_path = svar.repo_path + 'src\\arch\\' + arch + '\\script\\devattrb'
     devattrb_dir = os.path.dirname(devattrb_path)
     modname = os.path.basename(devattrb_path)
     sys.path.append(devattrb_dir)
