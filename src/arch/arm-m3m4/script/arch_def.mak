@@ -9,10 +9,21 @@ OC = arm-none-eabi-objcopy.exe
 OD = arm-none-eabi-objdump.exe
 SZ = arm-none-eabi-size.exe
 
+
+#
+# Arch specific GCC complier flags
+#
 ARCH_CFLAGS += -mcpu=cortex-m4 
 ARCH_CFLAGS += -march=armv7e-m 
 ARCH_CFLAGS += -mthumb 
 ARCH_CFLAGS += -mfloat-abi=hard
 ARCH_CFLAGS += -mfpu=fpv4-sp-d16
 ARCH_CFLAGS += -mno-thumb-interwork
+
+
+#
+# Arch specific Include search paths
+#
+ARCH_IPATH = -I$(ROOT)/src/arch/arm-m3m4
+
 

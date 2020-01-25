@@ -17,3 +17,11 @@ COMMOM_CFLAGS += -specs="nosys.specs"
 COMMOM_CFLAGS += -MD 
 COMMOM_CLFAGS += -std=c99 
 COMMOM_CFLAGS += -c
+
+
+#
+# Common Include search path
+#
+COMMON_IPATH  = -I$(ROOT_DIR)/src/include
+COMMON_IPATH += -I$(ROOT_DIR)/src/api
+COMMON_IPATH += -I$(ROOT_DIR)/src/service

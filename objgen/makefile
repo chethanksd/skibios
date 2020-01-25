@@ -35,8 +35,15 @@ ifndef SZ
 	$(error "ERROR! Size tool name not defined")
 endif
 
+COMPLIER_FLAGS = $(COMMON_CFLAGS) $(ARCH_CFLAGS)
+INCLUDE_PATHS  = $(COMMON_IPATH) $(ARCH_IPATH)
+
 symgen: arg_check
-	$(BIN_PATH)/$(CC) -S -I$(ROOT_DIR)/src/include $(COMMON_CFLAGS) $(ARCH_CFLAGS) $(ROOT_DIR)/src/symgen.c -o$(BUILD_PATH)/symgen.S
+	$(BIN_PATH)/$(CC) -S $(INCLUDE_PATHS) $(COMPLIER_FLAGS) $(ROOT_DIR)/src/symgen.c -o$(BUILD_PATH)/symgen.S
 	$(GRP_TOOL) "OFFSET_OF" $(BUILD_PATH)/symgen.S > $(BUILD_PATH)/symgen.txt
 	$(GRP_TOOL) "SIZE_OF" $(BUILD_PATH)/symgen.S >> $(BUILD_PATH)/symgen.txt
 	$(CAT_TOOL) $(BUILD_PATH)/symgen.S | $(AWK_TOOL) '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(BUILD_PATH)/symgen.h
+
+
+resource: arg_check
+	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPLIER_FLAGS) $(ROOT_DIR)/src/*.c -o$(BUILD_PATH)
