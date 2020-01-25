@@ -50,5 +50,4 @@ symgen: arg_check
 
 resource: arg_check
 	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(UPC_SKI_PARAM) $(COMPILER_FLAGS) $(ROOT_DIR)/src/kvar.c -o$(BUILD_PATH)/upc_kvar.o
-	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(UPC_SKI_PARAM) $(COMPILER_FLAGS) $(ROOT_DIR)/src/heap.c -o$(BUILD_PATH)/upc_heap.o
 	$(BIN_PATH)/$(OD) -t $(BUILD_PATH)/*.o > $(BUILD_PATH)/resource.txt
