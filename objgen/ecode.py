@@ -26,6 +26,7 @@ ERROR_PARAM_FILE_BAD                        =   110
 ERROR_BIN_PATH_NOT_PROVIDED                 =   111
 ERROR_BIN_PATH_NOT_FOUND                    =   112
 ERROR_SYMBOL_GEN_FAILED                     =   113
+ERROR_UPC_RESOURCE_CALCULATION_FALIED       =   114
 
 #
 # Error description
@@ -72,3 +73,6 @@ Please provide correct Bin tool path'
 
 error_description[ERROR_SYMBOL_GEN_FAILED] = 'Symbol header generation failed. \
 See Documentation SD-1001'
+
+error_description[ERROR_UPC_RESOURCE_CALCULATION_FALIED] = 'UPC Resource calculation failed. \
+Check if kvar source files has been corrupted or See Documentation SD-1002'

@@ -80,18 +80,18 @@ def run_objgen():
     try:
         process_obj = subprocess.Popen(resource_invoke, stdout=subprocess.PIPE, shell=True)
     except:
-        diagnostics.error = ecode.ERROR_SYMBOL_GEN_FAILED
+        diagnostics.error = ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED
         exit(1)
 
     try:
         (process_output, process_error) = process_obj.communicate()
         process_rcode = process_obj.returncode
     except:
-        diagnostics.error = ecode.ERROR_SYMBOL_GEN_FAILED
+        diagnostics.error = ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED
         exit(1)
 
     if(process_rcode != 0):
-        diagnostics.error = ecode.ERROR_SYMBOL_GEN_FAILED
+        diagnostics.error = ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED
         exit(1)
 
 
