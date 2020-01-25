@@ -27,6 +27,7 @@ def run_objgen():
 
     basic_param = ' BUILD_PATH=' + svar.build_path
     basic_param = basic_param + ' BIN_PATH=' + svar.bin_path
+    basic_param = basic_param + ' ROOT_DIR=' + svar.repo_path
 
     #
     # OBJGEN STAGE 1: Invoke symgen
@@ -35,7 +36,7 @@ def run_objgen():
     diagnostics.objgen_stage = 1
 
     print('***** Generating Symbol Header *****')
-    symgen_invoke = svar.repo_path + '/tools/make/make.exe symgen -f./objgen/makefile'
+    symgen_invoke = svar.repo_path + "/tools/make/make.exe symgen -f" + svar.repo_path + "objgen/makefile"
     symgen_invoke = symgen_invoke + ' ARCH_PATH=' + svar.repo_path + '/src/arch/' + device.arch
     symgen_invoke = symgen_invoke + basic_param
 
