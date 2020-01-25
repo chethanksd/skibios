@@ -24,6 +24,6 @@ ARCH_CFLAGS += -mno-thumb-interwork
 #
 # Arch specific Include search paths
 #
-ARCH_IPATH = -I$(ROOT)/src/arch/arm-m3m4
+ARCH_IPATH = -I$(ROOT_DIR)/src/arch/arm-m3m4
 
 

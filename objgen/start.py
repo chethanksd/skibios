@@ -100,6 +100,12 @@ if not bpath_exists:
     diagnostics.error = ecode.ERROR_BUILD_PATH_NOT_FOUND
     exit(1)
 
+svar.build_path = svar.build_path + "/skibios"
+
+bpath_exists = os.path.isdir(svar.build_path)
+if not bpath_exists:
+    os.mkdir(svar.build_path)
+
 #
 # START STAGE 4: Check if bin path exists
 #

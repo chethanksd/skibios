@@ -23,5 +23,5 @@ ARCH_CFLAGS += -mlsp
 #
 # Arch specific Include search paths
 #
-ARCH_IPATH = -I$(ROOT)/src/arch/mpc57x8
+ARCH_IPATH = -I$(ROOT_DIR)/src/arch/mpc57x8
 
