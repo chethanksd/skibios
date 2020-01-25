@@ -13,7 +13,6 @@ COMMON_CLFAGS += -fdata-sections
 
 COMMON_CFLAGS += -g -ggdb -gdwarf-3 -gstrict-dwarf 
 COMMON_CFLAGS += -Wall 
-COMMON_CFLAGS += -specs="nosys.specs"
 COMMON_CFLAGS += -MD 
 COMMON_CLFAGS += -std=c99 
 COMMON_CFLAGS += -c

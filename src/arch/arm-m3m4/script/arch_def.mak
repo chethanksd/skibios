@@ -19,6 +19,7 @@ ARCH_CFLAGS += -mthumb
 ARCH_CFLAGS += -mfloat-abi=hard
 ARCH_CFLAGS += -mfpu=fpv4-sp-d16
 ARCH_CFLAGS += -mno-thumb-interwork
+ARCH_CLFAGS += -specs="nosys.specs"
 
 
 #
