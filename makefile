@@ -8,9 +8,20 @@
 # $(GCC)    - Name of the GCC compilier
 # $(BUILD)  - Output Build path
 
-BIN    = C:\NXP\S32DS_Power_v2017.R1\Cross_Tools\powerpc-eabivle-4_9\bin
-PYTHON = E:\software\python.exe
-BUILD ?= .\..\proj\build
+arg_check:
+ifndef SKIBIOS_PATH
+	$(error "ERROR! SKIBIOS_PATH path name not defined")
+endif
+
+ifndef BIN
+	$(error "ERROR! BIN path name not defined")
+endif
+
+ifndef BUILD
+	$(error "ERROR! BUILD path name not defined")
+endif
+
+
 
 #
 # SKIBIOS Parameters
@@ -33,12 +44,12 @@ SKIBIOS_PARAM= -DPROCESS_STACK_SIZE=$(PROCESS_STACK_SIZE) -DUPPER_REGION_SIZE=$(
 
 
 skibios:
-	$(BIN)/$(GCC) -S -I./src/include $(CFLAGS) ./src/symgen.c -o$(BUILD)/symgen.S
+	$(BIN)/$(GCC) -S -I$(ROOT)/skibios/src/include $(CFLAGS) $(SKIBIOS_PATH)/src/symgen.c -o$(BUILD)/symgen.S
 	grep "OFFSET_OF" $(BUILD)/symgen.S > $(BUILD)/symgen.txt
 	grep "SIZE_OF" $(BUILD)/symgen.S >> $(BUILD)/symgen.txt
 	cat $(BUILD)/symgen.S | awk '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(BUILD)/symgen.h
-	./skibios.exe -b$(BIN) -o$(BUILD) -d./tm4c1294ncpdt.xml $(SKIBIOS_PARAM) -g
+	$(SKIBIOS_PATH)/skibios.exe -b$(BIN) -o$(BUILD) -d$(SKIBIOS_PATH)/tm4c1294ncpdt.xml $(SKIBIOS_PARAM) -g
 
 .PHONY: objgen
-objgen:
-	$(PYTHON) ./objgen/start.py ./tm4c1294ncpdt.xml ./param.xml $(BUILD) $(BIN)
+objgen: arg_check
+	$(PYTHON) $(SKIBIOS_PATH)/objgen/start.py $(SKIBIOS_PATH)/tm4c1294ncpdt.xml $(SKIBIOS_PATH)/param.xml $(BUILD) $(BIN)
