@@ -27,6 +27,12 @@ ERROR_BIN_PATH_NOT_PROVIDED                 =   111
 ERROR_BIN_PATH_NOT_FOUND                    =   112
 ERROR_SYMBOL_GEN_FAILED                     =   113
 ERROR_UPC_RESOURCE_CALCULATION_FALIED       =   114
+ERROR_UPC_RESOURCE_FILE_NOT_FOUND           =   115
+ERROR_UPC_RESOURCE_FILE_FAILED              =   116
+ERROR_KVAR_SRC_FILE_NOT_FOUND               =   117
+ERROR_KVAR_SRC_FILE_FAILED                  =   118
+ERROR_NO_MEMORY_FOR_PROCESS_STACK           =   119
+ERROR_KERNEL_STACK_SIZE_VIOLATION           =   120
 
 #
 # Error description
@@ -76,3 +82,21 @@ See Documentation SD-1001'
 
 error_description[ERROR_UPC_RESOURCE_CALCULATION_FALIED] = 'UPC Resource calculation failed. \
 Check if kvar source files has been corrupted or See Documentation SD-1002'
+
+error_description[ERROR_UPC_RESOURCE_FILE_NOT_FOUND] = 'UPC Resource file not found in build path. \
+Check if kvar source files has been corrupted or try building again'
+
+error_description[ERROR_UPC_RESOURCE_FILE_FAILED] = 'Unable to access UPC Resource file. \
+Unknown error, please try again with clean build'
+
+error_description[ERROR_KVAR_SRC_FILE_NOT_FOUND] = 'kvar source file not found in source directory. \
+Unknown error, check if kvar source file exists in source directory'
+
+error_description[ERROR_KVAR_SRC_FILE_FAILED] = 'Unable to access kvar source file. \
+Unknown error, please try again with clean build'
+
+error_description[ERROR_NO_MEMORY_FOR_PROCESS_STACK] = 'Less or no memory allocated to process stack. \
+Please check your resoure allocation in param.xml. See SD-1000 for more information'
+
+error_description[ERROR_KERNEL_STACK_SIZE_VIOLATION] = 'Less or no memory allocated to kernel stack. \
+Please check your resoure allocation in param.xml. See SD-1000 for more information'
