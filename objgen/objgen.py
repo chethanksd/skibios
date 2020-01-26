@@ -174,11 +174,6 @@ def run_objgen():
 
                     if(columns[3] == ".kbss"):
                         mpc_array_kbss_size = mpc_array_kbss_size + int(columns[4])
-    
-    print('upc_kdat_size = ', upc_kdat_size) 
-    print('upc_kbss_size = ', upc_kbss_size)
-    print("mpc_kdat_size = ", mpc_array_kdat_size)
-    print("mpc_kbss_size = ", mpc_array_kbss_size)
 
     #
     # OBJGEN STAGE 5: Resouce allocation feasibility check 
@@ -215,8 +210,3 @@ def run_objgen():
     actual_kbss_size = actual_kbss_size + (mpc_array_kbss_size * int(sparam.max_process_count))
     actual_kdat_size = upc_kdat_size - mpc_array_kdat_size
     actual_kdat_size = actual_kdat_size + (mpc_array_kdat_size * int(sparam.max_process_count))
-
-    print('kernel stack size: ', kstack_size)
-    print('max process count: ', sparam.max_process_count)
-    print('actual kbss size:', actual_kbss_size)
-    print('actual kdat size:', actual_kdat_size)
