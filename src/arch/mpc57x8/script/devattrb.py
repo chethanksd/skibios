@@ -13,3 +13,7 @@ var2 = 1
 def process_devattrb():
     var1 = var2
     print('var2: ', var2)
+
+def arch_specific_objgen():
+    print("running arch specific objgen")
+    print("kernel region size: ", sparam.kernel_section_size)

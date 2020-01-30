@@ -102,16 +102,18 @@ def parse_device_file():
     # device attributes processing modules are dynamically loaded
     # the devattrb script is present script folder of each architechture
     try:
-        module = __import__(modname)
-    except:
+        devattrb_module = __import__(modname)
+    except Exception as e:
         diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_NOT_FOUND
+        diagnostics.error_message = str(e)
         exit(1)
 
     try:
-        process_devattrb = getattr(module, 'process_devattrb')
+        process_devattrb = getattr(devattrb_module, 'process_devattrb')
         process_devattrb()
-    except:
+    except Exception as e:
         diagnostics.error = ecode.ERROR_PROCESS_DEVATTRIB_NOT_DEFINED
+        diagnostics.error_message = str(e)
         exit(1)
 
 

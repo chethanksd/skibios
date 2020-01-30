@@ -176,7 +176,7 @@ def run_objgen():
                         mpc_array_kbss_size = mpc_array_kbss_size + int(columns[4])
 
     #
-    # OBJGEN STAGE 5: Resouce allocation feasibility check 
+    # OBJGEN STAGE 5: Resource allocation feasibility check 
     #
     #
     diagnostics.objgen_stage = 5
@@ -210,3 +210,19 @@ def run_objgen():
     actual_kbss_size = actual_kbss_size + (mpc_array_kbss_size * int(sparam.max_process_count))
     actual_kdat_size = upc_kdat_size - mpc_array_kdat_size
     actual_kdat_size = actual_kdat_size + (mpc_array_kdat_size * int(sparam.max_process_count))
+
+    #
+    # OBJGEN STAGE 6: Run sripts to customize skibios for target device 
+    #
+    #
+    diagnostics.objgen_stage = 6
+
+    print('***** Customizing for target device *****')
+
+    try:
+        arch_specific_objgen = getattr(device.devattrb_module, 'arch_specific_objgen')
+        arch_specific_objgen()
+    except Exception as e:
+        diagnostics.error = ecode.ERROR_ARCH_OBJGEN_NOT_DEFINED
+        diagnostics.error_message = str(e)
+        exit(1)
