@@ -7,6 +7,11 @@
 
 import sys, os
 
+import svar
+import ecode
+import sparam
+import device
+
 var1 = 0
 var2 = 1
 
