@@ -11,6 +11,7 @@ import svar
 import ecode
 import sparam
 import device
+import diagnostics
 
 var1 = 0
 var2 = 1
@@ -23,11 +24,35 @@ def process_devattrb():
 def arch_specific_objgen():
 
     #
-    # STAGE 1: MPU SRD Bit calculation
+    # STAGE 1: Kernel SRAM address vs MPU alignment check and bound check
     #
     #
 
+    if(int(sparam.kernel_sram_address) < int(device.sram_addr)):
+        diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
+        diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
+        exit(1)
+
+    if(int(sparam.kernel_sram_address) >= (int(device.sram_addr) + int(device.sram_size))):
+        diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
+        diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
+        exit(1)
+
     next_fit_mpu_region = next_power_of_2(int(sparam.kernel_section_size))
+    next_fix_mpu_region_in_kb = next_fit_mpu_region * 1024
+
+    if(int(sparam.kernel_sram_address) % next_fix_mpu_region_in_kb != 0):
+        diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
+        diagnostics.error_message = '<kernel_sram_address> is not in par with ARM M3/M4 mpu region alignment requirement'
+        exit(1)
+
+
+
+    #
+    # STAGE 2: MPU SRD Bit calculation
+    #
+    #
+
 
     srd_shift = 0
     srd_bit = 0
@@ -38,11 +63,8 @@ def arch_specific_objgen():
     srd_bit = 255 << int(srd_bit)
     srd_bit = 255 & srd_bit
 
-    print("srd_shift: ", srd_shift)
-    print("srd_bit: ", srd_bit)
-
     #
-    # STAGE 2: Generate Process context switch MPU table
+    # STAGE 3: Generate Process context switch MPU table
     #
     #
 

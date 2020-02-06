@@ -16,6 +16,7 @@ import importlib
 
 def parse_param_file():
 
+    global kernel_sram_address
     global kernel_section_size
     global upper_region_size
     global process_stack_size
@@ -45,6 +46,13 @@ def parse_param_file():
     #
     # Start retriving data
     #
+    try:
+        kernel_sram_address = (pfile_tree.getElementsByTagName("kernel_sram_address")[0]).firstChild.data
+    except:
+        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
+        diagnostics.error_message = 'error retriving <kernel_sram_address> tag'
+        exit(1)    
+
     try:
         kernel_section_size = (pfile_tree.getElementsByTagName("kernel_section_size")[0]).firstChild.data
     except:

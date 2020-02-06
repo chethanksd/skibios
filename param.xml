@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <param>
-    <kernel_section_size>16</kernel_section_size>
+    <kernel_sram_address>536870912</kernel_sram_address>
+    <kernel_section_size>20</kernel_section_size>
     <upper_region_size>4</upper_region_size>
     <ghmb_region_size>1</ghmb_region_size>
     <process_stack_size>1024</process_stack_size>

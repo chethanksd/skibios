@@ -14,6 +14,7 @@ import ecode
 import diagnostics
 import pregen
 import objgen
+import postgen
 import svar
 
 
@@ -140,6 +141,14 @@ pregen.run_pregen()
 #
 
 objgen.run_objgen()
+
+#
+# Run Postgen
+#
+#
+
+postgen.run_postgen()
+
 
 
 print('Done!')
