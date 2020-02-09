@@ -8,8 +8,11 @@
 GRP_TOOL	  := $(ROOT_DIR)/tools/misc/grep.exe
 CAT_TOOL	  := $(ROOT_DIR)/tools/misc/cat.exe
 AWK_TOOL	  := $(ROOT_DIR)/tools/misc/awk.exe
+CP_TOOL		  := $(ROOT_DIR)/tools/misc/cp.exe
+FIND_TOOL	  := $(ROOT_DIR)/tools/misc/find.exe
 
 include $(ROOT_DIR)/objgen/common.mak
+include $(ROOT_DIR)/objgen/source.mak
 include $(ARCH_PATH)/script/arch_def.mak
 
 arg_check:
@@ -42,12 +45,24 @@ INCLUDE_PATHS  	 = $(COMMON_IPATH)
 INCLUDE_PATHS	+= $(ARCH_IPATH) 
 
 symgen: arg_check
-	$(BIN_PATH)/$(CC) -S $(INCLUDE_PATHS) $(COMPILER_FLAGS) $(ROOT_DIR)/src/symgen.c -o$(BUILD_PATH)/symgen.S
-	$(GRP_TOOL) "OFFSET_OF" $(BUILD_PATH)/symgen.S > $(BUILD_PATH)/symgen.txt
-	$(GRP_TOOL) "SIZE_OF" $(BUILD_PATH)/symgen.S >> $(BUILD_PATH)/symgen.txt
-	$(CAT_TOOL) $(BUILD_PATH)/symgen.S | $(AWK_TOOL) '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(BUILD_PATH)/symgen.h
+	$(BIN_PATH)/$(CC) -S $(INCLUDE_PATHS) $(COMPILER_FLAGS) $(ROOT_DIR)/src/symgen.c -o$(SYMGEN_PATH)/symgen.S
+	$(GRP_TOOL) "OFFSET_OF" $(SYMGEN_PATH)/symgen.S > $(SYMGEN_PATH)/symgen.txt
+	$(GRP_TOOL) "SIZE_OF" $(SYMGEN_PATH)/symgen.S >> $(SYMGEN_PATH)/symgen.txt
+	$(CAT_TOOL) $(SYMGEN_PATH)/symgen.S | $(AWK_TOOL) '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(SYMGEN_PATH)/symgen.h
+	$(CP_TOOL) $(SYMGEN_PATH)/symgen.h $(ALLSRC_PATH)/symgen.h
 
 
 resource: arg_check
-	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(UPC_SKI_PARAM) $(COMPILER_FLAGS) $(ROOT_DIR)/src/kvar.c -o$(BUILD_PATH)/upc_kvar.o
-	$(BIN_PATH)/$(OD) -t $(BUILD_PATH)/*.o > $(BUILD_PATH)/resource.txt
+	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(UPC_SKI_PARAM) $(COMPILER_FLAGS) $(ROOT_DIR)/src/kvar.c -o$(RESOURCE_PATH)/upc_kvar.o
+	$(BIN_PATH)/$(OD) -t $(RESOURCE_PATH)/*.o > $(RESOURCE_PATH)/resource.txt
+
+
+define CREATE_EXCLUDE_ARG
+! -name '$(EXCLUDE_FILE)'
+endef
+
+allsrc_copy: arg_check
+	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(COMMON_SRC_EXC), $(CREATE_EXCLUDE_ARG)))
+	$(FIND_TOOL) $(COMMON_SRC_INC) -maxdepth 1 -type f -name '*.c' $(EXCLUDE_ARG) > $(BUILD_PATH)/copy_list.txt
+	$(eval COPY_LIST := $(shell $(FIND_TOOL) $(COMMON_SRC_INC)  -maxdepth 1 -type f -name '*.c' $(EXCLUDE_ARG)))
+	$(CP_TOOL) $(COPY_LIST) $(ALLSRC_PATH)

@@ -45,6 +45,11 @@ def run_objgen():
     diagnostics.objgen_stage = 1
 
     print('***** Generating Symbol Header *****')
+
+    spath_exists = os.path.isdir(svar.build_path + '/symgen')
+    if not spath_exists:
+        os.mkdir(svar.build_path + '/symgen')
+
     symgen_invoke = svar.repo_path + "/tools/make/make.exe symgen -f" + svar.repo_path + "objgen/makefile"
     symgen_invoke = symgen_invoke + ' BUILD_PATH=' + svar.build_path
     symgen_invoke = symgen_invoke + basic_param
@@ -77,12 +82,12 @@ def run_objgen():
 
     print('***** Calculating Resources *****')
 
-    bpath_exists = os.path.isdir(svar.build_path + '/resource_cal')
-    if not bpath_exists:
+    rpath_exists = os.path.isdir(svar.build_path + '/resource_cal')
+    if not rpath_exists:
         os.mkdir(svar.build_path + '/resource_cal')
 
     resource_invoke = svar.repo_path + "/tools/make/make.exe resource -f" + svar.repo_path + "objgen/makefile"
-    resource_invoke = resource_invoke + ' BUILD_PATH=' + svar.build_path + '/resource_cal'
+    resource_invoke = resource_invoke + ' BUILD_PATH=' + svar.build_path
     resource_invoke = resource_invoke + basic_param
 
     try:
@@ -226,3 +231,40 @@ def run_objgen():
         diagnostics.error = ecode.ERROR_ARCH_OBJGEN_NOT_DEFINED
         diagnostics.error_message = str(e)
         exit(1)
+
+    #
+    # OBJGEN STAGE 7: copy required source files to allsrc
+    #
+    #
+    diagnostics.objgen_stage = 7
+
+    allsrc_copy_invoke = svar.repo_path + "/tools/make/make.exe allsrc_copy -f" + svar.repo_path + "objgen/makefile"
+    allsrc_copy_invoke = allsrc_copy_invoke + ' BUILD_PATH=' + svar.build_path
+    allsrc_copy_invoke = allsrc_copy_invoke + basic_param
+
+    try:
+        process_obj = subprocess.Popen(allsrc_copy_invoke, stdout=subprocess.PIPE, shell=True)
+    except:
+        diagnostics.error = ecode.ERROR_SOURCE_FILE_COPY_ERROR
+        exit(1)
+
+    try:
+        (process_output, process_error) = process_obj.communicate()
+        process_rcode = process_obj.returncode
+    except:
+        diagnostics.error = ecode.ERROR_SOURCE_FILE_COPY_ERROR
+        exit(1)
+
+    if(process_rcode != 0):
+        diagnostics.error = ecode.ERROR_SOURCE_FILE_COPY_ERROR
+        exit(1)
+
+    process_obj.wait()
+
+
+    
+    #
+    # OBJGEN STAGE: DONE
+    #
+    #
+    diagnostics.objgen_stage = diagnostics.STAGE_DONE

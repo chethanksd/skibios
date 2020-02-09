@@ -35,6 +35,7 @@ ERROR_NO_MEMORY_FOR_PROCESS_STACK           =   119
 ERROR_KERNEL_STACK_SIZE_VIOLATION           =   120
 ERROR_ARCH_OBJGEN_NOT_DEFINED               =   121
 ERROR_DEVICE_ATTRIBUTES_FAILED              =   122
+ERROR_SOURCE_FILE_COPY_ERROR                =   123
 
 #
 # Error description
@@ -108,3 +109,6 @@ Please define architecture specific objgen procedure. See Documentation SD-1000'
 
 error_description[ERROR_DEVICE_ATTRIBUTES_FAILED] = 'Device attribute module execution failed. \
 Check kernel paramater given in the input xml'
+
+error_description[ERROR_SOURCE_FILE_COPY_ERROR] = 'Error trying to invoke source file copy operation. \
+Unknown error. Check Makefile in objgen folder'

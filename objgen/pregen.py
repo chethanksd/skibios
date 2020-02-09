@@ -7,6 +7,7 @@
 
 import sys, os
 import subprocess
+import shutil
 import time
 
 import diagnostics
@@ -19,7 +20,7 @@ import sparam
 def run_pregen():
 
     #
-    # PREGEN STAGE1: Device file parsing
+    # PREGEN STAGE 1: Device file parsing
     #
     #
     diagnostics.pregen_stage = 1
@@ -28,7 +29,7 @@ def run_pregen():
 
 
     #
-    # PREGEN STAGE2: Device parameters validation
+    # PREGEN STAGE 2: Device parameters validation
     #
     #
     diagnostics.pregen_stage = 2
@@ -37,7 +38,7 @@ def run_pregen():
 
     
     #
-    # PREGEN STAGE3: Param file parsing
+    # PREGEN STAGE 3: Param file parsing
     #
     #
     diagnostics.pregen_stage = 3
@@ -46,14 +47,24 @@ def run_pregen():
 
 
     #
-    # PREGEN STAGE4: SKIBIOS Param validation
+    # PREGEN STAGE 4: SKIBIOS Param validation
     #
     #
     diagnostics.pregen_stage = 4
     
     sparam.validate_skibios_param()
 
+    #
+    # PREGEN STAGE 5: Create allsrc folder
+    #
+    #
+    diagnostics.pregen_stage = 5
 
+    apath_exists = os.path.isdir(svar.build_path + '/allsrc')
+    if not apath_exists:
+        os.mkdir(svar.build_path + '/allsrc')
+    else:
+        shutil.rmtree(svar.build_path + '/allsrc')
 
     #
     # PREGEN STAGE: DONE

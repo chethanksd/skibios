@@ -26,7 +26,30 @@ def run_postgen():
     #
     #
     diagnostics.postgen_stage = 1
-    
+
+    generate_support_linker_script()
+
+    #
+    # POSTGEN STAGE 2: Generate objgen summary report
+    #
+    #
+    diagnostics.postgen_stage = 2
+
+    #
+    # POSTGEN STAGE: DONE
+    #
+    #
+    diagnostics.postgen_stage = diagnostics.STAGE_DONE  
+
+
+
+#
+# Local Funnction: function to generate support linker script to integrate skibios
+#
+#
+
+def generate_support_linker_script():
+
     param_lds = open(svar.build_path + "/param.lds", "w+")
 
     kernel_base_address = int(sparam.kernel_sram_address) + int(device.intvec_size) * 4

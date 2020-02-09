@@ -98,7 +98,7 @@ def next_power_of_2(number):
 
 def generate_pcs_mpu_table():
 
-    mtable_src = open(svar.build_path + "/mtable.c", "w+")
+    mtable_src = open(svar.build_path + "/allsrc/mtable.c", "w+")
 
     mtable_src.write("#include <stdint.h>\n")
     mtable_src.write("#include <mpu.h>\n")
