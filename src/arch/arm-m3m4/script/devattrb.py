@@ -23,6 +23,9 @@ def process_devattrb():
 
 def arch_specific_objgen():
 
+    global srd_bit
+    global srd_shift
+
     #
     # STAGE 1: Kernel SRAM address vs MPU alignment check and bound check
     #
@@ -69,6 +72,13 @@ def arch_specific_objgen():
     #
 
     generate_pcs_mpu_table()
+
+    #
+    # STAGE 4: Append arch specific constants to param header
+    #
+    #
+
+    append_arch_constants()
 
 
 #
@@ -133,6 +143,38 @@ def generate_pcs_mpu_table():
 
 
 #
+# Local function: function to append arch specific symbolic constants to param header
+#
+#
+
+def append_arch_constants():
+
+    param_header = open(svar.build_path + "/allsrc/arch_param.h", "w+")
+
+    param_header.write("#ifndef _ARCH_PARAM_H_\n")
+    param_header.write("#define _ARCH_PARAM_H_\n")
+    param_header.write("\n")
+
+    param_header.write("#include <mpu.h>\n")
+    param_header.write("\n\n")
+
+    param_header.write("// Arch Specific Symbolic Constants\n\n")
+
+    temp = "#define KERNEL_REGION_SIZE " + kernel_region_to_string(int(sparam.kernel_section_size)) + "\n"
+    param_header.write(temp)
+
+    temp = "#define MPU_PSTACK_SIZE " + pstack_size_to_string(int(sparam.process_stack_size)) + "\n"
+    param_header.write(temp)
+
+    temp = "#define KERNEL_REGION_SRD " + str(srd_bit) + "\n"
+    param_header.write(temp)
+
+    param_header.write("\n\n")
+    param_header.write("#endif")
+    param_header.close()
+
+
+#
 # Local function: to convert process stack size into MPU Region string
 #
 #
@@ -148,4 +190,30 @@ def pstack_size_to_string(size):
         str_value = "MPU_REGION_SIZE_1KB"
 
     return str_value
+
+
+#
+# Local function: to convert kernel region size size into MPU Region string
+#
+#
+
+def kernel_region_to_string(size):
+
+    str = ""
+    value = next_power_of_2(size)
+
+    if(value == 8):
+        str = "MPU_REGION_SIZE_8KB"
+
+    elif(value == 16):
+        str = "MPU_REGION_SIZE_16KB"
+
+    elif(value == 32):
+        str = "MPU_REGION_SIZE_32KB"
+
+    elif(value == 64):
+        str = "MPU_REGION_SIZE_64KB"
+
+    return str
+
 

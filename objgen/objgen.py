@@ -51,7 +51,7 @@ def run_objgen():
         os.mkdir(svar.build_path + '/symgen')
 
     call_make_target('symgen', basic_param, ecode.ERROR_SYMBOL_GEN_FAILED)
-    
+
 
     #
     # OBJGEN STAGE 2: Unit Proess Count Compilation
@@ -176,10 +176,19 @@ def run_objgen():
     actual_kdat_size = actual_kdat_size + (mpc_array_kdat_size * int(sparam.max_process_count))
 
     #
-    # OBJGEN STAGE 6: Run sripts to customize skibios for target device 
+    # OBJGEN STAGE 6: Generate param header file
     #
     #
     diagnostics.objgen_stage = 6
+
+    generate_param_header()
+
+
+    #
+    # OBJGEN STAGE 7: Run sripts to customize skibios for target device 
+    #
+    #
+    diagnostics.objgen_stage = 7
 
     print('***** Customizing for target device *****')
 
@@ -192,10 +201,10 @@ def run_objgen():
         exit(1)
 
     #
-    # OBJGEN STAGE 7: copy required source files to allsrc
+    # OBJGEN STAGE 8: copy required source files to allsrc
     #
     #
-    diagnostics.objgen_stage = 7
+    diagnostics.objgen_stage = 8
 
     call_make_target('allsrc_copy', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
 
@@ -237,3 +246,44 @@ def call_make_target(target, param, error_code):
         exit(1)
 
     process_obj.wait()
+
+
+#
+# Local Function: function to genereate param header file
+#
+#
+
+def generate_param_header():
+
+    param_header = open(svar.build_path + "/allsrc/param.h", "w+")
+
+    param_header.write("#ifndef _PARAM_H_\n")
+    param_header.write("#define _PARAM_H_\n")
+    param_header.write("\n")
+
+    param_header.write("#include <arch_param.h>\n")
+    param_header.write("\n\n")
+
+    param_header.write("// Common Symbolic Constants\n\n")
+
+    temp = "#define NUM_OF_INTERRUPTS " + device.intvec_size + "\n"
+    param_header.write(temp)
+
+    temp = "#define MAX_PROCESS_COUNT " + str(int(sparam.max_process_count)) + "\n"
+    param_header.write(temp)
+
+    temp = "#define PROCESS_STACK_SIZE " + str(int(int(sparam.process_stack_size) / 4)) + "\n"
+    param_header.write(temp)
+
+    temp = "#define ENABLE_SKIBIOS 1 \n"
+    param_header.write(temp)
+
+    temp = "#define PROCESS_PER_SEC " + sparam.process_per_sec + "\n"
+    param_header.write(temp)
+
+    temp = "#define HEAP_BOOKEEPING_SIZE " + str(int(sparam.process_per_sec) * 256) + "\n"
+    param_header.write(temp)
+
+    param_header.write("\n\n")
+    param_header.write("#endif")
+    param_header.close()

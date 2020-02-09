@@ -20,7 +20,6 @@ import objgen
 
 def run_postgen():
 
-
     #
     # POSTGEN STAGE 1: Linker support file generation
     #
