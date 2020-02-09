@@ -57,7 +57,6 @@ const uint32_t base_mutex = 1;
 uint32_t kernel_init(void) {
 
     uint32_t error;
-    uint32_t ticks;
     uint8_t i;
 
     /* Relocate the Vector Table */

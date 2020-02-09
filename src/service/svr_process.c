@@ -300,8 +300,6 @@ pkill_continue:
     /* Turn ON scheduler */
     HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
 
-quit_error:
-
     return error;
 
 }

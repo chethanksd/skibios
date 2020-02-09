@@ -99,8 +99,13 @@ CC_PROGS := $(patsubst %.c,%_c.o,$(CC_SRCS))
 AS_SRCS  := $(wildcard $(ALLSRC_PATH)/*.S)
 AS_PROGS := $(patsubst %.S,%_S.o,$(AS_SRCS))
 
-compile_allsrc: arg_check $(AS_PROGS) $(CC_PROGS)
+compile_allsrc: arg_check compile_init $(AS_PROGS) $(CC_PROGS)
 
+
+# pre compile rules
+
+compile_init:
+	@echo > $(BUILD_PATH)/compile_list.txt
 
 # Build targets for c files
 

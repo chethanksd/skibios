@@ -63,8 +63,6 @@ def run_pregen():
     apath_exists = os.path.isdir(svar.build_path + '/allsrc')
     if not apath_exists:
         os.mkdir(svar.build_path + '/allsrc')
-    else:
-        shutil.rmtree(svar.build_path + '/allsrc')
 
     #
     # PREGEN STAGE: DONE

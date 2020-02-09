@@ -18,7 +18,6 @@ static uint16_t access_code;
 
 void BaseTask() {
 
-    uint32_t i = 0;
     uint32_t error;
 
     while(1) {

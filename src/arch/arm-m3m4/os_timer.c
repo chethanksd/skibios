@@ -10,6 +10,7 @@
 #include <error.h>
 #include <regmap.h>
 #include <kvar.h>
+#include <param.h>
 
 extern void scheduler(void);
 

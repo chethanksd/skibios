@@ -33,7 +33,7 @@ arch_semaphore_inc:
 .global arch_semaphore_dec
 
 arch_semaphore_dec:
-            PUSH        {R1, R0}
+            PUSH        {R0, R1}
         	LDREXB  	R1, [R0]   
             CMP    		R1, #0     
             ITEET		EQ		

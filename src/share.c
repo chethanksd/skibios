@@ -86,7 +86,7 @@ uint8_t spin_lock(uint32_t *mutex_st, uint16_t retry){
 
 }
 
-uint8_t semaphore_increment(uint8_t *semaphore, uint16_t retry) {
+uint8_t semaphore_increment(uint32_t *semaphore, uint16_t retry) {
 
     uint32_t state;
     uint16_t loop=0;
@@ -112,7 +112,7 @@ uint8_t semaphore_increment(uint8_t *semaphore, uint16_t retry) {
     return ERROR_NONE;
 }
 
-uint8_t semaphore_decrement(uint8_t *semaphore, uint16_t retry) {
+uint8_t semaphore_decrement(uint32_t *semaphore, uint16_t retry) {
 
     uint8_t state;
     uint16_t loop=0;

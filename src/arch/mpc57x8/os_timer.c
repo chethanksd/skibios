@@ -10,6 +10,7 @@
 
 #include <regmap.h>
 #include <error.h>
+#include <param.h>
 
 void os_timer_int_handler(void);
 
