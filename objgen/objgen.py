@@ -50,29 +50,8 @@ def run_objgen():
     if not spath_exists:
         os.mkdir(svar.build_path + '/symgen')
 
-    symgen_invoke = svar.repo_path + "/tools/make/make.exe symgen -f" + svar.repo_path + "objgen/makefile"
-    symgen_invoke = symgen_invoke + ' BUILD_PATH=' + svar.build_path
-    symgen_invoke = symgen_invoke + basic_param
-
-    try:
-        process_obj = subprocess.Popen(symgen_invoke, stdout=subprocess.PIPE, shell=True)
-    except:
-        diagnostics.error = ecode.ERROR_SYMBOL_GEN_FAILED
-        exit(1)
-
-    try:
-        (process_output, process_error) = process_obj.communicate()
-        process_rcode = process_obj.returncode
-    except:
-        diagnostics.error = ecode.ERROR_SYMBOL_GEN_FAILED
-        exit(1)
-
-    if(process_rcode != 0):
-        diagnostics.error = ecode.ERROR_SYMBOL_GEN_FAILED
-        exit(1)
-
-    process_obj.wait()
-
+    call_make_target('symgen', basic_param, ecode.ERROR_SYMBOL_GEN_FAILED)
+    
 
     #
     # OBJGEN STAGE 2: Unit Proess Count Compilation
@@ -86,27 +65,7 @@ def run_objgen():
     if not rpath_exists:
         os.mkdir(svar.build_path + '/resource_cal')
 
-    resource_invoke = svar.repo_path + "/tools/make/make.exe resource -f" + svar.repo_path + "objgen/makefile"
-    resource_invoke = resource_invoke + ' BUILD_PATH=' + svar.build_path
-    resource_invoke = resource_invoke + basic_param
-
-    try:
-        process_obj = subprocess.Popen(resource_invoke, stdout=subprocess.PIPE, shell=True)
-    except:
-        diagnostics.error = ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED
-        exit(1)
-
-    try:
-        (process_output, process_error) = process_obj.communicate()
-        process_rcode = process_obj.returncode
-    except:
-        diagnostics.error = ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED
-        exit(1)
-
-    if(process_rcode != 0):
-        diagnostics.error = ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED
-        exit(1)
-
+    call_make_target('resource', basic_param, ecode.ERROR_UPC_RESOURCE_CALCULATION_FALIED)
 
     #
     # OBJGEN STAGE 3: UPC Resource file and kvar file check and readout
@@ -238,29 +197,7 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 7
 
-    allsrc_copy_invoke = svar.repo_path + "/tools/make/make.exe allsrc_copy -f" + svar.repo_path + "objgen/makefile"
-    allsrc_copy_invoke = allsrc_copy_invoke + ' BUILD_PATH=' + svar.build_path
-    allsrc_copy_invoke = allsrc_copy_invoke + basic_param
-
-    try:
-        process_obj = subprocess.Popen(allsrc_copy_invoke, stdout=subprocess.PIPE, shell=True)
-    except:
-        diagnostics.error = ecode.ERROR_SOURCE_FILE_COPY_ERROR
-        exit(1)
-
-    try:
-        (process_output, process_error) = process_obj.communicate()
-        process_rcode = process_obj.returncode
-    except:
-        diagnostics.error = ecode.ERROR_SOURCE_FILE_COPY_ERROR
-        exit(1)
-
-    if(process_rcode != 0):
-        diagnostics.error = ecode.ERROR_SOURCE_FILE_COPY_ERROR
-        exit(1)
-
-    process_obj.wait()
-
+    call_make_target('allsrc_copy', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
 
     
     #
@@ -268,3 +205,35 @@ def run_objgen():
     #
     #
     diagnostics.objgen_stage = diagnostics.STAGE_DONE
+
+
+
+#
+# Local Function: function to call make target
+#
+#
+
+def call_make_target(target, param, error_code):
+
+    make_invoke = svar.repo_path + "/tools/make/make.exe " + target + " -f" + svar.repo_path + "objgen/makefile"
+    make_invoke = make_invoke + ' BUILD_PATH=' + svar.build_path
+    make_invoke = make_invoke + param
+
+    try:
+        process_obj = subprocess.Popen(make_invoke, stdout=subprocess.PIPE, shell=True)
+    except:
+        diagnostics.error = error_code
+        exit(1)
+
+    try:
+        (process_output, process_error) = process_obj.communicate()
+        process_rcode = process_obj.returncode
+    except:
+        diagnostics.error = error_code
+        exit(1)
+
+    if(process_rcode != 0):
+        diagnostics.error = error_code
+        exit(1)
+
+    process_obj.wait()

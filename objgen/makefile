@@ -72,3 +72,6 @@ allsrc_copy: arg_check
 	$(FIND_TOOL) $(SOURCE_PATHS) -maxdepth 1 -type f \( -name '*.c' -o -name '*.S' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/copy_list.txt
 	$(eval COPY_LIST = $(shell $(FIND_TOOL) $(SOURCE_PATHS)  -maxdepth 1 -type f \( -name '*.c' -o -name '*.S' \) $(EXCLUDE_ARG)))
 	$(CP_TOOL) $(COPY_LIST) $(ALLSRC_PATH)
+
+
+complie_allsrc: arg_check
