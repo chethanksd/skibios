@@ -32,7 +32,7 @@ def parse_param_file():
     global kernel_base_address
     global app_base_address
     global proc_heap_address
-    global kernel_stack_address
+    global kernel_stack_end_address
     global ghmb_address
 
     #

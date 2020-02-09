@@ -176,22 +176,34 @@ def run_objgen():
     actual_kdat_size = actual_kdat_size + (mpc_array_kdat_size * int(sparam.max_process_count))
 
     #
-    # OBJGEN STAGE 6: Generate param header file
+    # OBJGEN STAGE 6: Final resource allocation calculations
     #
     #
     diagnostics.objgen_stage = 6
 
-    #ToDo: create stage for this
+    sparam.kernel_base_address = int(sparam.kernel_sram_address) + int(device.intvec_size) * 4
+    sparam.app_base_address = int(sparam.kernel_sram_address) + (int(sparam.kernel_section_size) * 1024)
+    sparam.ghmb_address = sparam.app_base_address - (int(sparam.ghmb_region_size) * 1024)
+
     sparam.proc_heap_address = int(sparam.kernel_sram_address) + (int(sparam.upper_region_size) * 1024)
+    sparam.kernel_stack_end_address = sparam.proc_heap_address - 4
+
+    #
+    # OBJGEN STAGE 7: Generate param header file
+    #
+    #
+    diagnostics.objgen_stage = 7
+
+    #ToDo: create stage for this
 
     generate_param_header()
 
 
     #
-    # OBJGEN STAGE 7: Run sripts to customize skibios for target device 
+    # OBJGEN STAGE 8: Run sripts to customize skibios for target device 
     #
     #
-    diagnostics.objgen_stage = 7
+    diagnostics.objgen_stage = 8
 
     print('***** Customizing for target device *****')
 
@@ -204,20 +216,20 @@ def run_objgen():
         exit(1)
 
     #
-    # OBJGEN STAGE 8: copy required source files to allsrc
+    # OBJGEN STAGE 9: copy required source files to allsrc
     #
     #
-    diagnostics.objgen_stage = 8
+    diagnostics.objgen_stage = 9
 
     print('***** Copying required files to allsrc *****')
 
     call_make_target('allsrc_copy', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
 
     #
-    # OBJGEN STAGE 9: Compile files in allsrc to generate obj files
+    # OBJGEN STAGE 10: Compile files in allsrc to generate obj files
     #
     #
-    diagnostics.objgen_stage = 9
+    diagnostics.objgen_stage = 10
 
     print('***** Compiling source files *****')
 
