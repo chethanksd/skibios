@@ -206,7 +206,23 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 8
 
+    print('***** Copying required files to allsrc *****')
+
     call_make_target('allsrc_copy', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
+
+    #
+    # OBJGEN STAGE 9: Compile files in allsrc to generate obj files
+    #
+    #
+    diagnostics.objgen_stage = 9
+
+    print('***** Compiling source files *****')
+
+    opath_exists = os.path.isdir(svar.build_path + '/obj')
+    if not opath_exists:
+        os.mkdir(svar.build_path + '/obj')
+
+    call_make_target('compile_allsrc', basic_param, ecode.ERROR_OBJECT_GENERATION_ERROR)
 
     
     #

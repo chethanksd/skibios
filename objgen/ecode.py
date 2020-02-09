@@ -36,6 +36,7 @@ ERROR_KERNEL_STACK_SIZE_VIOLATION           =   120
 ERROR_ARCH_OBJGEN_NOT_DEFINED               =   121
 ERROR_DEVICE_ATTRIBUTES_FAILED              =   122
 ERROR_SOURCE_FILE_COPY_ERROR                =   123
+ERROR_OBJECT_GENERATION_ERROR               =   124
 
 #
 # Error description
@@ -112,3 +113,6 @@ Check kernel paramater given in the input xml'
 
 error_description[ERROR_SOURCE_FILE_COPY_ERROR] = 'Error trying to invoke source file copy operation. \
 Unknown error. Check Makefile in objgen folder'
+
+error_description[ERROR_OBJECT_GENERATION_ERROR] = 'Error trying to invoke object file generation. \
+Possibly one or more modified skibios source files has syntax error'
