@@ -124,6 +124,23 @@ namespace skibios
                 return error;
             }
 
+            StreamWriter fwp;
+
+            if (!File.Exists(outpath + "/param.h"))
+            {
+                fwp = new StreamWriter(File.Create(outpath + "/param.h"));
+            }
+            else
+            {
+                fwp = new StreamWriter(outpath + "/param.h");
+            }
+
+            fwp.WriteLine("#ifndef _PARAM_H_");
+            fwp.WriteLine("#define _PARAM_H_");
+            fwp.WriteLine("#endif");
+
+            fwp.Close();
+
             //Stage 3: Upper Region Size Validation
             error = UpperKernelValidation();
 
@@ -196,13 +213,29 @@ namespace skibios
             {
                 return error;
             }
-/*
-#if DEBUG
-#else
-            File.Delete(outpath + "/mtable.c");
-#endif*/
+            /*
+            #if DEBUG
+            #else
+                        File.Delete(outpath + "/mtable.c");
+            #endif*/
 
             //Stage6 : Compile all Source files with original parameters
+
+            if (!File.Exists(outpath + "/param.h"))
+            {
+                fwp = new StreamWriter(File.Create(outpath + "/param.h"));
+            }
+            else
+            {
+                fwp = new StreamWriter(outpath + "/param.h");
+            }
+
+            fwp.WriteLine("#ifndef _PARAM_H_");
+            fwp.WriteLine("#define _PARAM_H_");
+            fwp.WriteLine("#endif");
+
+            fwp.Close();
+
             error = CompileSource("kernel");
 
             if (error != ecode.ERROR_NONE)

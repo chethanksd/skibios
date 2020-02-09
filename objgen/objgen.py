@@ -181,6 +181,9 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 6
 
+    #ToDo: create stage for this
+    sparam.proc_heap_address = int(sparam.kernel_sram_address) + (int(sparam.upper_region_size) * 1024)
+
     generate_param_header()
 
 
@@ -297,7 +300,7 @@ def generate_param_header():
     temp = "#define PROCESS_PER_SEC " + sparam.process_per_sec + "\n"
     param_header.write(temp)
 
-    temp = "#define HEAP_BOOKEEPING_SIZE " + str(int(sparam.process_per_sec) * 256) + "\n"
+    temp = "#define HEAP_BOOKEEPING_SIZE " + str(int(sparam.ghmb_region_size) * 256) + "\n"
     param_header.write(temp)
 
     param_header.write("\n\n")

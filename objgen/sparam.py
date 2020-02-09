@@ -16,6 +16,7 @@ import importlib
 
 def parse_param_file():
 
+    # input parameters
     global kernel_sram_address
     global kernel_section_size
     global upper_region_size
@@ -25,6 +26,14 @@ def parse_param_file():
     global process_per_sec
     global enable_safe_lock
     global disable_buffer
+
+    #output parameters
+    global max_process_count
+    global kernel_base_address
+    global app_base_address
+    global proc_heap_address
+    global kernel_stack_address
+    global ghmb_address
 
     #
     # Try creating param tree

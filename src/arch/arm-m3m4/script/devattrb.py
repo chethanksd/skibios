@@ -122,8 +122,7 @@ def generate_pcs_mpu_table():
         temp = "// Process " + str(i) + "\n"
         mtable_src.write(temp)
 
-        pstack_addr = 0
-        addr = pstack_addr + (i * int(sparam.process_stack_size)) + 23
+        addr = sparam.proc_heap_address + (i * int(sparam.process_stack_size)) + 23
         
         temp = hex(addr) + ",\n"
         mtable_src.write(temp)
