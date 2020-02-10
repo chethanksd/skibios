@@ -25,6 +25,7 @@ def parse_device_file():
     global core_count
 
     global arch
+    global partno
     global devattrb_module
 
     #
@@ -87,7 +88,14 @@ def parse_device_file():
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <arch> tag'
-        exit(1)        
+        exit(1)
+
+    try:
+        partno = (dfile_tree.getElementsByTagName("partno")[0]).firstChild.data
+    except:
+        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
+        diagnostics.error_message = 'error retriving <partno> tag'
+        exit(1)         
 
     #
     # Parse device attribute
