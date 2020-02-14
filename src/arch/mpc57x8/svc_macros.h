@@ -9,4 +9,12 @@
 // CREATE_PROCESS with process argument
 #define SVC_CREATE_PROCESS_WITH_ARG(proc_obj, proc_arg)
 
+
+// KILL_PROCESS for direct process kill
+#define SVC_KILL_PROCESS_DIRECT(process_id) 
+ 
+
+ // KILL_PROCESS to resolve end of process
+ #define SVC_KILL_PROCESS_RESOLVE_END(process_id) 
+
 #endif

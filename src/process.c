@@ -97,14 +97,7 @@ uint8_t process_kill(process_t *myprocess) {
 
     }
 
-    __asm volatile (" MOV R0, %[proc_id]   \n"
-                    " MOV R1, #0           \n"
-            :
-            : [proc_id] "r" (process_id[i])
-            :
-    );
-
-    svc(KILL_PROCESS);   
+    SVC_KILL_PROCESS_DIRECT(process_id[i]);   
 
     return ERROR_NONE;
 

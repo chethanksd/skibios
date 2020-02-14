@@ -6,6 +6,7 @@
  */
 
 #include <svr_process.h>
+#include <os_support.h>
 #include <kvar.h>
 #include <svc.h>
 #include <error.h>
@@ -436,13 +437,6 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
 
 void resolve_end(void) {
 
-    __asm volatile (" MOV R0, %[proc_id]   \n"
-                    " MOV R1, #1           \n"
-            :
-            : [proc_id] "r" (process_id[current_task])
-            :
-    );
-
-    svc(KILL_PROCESS);
+    SVC_KILL_PROCESS_RESOLVE_END(process_id[current_task]);
 
 }
