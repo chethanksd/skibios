@@ -4,4 +4,6 @@
 #include <svc_macros.h>
 
 
+#define svc(code)
+
 #endif

@@ -4,9 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <svc.h>
+#include <app_support.h>
 
-// inline assembler helper directive: call SVC with the given immediate
-#define svc(code) __asm("svc %[immediate]"::[immediate] "I" (code));
 
 #ifdef	__cplusplus
 extern "C" {
