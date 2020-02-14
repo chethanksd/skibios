@@ -3,7 +3,7 @@
 
 
 // CREATE_PROCESS without process argument
-#define SVC_CREATE_PROCESS(proc_obj)
+#define SVC_CREATE_PROCESS_NO_ARG(proc_obj)
 
 
 // CREATE_PROCESS with process argument
