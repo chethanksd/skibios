@@ -14,7 +14,7 @@
 #include <interrupt.h>
 #include <permissions.h>
 #include <svc.h>
-#include <arch_util.h>
+#include <os_support.h>
 #include <kvar.h>
 #include <param.h>
 #include <access.h>

@@ -5,7 +5,7 @@
  *
  */
 
-#include <arch_util.h>
+#include <os_support.h>
 #include <access.h>
 #include <error.h>
 #include <kernel.h>
