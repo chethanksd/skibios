@@ -14,6 +14,7 @@
 #include <access.h>
 #include <kvar.h>
 #include <defines.h>
+#include <os_support.h>
 
 
 uint8_t process_init(process_t *myprocess) {
@@ -52,14 +53,7 @@ uint8_t process_start(process_t *myprocess) {
 
     }
 
-    __asm volatile (" MOV R0, %[proc]   \n"
-                    " MOV R1, #0        \n"
-                    :
-                    : [proc] "r" (myprocess)
-                    :
-            );
-
-    svc(CREATE_PROCESS);
+    SVC_CREATE_PROCESS_NO_ARG(myprocess);
 
     return ERROR_NONE;
 
@@ -78,14 +72,7 @@ uint8_t process_start_arg(process_t *myprocess, void *arg) {
 
     }
 
-    __asm volatile (" MOV R0, %[proc]   \n"
-                    " MOV R1, %[arg]    \n"
-                :
-                : [proc] "r" (myprocess), [arg] "r" (arg)
-                :
-        );
-    
-    svc(CREATE_PROCESS);
+    SVC_CREATE_PROCESS_WITH_ARG(myprocess, arg);
 
     return ERROR_NONE;
 
