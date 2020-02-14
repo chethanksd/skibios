@@ -149,16 +149,8 @@ uint8_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
 
     merged = current_task | (reverse == false ? 0 : HIBEARNTE_REV_MASK);
 
-    __asm volatile (" LDR R0, %[mrg]        \n"
-                    " LDR R1, %[op1]        \n"
-                    " LDR R2, %[op2]        \n"
-                    " LDR R3, %[val]        \n"
-            :
-            : [mrg] "m" (merged), [op1] "m" (op1), [op2] "m" (op2), [val] "m" (value)
-            :
-    );
-
-    svc(HIBERNATE);
+    SVC_HIBERNATE(merged, op1, op2, value);
 
     return ERROR_NONE;
+    
 }

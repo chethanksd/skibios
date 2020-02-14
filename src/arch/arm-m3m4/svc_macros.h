@@ -33,4 +33,13 @@
                      " SVC %[svc_code]           \n" \
                     :: [i_proc_id] "m" (process_id), [svc_code] "I" (KILL_PROCESS):)
 
+// HIBERNATE 
+#define SVC_HIBERNATE(merged, op1, op2, value) \
+    __asm volatile (" LDR R0, %[i_mrg]          \n" \
+                    " LDR R1, %[i_op1]          \n" \
+                    " LDR R2, %[i_op2]          \n" \
+                    " LDR R3, %[i_val]          \n" \
+                    " SVC %[svc_code]           \n" \
+                    :: [i_mrg] "m" (merged), [i_op1] "m" (op1), [i_op2] "m" (op2), [i_val] "m" (value),  [svc_code] "I" (HIBERNATE):)
+
 #endif
