@@ -5,7 +5,7 @@
  *
  */
 
-#include <mpu.h>
+#include <arch_util.h>
 #include <access.h>
 #include <error.h>
 #include <kernel.h>

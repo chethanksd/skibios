@@ -10,7 +10,7 @@
 #include <svc.h>
 #include <kvar.h>
 #include <svr_umpu.h>
-#include <mpu.h>
+#include <arch_util.h>
 #include <regmap.h>
 
 uint32_t svc_service_umpu_disable(uint32_t *svc_num, uint32_t *arguments) {

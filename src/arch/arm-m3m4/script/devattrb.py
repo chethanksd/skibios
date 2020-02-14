@@ -111,7 +111,7 @@ def generate_pcs_mpu_table():
     mtable_src = open(svar.build_path + "/allsrc/mtable.c", "w+")
 
     mtable_src.write("#include <stdint.h>\n")
-    mtable_src.write("#include <mpu.h>\n")
+    mtable_src.write("#include <arch_util.h>\n")
     mtable_src.write("\n")
 
     temp = "const uint32_t mpu_table[" + str(int(2 * sparam.max_process_count)) + "] = {" + "\n"
@@ -154,7 +154,7 @@ def append_arch_constants():
     param_header.write("#define _ARCH_PARAM_H_\n")
     param_header.write("\n")
 
-    param_header.write("#include <mpu.h>\n")
+    param_header.write("#include <arch_util.h>\n")
     param_header.write("\n\n")
 
     param_header.write("// Arch Specific Symbolic Constants\n\n")
