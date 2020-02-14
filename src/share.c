@@ -12,6 +12,7 @@
 #include <error.h>
 #include <svc.h>
 #include <kvar.h>
+#include <os_support.h>
 
 extern uint32_t arch_semaphore_inc(uint32_t *semaphore);
 extern uint32_t arch_semaphore_dec(uint32_t *semaphore);
@@ -63,13 +64,7 @@ uint8_t spin_lock(uint32_t *mutex_st, uint16_t retry){
                 continue;
             }
 
-            __asm volatile (" MOV R0, %[mutex]   \n"
-            :
-            : [mutex] "r" (mutex_st)
-            :
-            );
-
-            svc(PRIORITY_PROMOTE);
+            SVC_PRIORITY_PROMOTE(mutex_st);
         
         }
 

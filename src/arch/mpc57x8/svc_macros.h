@@ -14,7 +14,15 @@
 #define SVC_KILL_PROCESS_DIRECT(process_id) 
  
 
- // KILL_PROCESS to resolve end of process
- #define SVC_KILL_PROCESS_RESOLVE_END(process_id) 
+// KILL_PROCESS to resolve end of process
+#define SVC_KILL_PROCESS_RESOLVE_END(process_id) 
+
+
+// HIBERNATE 
+#define SVC_HIBERNATE(merged, op1, op2, value)
+
+
+// PRIORITY_PROMOTE
+#define SVC_PRIORITY_PROMOTE(mutex)
 
 #endif

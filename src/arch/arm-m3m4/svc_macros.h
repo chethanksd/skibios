@@ -42,4 +42,11 @@
                     " SVC %[svc_code]           \n" \
                     :: [i_mrg] "m" (merged), [i_op1] "m" (op1), [i_op2] "m" (op2), [i_val] "m" (value),  [svc_code] "I" (HIBERNATE):)
 
+
+// PRIORITY_PROMOTE
+#define SVC_PRIORITY_PROMOTE(mutex) \
+    __asm volatile (" LDR R0, %[i_mutex]        \n" \
+                    " SVC %[svc_code]           \n" \
+                    :: [i_mutex] "m" (mutex), [svc_code] "I" (PRIORITY_PROMOTE):)
+
 #endif
