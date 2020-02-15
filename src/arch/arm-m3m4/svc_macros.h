@@ -39,6 +39,7 @@
                      " SVC %[svc_code]           \n" \
                     :: [i_proc_id] "m" (process_id), [svc_code] "I" (KILL_PROCESS):)
 
+
 // HIBERNATE 
 #define SVC_HIBERNATE(merged, op1, op2, value) \
     __asm volatile (" LDR R0, %[i_mrg]          \n" \
@@ -61,5 +62,28 @@
     __asm volatile (" MOV R0, %[i_interrupt]    \n" \
                     " SVC %[svc_code]           \n" \
                     :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_ENABLE):)
+
+
+// INT_DISABLE
+#define SVC_INT_DISABLE(interrupt)  \
+    __asm volatile (" MOV R0, %[i_interrupt]    \n" \
+                    " SVC %[svc_code]           \n" \
+                    :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_DISABLE):)
+
+
+// INT_REGISTER
+#define SVC_INT_REGISTER(interrupt, handler)  \
+    __asm volatile (" MOV R0, %[i_interrupt]    \n" \
+                    " MOV R1, %[i_handler]      \n" \
+                    " SVC %[svc_code]           \n" \
+                    :: [i_interrupt] "r" (interrupt), [i_handler] "r" (handler), [svc_code] "I" (INT_REGISTER):)
+
+
+// SET_PRIORITY
+#define SVC_SET_PRIORITY(interrupt, priority) \
+    __asm volatile (" MOV R0, %[i_interrupt]    \n" \
+                    " MOV R1, %[i_priority]     \n" \
+                    " SVC %[svc_code]           \n" \
+                    :: [i_interrupt] "r" (interrupt), [i_priority] "r" (priority),  [svc_code] "I" (SET_PRIORITY):)
 
 #endif

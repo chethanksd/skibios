@@ -33,4 +33,16 @@
 // INT_ENABLE
 #define SVC_INT_ENABLE(interrrupt)
 
+
+// INT_DISABLE
+#define SVC_INT_DISABLE(interrupt) 
+
+
+// INT_REGISTER
+#define SVC_INT_REGISTER(interrupt, handler) 
+
+
+// SET_PRIORITY
+#define SVC_SET_PRIORITY(interrupt, priority) 
+
 #endif

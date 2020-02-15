@@ -134,19 +134,9 @@ uint8_t interrupt_disable(uint8_t interrupt) {
         return ERROR_ACCESS_DENIED;
     }
 
-    __asm volatile (" MOV R0, %[interrupt]  \n"
-            :
-            : [interrupt] "r" (interrupt)
-            :
-    );
+    SVC_INT_DISABLE(interrupt);
 
-    svc(INT_DISABLE);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
     
@@ -161,20 +151,9 @@ uint8_t interrupt_register(uint32_t interrupt, void (*pfnHandler)(void)){
         return ERROR_ACCESS_DENIED;
     }
 
-    __asm volatile (" MOV R0, %[interrupt]  \n"
-                    " MOV R1, %[handler]    \n"
-            :
-            : [interrupt] "r" (interrupt), [handler] "r" (pfnHandler)
-            :
-    );
+    SVC_INT_REGISTER(interrupt, pfnHandler);
 
-    svc(INT_REGISTER);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
 }
@@ -187,20 +166,9 @@ uint8_t interrupt_set_priority(uint8_t interrupt, uint8_t priority){
         return ERROR_ACCESS_DENIED;
     }
 
-    __asm volatile (" MOV R0, %[interrupt]  \n"
-                    " MOV R1, %[prio]       \n"
-            :
-            : [interrupt] "r" (interrupt), [prio] "r" (priority)
-            :
-    );
+    SVC_SET_PRIORITY(interrupt, priority);
 
-    svc(SET_PRIORITY);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
     
