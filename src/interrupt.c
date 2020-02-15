@@ -14,6 +14,7 @@
 #include <kernel.h>
 #include <regmap.h>
 #include <kvar.h>
+#include <os_support.h>
 
 
 
@@ -115,19 +116,9 @@ uint8_t interrupt_enable(uint8_t interrupt){
         return ERROR_ACCESS_DENIED;
     }
 
-    __asm volatile (" MOV R0, %[interrupt]  \n"
-            :
-            : [interrupt] "r" (interrupt)
-            :
-    );
+    SVC_INT_ENABLE(interrupt);
 
-    svc(INT_ENABLE);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
 

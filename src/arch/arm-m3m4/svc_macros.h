@@ -2,6 +2,12 @@
 #define _SVC_MACROS_H_
 
 
+// Get SVC Servie return code
+#define GET_SVC_RETURN_CODE(error) \
+    __asm volatile (" STR R0, %[i_error]        \n" \
+        : [i_error] "=m" (error)::)
+
+
 // CREATE_PROCESS without process argument
 #define SVC_CREATE_PROCESS_NO_ARG(proc_obj) \
     __asm volatile (" LDR R0, %[i_proc_obj]     \n" \
@@ -48,5 +54,12 @@
     __asm volatile (" LDR R0, %[i_mutex]        \n" \
                     " SVC %[svc_code]           \n" \
                     :: [i_mutex] "m" (mutex), [svc_code] "I" (PRIORITY_PROMOTE):)
+
+
+// INT_ENABLE
+#define SVC_INT_ENABLE(interrupt)   \
+    __asm volatile (" MOV R0, %[i_interrupt]    \n" \
+                    " SVC %[svc_code]           \n" \
+                    :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_ENABLE):)
 
 #endif

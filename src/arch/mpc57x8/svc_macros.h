@@ -2,6 +2,10 @@
 #define _SVC_MACROS_H_
 
 
+// Get SVC Servie return code
+#define GET_SVC_RETURN_CODE(error) 
+
+
 // CREATE_PROCESS without process argument
 #define SVC_CREATE_PROCESS_NO_ARG(proc_obj)
 
@@ -24,5 +28,9 @@
 
 // PRIORITY_PROMOTE
 #define SVC_PRIORITY_PROMOTE(mutex)
+
+
+// INT_ENABLE
+#define SVC_INT_ENABLE(interrrupt)
 
 #endif
