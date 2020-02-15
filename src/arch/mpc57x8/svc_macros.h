@@ -45,4 +45,17 @@
 // SET_PRIORITY
 #define SVC_SET_PRIORITY(interrupt, priority) 
 
+
+// INVOKE_BASE
+#define SVC_INVOKE_BASE(argument) 
+
+
+// RELEASE_BASE
+#define SVC_RELEASE_BASE(error) 
+
+
+// GRANT_PERMISSION
+#define SVC_GRANT_PERMISSION(process_id, permission)
+
+
 #endif

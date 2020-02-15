@@ -11,6 +11,7 @@
 #include <kvar.h>
 #include <kernel.h>
 #include <permissions.h>
+#include <os_support.h>
 
 
 uint8_t base_run(void *args) {
@@ -21,19 +22,9 @@ uint8_t base_run(void *args) {
         return ERROR_BASE_PROCESS;
     }
 
-    __asm volatile (" LDR R0, %[args] \n"
-        : 
-        :[args] "m" (args)
-        :
-    );
+    SVC_INVOKE_BASE(args);
 
-    svc(INVOKE_BASE);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     if(error == ERROR_NONE) {
         error = hib_value[current_task];
@@ -49,19 +40,9 @@ uint8_t base_release(uint8_t error) {
         return ERROR_ACCESS_DENIED;
     }
 
-    __asm volatile (" LDR R0, %[err] \n"
-        : 
-        :[err] "m" (error)
-        :
-    );
+    SVC_RELEASE_BASE(error);
 
-    svc(RELEASE_BASE);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
     
@@ -92,20 +73,9 @@ uint8_t grant_permission(uint32_t pid, uint16_t permission) {
         return ERROR_ACCESS_DENIED;
     }
 
-    __asm volatile (" LDR   R0, %[proc_id]  \n"
-                    " LDRH  R1, %[prm]      \n"
-        : 
-        :[proc_id] "m" (pid), [prm] "m" (permission)
-        :
-    );
+    SVC_GRANT_PERMISSION(pid, permission);
 
-    svc(GRANT_PERMISSION);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
 

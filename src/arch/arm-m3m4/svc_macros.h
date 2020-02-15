@@ -86,4 +86,27 @@
                     " SVC %[svc_code]           \n" \
                     :: [i_interrupt] "r" (interrupt), [i_priority] "r" (priority),  [svc_code] "I" (SET_PRIORITY):)
 
+
+// INVOKE_BASE
+#define SVC_INVOKE_BASE(argument) \
+    __asm volatile (" LDR R0, %[i_argument]     \n" \
+                    " SVC %[svc_code]           \n" \
+                    ::[i_argument] "m" (argument), [svc_code] "I" (INVOKE_BASE):)
+
+
+// RELEASE_BASE
+#define SVC_RELEASE_BASE(error)  \
+    __asm volatile (" LDR R0, %[i_error]        \n" \
+                    " SVC %[svc_code]           \n" \
+                    ::[i_error] "m" (error), [svc_code] "I" (RELEASE_BASE):)
+
+
+// GRANT_PERMISSION
+#define SVC_GRANT_PERMISSION(process_id, permission) \
+    __asm volatile (" LDR   R0, %[i_process_id] \n" \
+                    " LDRH  R1, %[i_permission] \n" \
+                    " SVC %[svc_code]           \n" \
+                    ::[i_process_id] "m" (process_id), [i_permission] "m" (permission), [svc_code] "I" (GRANT_PERMISSION):)
+
+
 #endif
