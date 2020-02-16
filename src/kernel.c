@@ -40,6 +40,7 @@ static uint8_t mpu_init(void);
 
 /* External Kernel Function Declarations */
 extern void switch_mcu_mode(void);
+extern void btask_psp_correction();
 extern void svc_handler(void);
 extern void resolve_end(void);
 extern void pendsv_handler(void);
@@ -174,7 +175,6 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
 
-    uint32_t new_btask_psp;
     uint32_t i;
 
     maxp_level = 127;
@@ -189,17 +189,10 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
 
     // at start current_stask is set as 0, which is always base_task
     // start_process prepares entire stack. During the first time context switch
-    // between base_task -> high_priority task, the pendsv will write {R2-R11} on 
-    // top of already prepared stack signature for base_task if PSP value for base_task
-    // is kept as it is. So, we will move PSP value for base_task {R1-R11} below, so
-    // that pendsv can rewrite the {R1-R11} base_task stack signature
-    new_btask_psp = (uint32_t) PSP_Array[current_task] + (10 * 4);
-
-    __asm volatile (" MSR PSP, %[i_value]   \n"
-                    :
-                    : [i_value] "r" (new_btask_psp)
-                    : 
-                );
+    // between base_task -> high_priority task, the context siwtch algorithm may overwrite
+    // existing stack signature for base_task. based on architecture appropriate 
+    // psp correction needs to be applied
+    btask_psp_correction();
 
 
     self_kill = false;

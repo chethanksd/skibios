@@ -18,3 +18,11 @@
 switch_mcu_mode:
        e_addi   r3, r3, 0
        se_blr
+
+
+.type btask_psp_correction, %function
+.global btask_psp_correction
+
+btask_psp_correction:
+       e_addi   r3, r3, 0
+       se_blr
