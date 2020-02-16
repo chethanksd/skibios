@@ -39,6 +39,7 @@ void scheduler(void);
 static uint8_t mpu_init(void);
 
 /* External Kernel Function Declarations */
+extern void switch_mcu_mode(void);
 extern void svc_handler(void);
 extern void resolve_end(void);
 extern void pendsv_handler(void);
@@ -134,24 +135,18 @@ quit_error:
 
 }
 
-void  __attribute__((naked)) start_scheduler(void) {
-
-    uint32_t value;
+void  start_scheduler(void) {
 
     current_task = 0;
     first_start = true;
 
-    value = PSP_Array[current_task] ;//+ 10 * 4;
+    // call arch defined function to switch mcu mode from supervisor
+    // to user mode and then call kernel service START_SCHEDULER
+    switch_mcu_mode();
 
-    __asm volatile (" MSR PSP, %[value] \n"
-    				" LDR R0, =0x3      \n"
-    		        " MSR CONTROL, R0   \n"
-    				" ISB			    \n"
-                    :
-                    : [value] "r" (value)
-                );
-
-    svc(START_SCHEDULER);
+    while(1) {
+        // This part of code should never be reached
+    }
 
 }
 
