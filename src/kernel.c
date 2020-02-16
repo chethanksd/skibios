@@ -141,7 +141,7 @@ void  __attribute__((naked)) start_scheduler(void) {
     current_task = 0;
     first_start = true;
 
-    value = PSP_Array[current_task] + 10 * 4;
+    value = PSP_Array[current_task] ;//+ 10 * 4;
 
     __asm volatile (" MSR PSP, %[value] \n"
     				" LDR R0, =0x3      \n"
@@ -179,30 +179,36 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
 
-    uint32_t value;
+    uint32_t new_btask_psp;
     uint32_t i;
 
     maxp_level = 127;
-    value = (uint32_t)proc_obj[current_task]->ptr_func;
 
     //base task should have all permissions
     permissions[0] = 0xFFFF;
 
-    //reset of the task will have by default no permissions
+    //rest of the task will have by default no permissions
     for(i = 1; i < MAX_PROCESS_COUNT; i++) {
         permissions[i] = 0;
     }
 
-    __asm volatile (" MRS R0,PSP        \n"
-                    " ADD R0,R0,#24     \n"
-                    " LDR R1,%0			\n"
-                    " STR R1,[R0]		\n"
-                    " ISB"
+    // at start current_stask is set as 0, which is always base_task
+    // start_process prepares entire stack. During the first time context switch
+    // between base_task -> high_priority task, the pendsv will write {R2-R11} on 
+    // top of already prepared stack signature for base_task if PSP value for base_task
+    // is kept as it is. So, we will move PSP value for base_task {R1-R11} below, so
+    // that pendsv can rewrite the {R1-R11} base_task stack signature
+    new_btask_psp = (uint32_t) PSP_Array[current_task] + (10 * 4);
+
+    __asm volatile (" MSR PSP, %[i_value]   \n"
                     :
-                    : "m" (value)
-                    );
-                    
-    HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+                    : [i_value] "r" (new_btask_psp)
+                    : 
+                );
+
+
+    self_kill = false;
+    *svc_num = HAND_OVER;
     
     return ERROR_NONE;
 
