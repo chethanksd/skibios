@@ -53,6 +53,9 @@ def generate_support_linker_script():
 
     param_lds = open(svar.build_path + "/param.lds", "w+")
 
+    temp = '_kernel_start_address = ' + str(sparam.kernel_sram_address) + ';\n'
+    param_lds.write(temp)
+
     temp = '_kernel_base_address = ' + str(sparam.kernel_base_address) + ';\n'
     param_lds.write(temp)
 
