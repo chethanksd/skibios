@@ -4,6 +4,6 @@
 #include <svc_macros.h>
 
 
-#define svc(code)
+#define svc(code) __asm("se_sc")
 
 #endif
