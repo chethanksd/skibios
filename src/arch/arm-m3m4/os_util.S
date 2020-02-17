@@ -1,5 +1,5 @@
 /* 
- * svc handler code for arm m3/m4
+ * os utility functions
  *
  * author: chetandev.ksd@gmail.com
  *

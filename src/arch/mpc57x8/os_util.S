@@ -1,5 +1,5 @@
 /*
- * mutex lock and unlock source code for MPC5
+ * os utility functions
  *
  * author: chetandev.ksd@gmail.com
  *
@@ -16,11 +16,14 @@
 .align 4
 
 switch_mcu_mode:
-       e_addi   r3, r3, 0
+       mfmsr       r3
+       e_lis       r4, 0x2
+       se_or       r3, r4
+       mtmsr       r3
        se_blr
 
 
-.type btask_psp_correction, %function
+.type btask_psp_co4rrection, %function
 .global btask_psp_correction
 
 btask_psp_correction:
