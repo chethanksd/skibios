@@ -21,7 +21,7 @@ svc_handler:
 
 	// check cpu mode
     mfspr       r3, SRR1
-    e_andi      r3, r3, 0x20000
+    e_andi      r3, r3, 0x4000
     e_lis		r4, 0
     cmpw      	r3, r4
     e_beq     	prelouge_sp_banking_exit
