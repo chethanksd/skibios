@@ -53,7 +53,7 @@ uint8_t process_start(process_t *myprocess) {
 
     }
 
-    SVC_CREATE_PROCESS_NO_ARG(myprocess);
+    SVC_CREATE_PROCESS_NO_ARG((uint32_t)myprocess);
 
     return ERROR_NONE;
 
@@ -72,7 +72,7 @@ uint8_t process_start_arg(process_t *myprocess, void *arg) {
 
     }
 
-    SVC_CREATE_PROCESS_WITH_ARG(myprocess, arg);
+    SVC_CREATE_PROCESS_WITH_ARG((uint32_t)myprocess, (uint32_t)arg);
 
     return ERROR_NONE;
 
@@ -149,7 +149,7 @@ uint8_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
 
     merged = current_task | (reverse == false ? 0 : HIBEARNTE_REV_MASK);
 
-    SVC_HIBERNATE(merged, op1, op2, value);
+    SVC_HIBERNATE(merged, (uint32_t)op1, (uint32_t)op2, value);
 
     return ERROR_NONE;
     

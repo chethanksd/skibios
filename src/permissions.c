@@ -22,7 +22,7 @@ uint8_t base_run(void *args) {
         return ERROR_BASE_PROCESS;
     }
 
-    SVC_INVOKE_BASE(args);
+    SVC_INVOKE_BASE((uint32_t)args);
 
     GET_SVC_RETURN_CODE(error);
 

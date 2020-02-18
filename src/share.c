@@ -64,7 +64,7 @@ uint8_t spin_lock(uint32_t *mutex_st, uint16_t retry){
                 continue;
             }
 
-            SVC_PRIORITY_PROMOTE(mutex_st);
+            SVC_PRIORITY_PROMOTE((uint32_t)mutex_st);
         
         }
 
