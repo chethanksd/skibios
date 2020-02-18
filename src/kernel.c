@@ -433,19 +433,9 @@ uint8_t cpu_freq_update(uint32_t frequency) {
 
     uint8_t error;
 
-    __asm volatile (" LDR R1, %[freq] \n"
-            :
-            : [freq] "m" (frequency)
-            :
-    );
+    SVC_CPU_FREQ_UPDATE(frequency);
 
-    svc(CPU_FREQ);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
 

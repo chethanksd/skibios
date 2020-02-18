@@ -109,4 +109,10 @@
                     ::[i_process_id] "m" (process_id), [i_permission] "m" (permission), [svc_code] "I" (GRANT_PERMISSION):)
 
 
+// CPU_FREQ
+#define SVC_CPU_FREQ_UPDATE(frequency) \
+    __asm volatile (" LDR R1, %[i_freq]         \n" \
+                    " SVC %[svc_code]           \n" \
+                     :: [i_freq] "m" (frequency), [svc_code] "I" (CPU_FREQ):) \
+
 #endif
