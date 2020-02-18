@@ -63,4 +63,7 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 #define SVC_GRANT_PERMISSION(process_id, permission) call_kernel_service(GRANT_PERMISSION, process_id, permission, 0, 0)
 
 
+// CPU_FREQ
+#define SVC_CPU_FREQ_UPDATE(frequency) call_kernel_service(CPU_FREQ, frequency, 0, 0, 0)
+
 #endif
