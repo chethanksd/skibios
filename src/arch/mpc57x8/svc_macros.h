@@ -1,13 +1,18 @@
 #ifndef _SVC_MACROS_H_
 #define _SVC_MACROS_H_
 
+// defined in os_util.S 
+extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4);
 
 // Get SVC Servie return code
-#define GET_SVC_RETURN_CODE(error) 
+#define GET_SVC_RETURN_CODE(error) \
+    __asm volatile ("lwz 4, %[i_error] \n" \
+                    "se_stw 3, 0(4)    \n" \
+                :: [i_error] "m" (error):)
 
 
 // CREATE_PROCESS without process argument
-#define SVC_CREATE_PROCESS_NO_ARG(proc_obj)
+#define SVC_CREATE_PROCESS_NO_ARG(proc_obj) call_kernel_service(CREATE_PROCESS, proc_obj, 0, 0, 0)
 
 
 // CREATE_PROCESS with process argument

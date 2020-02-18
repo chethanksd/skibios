@@ -43,3 +43,22 @@ switch_mcu_mode:
 btask_psp_correction:
        e_addi   r3, r3, 0
        se_blr
+
+
+
+//
+// arch specific util functions
+//
+
+.type call_kernel_service, %function
+.global call_kernel_service
+
+call_kernel_service:
+       e_addi  r1, r1, -16
+       se_stw  r4, 0(r1)
+       se_stw  r5, 4(r1)
+       se_stw  r6, 8(r1)
+       se_stw  r7, 12(r1)
+       se_sc
+       se_blr
+
