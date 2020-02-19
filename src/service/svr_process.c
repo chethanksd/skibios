@@ -153,7 +153,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
                 max_level = priority_Array[j][PROCESS_PRIO_CURRENT];
                 alc=0;
                 hlc=0;
-                HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+                ENABLE_SCHEDULER();
 
             }
 
@@ -172,7 +172,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
 
         /* Start scheduler if there was only one process in  & start scheduler has been already executed */
         if((alc + hlc) == 2 && first_start == true) {
-            HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+            ENABLE_SCHEDULER();
         }
 
     } else {
@@ -299,7 +299,7 @@ pkill_continue:
     }  
 
     /* Turn ON scheduler */
-    HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+    ENABLE_SCHEDULER();
 
     return error;
 

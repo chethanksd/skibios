@@ -11,13 +11,16 @@
 
 
 // Enable STM timer to run scheduler
-#define ENABLE_SCHEDULER() 
+#define ENABLE_SCHEDULER() HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE
 
 // Disable STM timer to stop scheduler
-#define DISABLE_SCHEDULER()
+#define DISABLE_SCHEDULER() HWREG(STCTRL) &= SYSTICK_DISABLE & SYSTICK_INT_DISABLE
 
 // Trigger STM interrupt to run scheduler immediately
 #define TRIGGER_SCHEDULER() HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET)
+
+// Clear STM timer value
+#define SCHEDULER_TIMER_RESET() HWREG(STCURRENT) = 0x00000000
 
 
 #endif

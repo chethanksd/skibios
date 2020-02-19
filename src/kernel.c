@@ -239,7 +239,7 @@ void scheduler(){
     uint8_t lptr;
 
     /* Stop the scheduler Temporarily */
-    HWREG(STCTRL) &= SYSTICK_DISABLE & SYSTICK_INT_DISABLE;
+    DISABLE_SCHEDULER();
 
     if(normal_schedule == true) {
 
@@ -317,18 +317,18 @@ void scheduler(){
     state[next_task] = PROCESS_STATE_ACTIVE;
 
     /* Clear Current Register of Systick timer */
-    HWREG(STCURRENT) = 0x00000000;
+    SCHEDULER_TIMER_RESET();
 
     /* Disable the scheduler if there is only one process i.e, only Base Proccess is present */
 
-    if(alc==1 && hlc==0){
-        HWREG(STCTRL) &= SYSTICK_DISABLE & SYSTICK_INT_DISABLE;
+    if(alc == 1 && hlc == 0) {
+        DISABLE_SCHEDULER();
     }else{
-        HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+        ENABLE_SCHEDULER();
     }
 
     if(level != max_level) {
-        HWREG(STCTRL) |= SYSTICK_INT_ENABLE | SYSTICK_ENABLE;
+        ENABLE_SCHEDULER();
     }
 
     /* Set PendSV Pending for context switching */
