@@ -342,8 +342,7 @@ uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
     }
 
     normal_schedule = false;
-
-    HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+    TRIGGER_SCHEDULER();
 
     return ERROR_NONE;
 
@@ -383,9 +382,9 @@ uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments) {
     state[current_task] = PROCESS_STATE_HOLD;
     op1[current_task] = (uint32_t*)mutex_address;
 
-    // Enable scheduler and set normal scheule as false
+    // Enable scheduler and set normal schedule as false
     normal_schedule = false;
-    HWREG(INTCTRL) |= (1 << INTCTRL_PENDSTSET);
+    TRIGGER_SCHEDULER();
 
     return ERROR_NONE;
 

@@ -10,4 +10,14 @@
                   :: [i_code] "I" (code) :  \
                   )
 
+// Enable SYSTICK timer to run scheduler
+#define ENABLE_SCHEDULER() 
+
+// Disable SYSTICK timer to stop scheduler
+#define DISABLE_SCHEDULER()
+
+// Trigger SYSTICK interrupt to run scheduler immediately
+#define TRIGGER_SCHEDULER() 
+
+
 #endif
