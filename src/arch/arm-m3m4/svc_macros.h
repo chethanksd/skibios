@@ -113,6 +113,23 @@
 #define SVC_CPU_FREQ_UPDATE(frequency) \
     __asm volatile (" LDR R1, %[i_freq]         \n" \
                     " SVC %[svc_code]           \n" \
-                     :: [i_freq] "m" (frequency), [svc_code] "I" (CPU_FREQ):) \
+                     :: [i_freq] "m" (frequency), [svc_code] "I" (CPU_FREQ):)
+
+
+// ENABLE_UMPU
+#define SVC_ENABLE_UMPU(region, address, attributes) \
+    __asm volatile (" LDRB R0, %[i_region]      \n" \
+                    " LDR  R1, %[i_address]     \n" \
+                    " LDR  R2, %[i_attributes]  \n" \
+                    " SVC  %[svc_code]          \n" \
+                    :: [i_region] "m" (region), [i_address] "m" (address), [i_attributes] "m" (attributes), [svc_code] "I" (ENABLE_UMPU):)
+
+
+// DISABLE_UMPU
+#define SVC_DISABLE_UMPU(region) \
+    __asm volatile (" LDRB R0, %[i_region]      \n" \
+                    " SVC  %[svc_code]          \n" \
+                    :: [i_region] "m" (region), [svc_code] "I" (DISABLE_UMPU):)
+
 
 #endif

@@ -19,21 +19,9 @@ uint8_t user_mpu_enable(uint8_t region, uint32_t address, uint32_t attributes) {
 
     region = region + 3;
 
-    __asm volatile (" LDRB R0, %[region] \n"
-                    " LDR  R1, %[addr]   \n"
-                    " LDR  R2, %[attr]   \n"
-            :
-            : [region] "m" (region), [addr] "m" (address), [attr] "m" (attributes)
-            :
-    );
+    SVC_ENABLE_UMPU(region, address, attributes);
 
-    svc(ENABLE_UMPU);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
 
@@ -45,19 +33,9 @@ uint8_t user_mpu_disable(uint8_t region) {
 
     region = region + 3;
 
-    __asm volatile (" LDRB R0, %[region] \n"
-            :
-            : [region] "m" (region)
-            :
-    );
+    SVC_DISABLE_UMPU(region);
 
-    svc(DISABLE_UMPU);
-
-    __asm volatile (" STR R0, %[err] \n"
-        : [err] "=m" (error)
-        :
-        :
-    );
+    GET_SVC_RETURN_CODE(error);
 
     return error;
 
