@@ -3,6 +3,7 @@
 
 #include <mpu.h>
 #include <svc_macros.h>
+#include <arch_interrupt.h>
 #include <regmap.h>
 
 

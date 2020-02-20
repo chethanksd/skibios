@@ -18,41 +18,6 @@
 
 
 
-
-/* This is a mapping between priority grouping encodings and the number of preemption priority bits.*/
-const uint32_t g_pui32Priority[] ={
-PRIGROUP_8_1,
-PRIGROUP_4_2,
-PRIGROUP_2_4,
-PRIGROUP_1_8
-};
-
-
-/* This is a mapping between interrupt number and the register that contains the priority encoding 
-for that interrupt.*/
-const uint32_t prioreg[] =
-{
- NVIC_PRI0,  NVIC_PRI1,  NVIC_PRI2,  NVIC_PRI3,  NVIC_PRI4,  NVIC_PRI5,  
- NVIC_PRI6,  NVIC_PRI7,  NVIC_PRI8,  NVIC_PRI9,  NVIC_PRI10, NVIC_PRI11, 
- NVIC_PRI12, NVIC_PRI13, NVIC_PRI14, NVIC_PRI15, NVIC_PRI16, NVIC_PRI17, 
- NVIC_PRI18, NVIC_PRI19, NVIC_PRI20, NVIC_PRI21, NVIC_PRI22, NVIC_PRI23, 
- NVIC_PRI24, NVIC_PRI25, NVIC_PRI26, NVIC_PRI27, NVIC_PRI28, NVIC_PRI29, 
- NVIC_PRI30, NVIC_PRI31, NVIC_PRI32, NVIC_PRI33, NVIC_PRI34
-};
-
-
-/* This is a mapping between interrupt number (for the peripheral interrupts only)
- and the register that contains the interrupt disable for that interrupt.*/
-const uint32_t g_pui32Dii16Regs[] ={
-    NVIC_DIS0, NVIC_DIS1, NVIC_DIS2, NVIC_DIS3
-};
-
-/* This is a mapping between interrupt number (for the peripheral interrupts only) and 
-the register that contains the interrupt enable for that interrupt.*/
-const uint32_t g_pui32EnRegs[] ={
-    NVIC_EN0, NVIC_EN1, NVIC_EN2, NVIC_EN3
-};
-
 uint32_t __attribute__((naked)) global_interrupt_enable(){
 
     uint32_t ret;
@@ -111,11 +76,6 @@ uint8_t interrupt_enable(uint8_t interrupt){
 
     uint8_t error;
 
-    /* Valid Interrupt number */
-    if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
-    }
-
     SVC_INT_ENABLE(interrupt);
 
     GET_SVC_RETURN_CODE(error);
@@ -129,11 +89,6 @@ uint8_t interrupt_disable(uint8_t interrupt) {
 
     uint8_t error;
 
-    /* Valid Interrupt number */
-    if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
-    }
-
     SVC_INT_DISABLE(interrupt);
 
     GET_SVC_RETURN_CODE(error);
@@ -146,11 +101,6 @@ uint8_t interrupt_register(uint32_t interrupt, void (*pfnHandler)(void)){
 
     uint8_t error;
 
-    /* Valid Interrupt number */
-    if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
-    }
-
     SVC_INT_REGISTER(interrupt, pfnHandler);
 
     GET_SVC_RETURN_CODE(error);
@@ -161,10 +111,6 @@ uint8_t interrupt_register(uint32_t interrupt, void (*pfnHandler)(void)){
 uint8_t interrupt_set_priority(uint8_t interrupt, uint8_t priority){
 
     uint8_t error;
-
-    if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
-    }
 
     SVC_SET_PRIORITY(interrupt, priority);
 
