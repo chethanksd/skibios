@@ -20,7 +20,6 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
 
     uint32_t error = ERROR_NONE;
     uint64_t os_timer_load;
-    uint32_t *vector;
 
     // divide i/p of STM timer by 10 which will 
     // be pre-scaled clock source for STM

@@ -15,4 +15,5 @@ ARCH_SRC_EXC += umpu.c
 ARCH_SRC_EXC += svr_interrupts.c
 ARCH_SRC_EXC += svr_process.c
 ARCH_SRC_EXC += svr_umpu.c
+ARCH_SRC_EXC += svr_heap.c
 

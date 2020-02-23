@@ -54,11 +54,27 @@ btask_psp_correction:
 .global call_kernel_service
 
 call_kernel_service:
-       e_addi  r1, r1, -16
+
+       e_addi  r1, r1, -20
+
+       // store arguments in stack
        se_stw  r4, 0(r1)
        se_stw  r5, 4(r1)
        se_stw  r6, 8(r1)
        se_stw  r7, 12(r1)
+
+       // store lr value in stack
+       se_mflr r4
+       se_stw  r4, 16(r1)
+
+       // call kernel service
        se_sc
+
+       // restore lr value from stack
+       se_lwz  r4, 16(r1)
+       se_mtlr r4
+
+       // return to caller
+       e_addi	r1, r1, 20
        se_blr
 
