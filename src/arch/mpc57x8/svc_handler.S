@@ -98,6 +98,7 @@ svc_again:
 call_service:
     e_lwz       r0, OFFSET_OF_SDT_SVC_SERVICE(r8)
 
+#if 0
 	// store important registers to stack
     e_addi      r1, r1,-24
     se_stw		r4, 4(r1)
@@ -106,10 +107,12 @@ call_service:
     se_stw		r7, 16(r1)
     e_stw		r8, 20(r1)
     e_stw		r9, 24(r1)
+#endif
 
     se_mtctr    r0
     se_bctrl
 
+#if 0
 	// restore important register stacked values
     se_lwz		r4, 4(r1)
     se_lwz		r5, 8(r1)
@@ -118,6 +121,7 @@ call_service:
     e_lwz		r8, 20(r1)
     e_lwz		r9, 24(r1)
     e_addi      r1, r1, 24
+#endif
 
     e_lwz       SVC_CODE, 0(r1)
     cmpw        SVC_CODE, SVC_STASH
