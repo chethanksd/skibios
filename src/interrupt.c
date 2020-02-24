@@ -120,6 +120,8 @@ uint8_t interrupt_set_priority(uint8_t interrupt, uint8_t priority){
     
 }
 
+extern uint32_t __VECTOR_RAM[];
+
 void vector_table_relocate(void){
 
     uint32_t index, value;
@@ -130,7 +132,7 @@ void vector_table_relocate(void){
         /* Copy the vector table from the beginning of FLASH to the RAM vector table. */
         value = HWREG(VTABLE);
         for(index = 0; index < NUM_OF_INTERRUPTS; index++){
-            HWREG(KERNEL_START_ADDRESS + (index * 4)) = HWREG((index * 4) + value);
+            __VECTOR_RAM[index] = HWREG((index * 4) + value);
         }
 
 
