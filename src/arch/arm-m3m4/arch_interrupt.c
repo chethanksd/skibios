@@ -9,6 +9,7 @@
 #include <regmap.h>
 #include <error.h>
 #include <access.h>
+#include <param.h>
 
 
 // this is a mapping between priority grouping encodings and the number of preemption priority bits
