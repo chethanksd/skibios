@@ -6,10 +6,19 @@
  */
 
 #include <arch_interrupt.h>
+#include <os_support.h>
 #include <regmap.h>
 #include <error.h>
 #include <access.h>
+#include <param.h>
 
+
+// brief Registers in which the start of interrupt vector table needs to be configured
+#define FEATURE_INTERRUPT_INT_VECTORS {(uint32_t *)&INTC->IACKR[0], (uint32_t *) &INTC->IACKR[1], (uint32_t *)&INTC->IACKR[3]}
+
+/* Addresses for VECTOR_TABLE and VECTOR_RAM come from the linker file */
+extern uint32_t __VECTOR_TABLE[];
+extern uint32_t __VECTOR_RAM[];
 
 
 uint8_t arch_interrupt_enable(uint32_t interrupt) {
@@ -36,4 +45,27 @@ uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority) {
 
     return ERROR_NONE;
     
+}
+
+
+uint32_t vector_table_relocate() {
+
+    uint8_t core_id;
+    uint32_t n;
+
+    volatile uint32_t *vectors[NUMBER_OF_CORES] = FEATURE_INTERRUPT_INT_VECTORS;
+
+    core_id = (uint8_t)GET_CORE_ID();
+
+    // copy the vector table from ROM to RAM
+    for (n = 0; n < (NUM_OF_INTERRUPTS); n++)
+    {
+        __VECTOR_RAM[n] = __VECTOR_TABLE[n];
+    }
+
+    // point the VTOR to the position of vector table
+    *vectors[core_id] = (uint32_t)__VECTOR_RAM;
+
+    return ERROR_NONE;
+
 }

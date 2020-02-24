@@ -45,6 +45,9 @@ const uint32_t g_pui32EnRegs[] = {
     NVIC_EN0, NVIC_EN1, NVIC_EN2, NVIC_EN3
 };
 
+// extern variables
+extern uint32_t __VECTOR_RAM[];
+
 
 uint8_t arch_interrupt_enable(uint32_t interrupt) {
 
@@ -101,4 +104,27 @@ uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority) {
 
     return ERROR_NONE;
     
+}
+
+
+void vector_table_relocate(void){
+
+    uint32_t index, value;
+
+    // copy the vector table from the beginning of FLASH to the RAM vector table
+    value = HWREG(VTABLE);
+    for(index = 0; index < NUM_OF_INTERRUPTS; index++){
+        __VECTOR_RAM[index] = HWREG((index * 4) + value);
+    }
+
+    // data memory barrier to ensure that write to memory is completed
+    __asm("DMB \n");
+
+    // point the NVIC at the RAM vector table
+    HWREG(VTABLE) = KERNEL_START_ADDRESS;
+
+    // data synchronization barrier to ensure all subsequent instruction use new configuration
+    __asm("DSB \n");
+    
+
 }

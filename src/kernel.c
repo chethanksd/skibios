@@ -44,7 +44,6 @@ extern void btask_psp_correction();
 extern void svc_handler(void);
 extern void resolve_end(void);
 extern void pendsv_handler(void);
-extern void vector_table_relocate(void);
 extern void BaseTask();
 
 /* External Kernel Variables */

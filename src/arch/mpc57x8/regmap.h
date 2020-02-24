@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define NUMBER_OF_CORES                 3
 #define STM_0_CHANNEL_0_INT             36
 #define INTERRUPT_PRIORITY_DEFAULT      15
 

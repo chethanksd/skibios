@@ -2,6 +2,7 @@
 #define _OS_SUPPORT_H_
 
 #include <svc_macros.h>
+#include <arch_interrupt.h>
 
 
 #define svc(code) \
@@ -9,6 +10,12 @@
                   "se_sc                    \n\t" \
                   :: [i_code] "I" (code) :  \
                   )
+
+#define MFSPR( rn )        ({unsigned int rval; __asm__ volatile("mfspr %0,%1" : "=r" (rval) : "I" (rn)); rval;})
+
+
+// GET_CORE_ID returns the processor identification number for e200z
+#define GET_CORE_ID()	MFSPR(286)
 
 // Enable SYSTICK timer to run scheduler
 #define ENABLE_SCHEDULER() 

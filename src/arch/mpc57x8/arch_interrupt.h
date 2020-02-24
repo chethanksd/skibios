@@ -12,6 +12,8 @@ extern uint8_t arch_interrupt_disable(uint32_t interrupt);
 extern uint8_t arch_interrupt_register(uint32_t interrupt, uint32_t handler);
 extern uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority);
 
+extern uint32_t vector_table_relocate();
+
 #ifdef __cplusplus
 }
 #endif
