@@ -107,7 +107,7 @@ uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority) {
 }
 
 
-void vector_table_relocate(void){
+uint8_t vector_table_relocate(){
 
     uint32_t index, value;
 
@@ -127,4 +127,6 @@ void vector_table_relocate(void){
     __asm("DSB \n");
     
 
+    return ERROR_NONE;
+    
 }

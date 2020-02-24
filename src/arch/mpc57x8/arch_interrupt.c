@@ -48,7 +48,7 @@ uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority) {
 }
 
 
-uint32_t vector_table_relocate() {
+uint8_t vector_table_relocate() {
 
     uint8_t core_id;
     uint32_t n;

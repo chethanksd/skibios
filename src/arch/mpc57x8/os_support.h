@@ -1,6 +1,7 @@
 #ifndef _OS_SUPPORT_H_
 #define _OS_SUPPORT_H_
 
+#include <os_util.h>
 #include <svc_macros.h>
 #include <arch_interrupt.h>
 

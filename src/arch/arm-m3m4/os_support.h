@@ -2,6 +2,7 @@
 #define _OS_SUPPORT_H_
 
 #include <mpu.h>
+#include <os_util.h>
 #include <svc_macros.h>
 #include <arch_interrupt.h>
 #include <regmap.h>
@@ -22,6 +23,9 @@
 
 // Clear STM timer value
 #define SCHEDULER_TIMER_RESET() HWREG(STCURRENT) = 0x00000000
+
+// Triiger Context Switch ISR
+#define TRIGGER_CONTEXT_SWITCH() HWREG(ICSR) |= 0x10000000
 
 
 #endif
