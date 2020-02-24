@@ -83,7 +83,7 @@ uint8_t arch_interrupt_register(uint32_t interrupt, uint32_t handler) {
     }
 
     // save the interrupt handler
-    HWREG(SRAM_START_ADDRESS + (interrupt * 4)) = handler;
+    HWREG(KERNEL_START_ADDRESS + (interrupt * 4)) = handler;
 
     return ERROR_NONE;
 

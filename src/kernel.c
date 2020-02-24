@@ -71,7 +71,7 @@ uint32_t kernel_init(void) {
      HWREG(APINT) &= 0x0000FFFF;
 
     /* Register SVCall Interrupt Handler */
-    HWREG(SRAM_START_ADDRESS + (INT_NUM_SVC * 4)) = (uint32_t) svc_handler;
+    HWREG(KERNEL_START_ADDRESS + (INT_NUM_SVC * 4)) = (uint32_t) svc_handler;
 
     /* Disable Memory buffering if requested (Required for Debug) */
     #if(DISABLE_BUFFER >= 1)
@@ -85,7 +85,7 @@ uint32_t kernel_init(void) {
     }
 
     /* Register PendSV Interrupt Handler */
-    HWREG(SRAM_START_ADDRESS + (INT_NUM_PENDSV * 4)) = (uint32_t) pendsv_handler;
+    HWREG(KERNEL_START_ADDRESS + (INT_NUM_PENDSV * 4)) = (uint32_t) pendsv_handler;
 
     /* Setup Hightest priority for+ SVC Interrupt */
     HWREG(SYSPRI2) |= 0x00000000;
@@ -391,10 +391,10 @@ uint8_t mpu_init() {
     HWREG(MPURNR) = 0;
 
     // Register Memory Mangement Fault Handler
-    HWREG(SRAM_START_ADDRESS + (INT_NUM_MEMFAULT * 4)) = (uint32_t) &mem_fault_handler;
+    HWREG(KERNEL_START_ADDRESS + (INT_NUM_MEMFAULT * 4)) = (uint32_t) &mem_fault_handler;
 
     // Register Bus Fault Handler
-    HWREG(SRAM_START_ADDRESS + (INT_NUM_BUSFAULT * 4)) = (uint32_t) &bus_fault_handler;
+    HWREG(KERNEL_START_ADDRESS + (INT_NUM_BUSFAULT * 4)) = (uint32_t) &bus_fault_handler;
 
     // Enable Memory Management and Bus Fault Interrupt
     HWREG(SYSHNDCTRL) |= 0x00010000 | 0x00020000;

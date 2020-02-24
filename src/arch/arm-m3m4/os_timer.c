@@ -28,7 +28,7 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
     HWREG(STCTRL) |= SYSTICK_SYS_CLK;
 
     // Register Systick Interrupt Handler
-    HWREG(SRAM_START_ADDRESS + (INT_NUM_SYSTICK * 4)) = (uint32_t) scheduler;
+    HWREG(KERNEL_START_ADDRESS + (INT_NUM_SYSTICK * 4)) = (uint32_t) scheduler;
 
 quit_error:
 

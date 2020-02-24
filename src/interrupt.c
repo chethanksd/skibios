@@ -125,12 +125,12 @@ void vector_table_relocate(void){
     uint32_t index, value;
 
     /* Already relocated to SRAM ? */
-    if(HWREG(VTABLE) != SRAM_START_ADDRESS) {
+    if(HWREG(VTABLE) != KERNEL_START_ADDRESS) {
 
         /* Copy the vector table from the beginning of FLASH to the RAM vector table. */
         value = HWREG(VTABLE);
         for(index = 0; index < NUM_OF_INTERRUPTS; index++){
-            HWREG(SRAM_START_ADDRESS + (index * 4)) = HWREG((index * 4) + value);
+            HWREG(KERNEL_START_ADDRESS + (index * 4)) = HWREG((index * 4) + value);
         }
 
 
@@ -138,7 +138,7 @@ void vector_table_relocate(void){
         __asm("DMB \n");
 
         /* Point the NVIC at the RAM vector table. */
-        HWREG(VTABLE) = SRAM_START_ADDRESS;
+        HWREG(VTABLE) = KERNEL_START_ADDRESS;
 
         /* Data Synchronization Barrier to ensure all subsequent instruction use new configuration */
         __asm("DSB \n");

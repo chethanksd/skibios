@@ -315,6 +315,9 @@ def generate_param_header():
     temp = "#define HEAP_BOOKEEPING_SIZE " + str(int(sparam.ghmb_region_size) * 256) + "\n"
     param_header.write(temp)
 
+    temp = "#define KERNEL_START_ADDRESS " + str(int(sparam.kernel_sram_address)) + "\n"
+    param_header.write(temp)
+
     param_header.write("\n\n")
     param_header.write("#endif")
     param_header.close()
