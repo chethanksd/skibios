@@ -27,5 +27,7 @@
 // Triiger Context Switch ISR
 #define TRIGGER_CONTEXT_SWITCH() HWREG(ICSR) |= 0x10000000
 
+// Device reset
+#define TRIGGER_DEVICE_RESET() HWREG(APINT) = APINT_VECKEY | APINT_SYSRESETREQ
 
 #endif

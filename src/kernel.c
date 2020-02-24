@@ -191,7 +191,7 @@ uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments) {
     // Perform a software reset request.  This request causes the device to
     // reset, no further code is executed
 
-    HWREG(APINT) = APINT_VECKEY | APINT_SYSRESETREQ;
+    TRIGGER_DEVICE_RESET();
 
     // The device should have reset, so this should never be reached.  Just in
     // case, loop forever

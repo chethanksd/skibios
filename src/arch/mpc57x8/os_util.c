@@ -26,3 +26,7 @@ uint8_t arch_mpu_init() {
     return ERROR_NONE;
 
 }
+
+void heap_init() {
+    
+}

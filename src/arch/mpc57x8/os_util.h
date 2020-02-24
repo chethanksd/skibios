@@ -9,6 +9,7 @@ extern "C" {
 
 extern uint8_t arch_kernel_init();
 extern uint8_t arch_mpu_init();
+extern void heap_init();
 
 #ifdef __cplusplus
 }

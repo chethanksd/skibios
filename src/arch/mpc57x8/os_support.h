@@ -27,5 +27,13 @@
 // Trigger SYSTICK interrupt to run scheduler immediately
 #define TRIGGER_SCHEDULER() 
 
+// Clear STM timer value
+#define SCHEDULER_TIMER_RESET()
+
+// Triiger Context Switch ISR
+#define TRIGGER_CONTEXT_SWITCH()
+
+// Device reset
+#define TRIGGER_DEVICE_RESET()
 
 #endif
