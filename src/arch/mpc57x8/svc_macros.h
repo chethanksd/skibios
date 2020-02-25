@@ -44,7 +44,7 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 
 
 // INT_REGISTER
-#define SVC_INT_REGISTER(interrupt, handler) call_kernel_service(INT_REGISTER, interrupt, handler, 0, 0)
+#define SVC_INT_REGISTER(interrupt, handler) call_kernel_service(INT_REGISTER, interrupt, (uint32_t)handler, 0, 0)
 
 
 // SET_PRIORITY

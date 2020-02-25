@@ -23,6 +23,10 @@ extern uint32_t __VECTOR_RAM[];
 
 uint8_t arch_interrupt_enable(uint32_t interrupt) {
 
+    // ToDo: argument check
+    
+    INTC->PSR[interrupt].PRIN = INTERRUPT_PRIORITY_DEFAULT;
+
     return ERROR_NONE;
 
 }
@@ -30,12 +34,27 @@ uint8_t arch_interrupt_enable(uint32_t interrupt) {
 
 uint8_t arch_interrupt_disable(uint32_t interrupt) {
 
+    // ToDo: argument check
+    
+    INTC->PSR[interrupt].PRIN = 0;
+    
     return ERROR_NONE;
 
 }
 
 
 uint8_t arch_interrupt_register(uint32_t interrupt, uint32_t handler) {
+
+    uint8_t core_id;
+
+    // ToDo: argument check
+
+    core_id = (uint8_t)GET_CORE_ID();
+
+    // direct interrupt to active core
+    // register interrupt in SRAM vtable
+    INTC->PSR[interrupt].PRC_SELN = (8 >> core_id);
+    __VECTOR_RAM[interrupt] = (uint32_t)handler;
 
     return ERROR_NONE;
 
