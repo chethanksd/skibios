@@ -125,19 +125,21 @@
 
 
 // ENABLE_UMPU
-#define SVC_ENABLE_UMPU(region, address, attributes) \
+#define SVC_ENABLE_UMPU(region, address, attributes, error) \
     __asm volatile (" LDRB R0, %[i_region]      \n" \
                     " LDR  R1, %[i_address]     \n" \
                     " LDR  R2, %[i_attributes]  \n" \
                     " SVC  %[svc_code]          \n" \
-                    :: [i_region] "m" (region), [i_address] "m" (address), [i_attributes] "m" (attributes), [svc_code] "I" (ENABLE_UMPU):)
+                    :: [i_region] "m" (region), [i_address] "m" (address), [i_attributes] "m" (attributes), [svc_code] "I" (ENABLE_UMPU):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // DISABLE_UMPU
-#define SVC_DISABLE_UMPU(region) \
+#define SVC_DISABLE_UMPU(region, error) \
     __asm volatile (" LDRB R0, %[i_region]      \n" \
                     " SVC  %[svc_code]          \n" \
-                    :: [i_region] "m" (region), [svc_code] "I" (DISABLE_UMPU):)
+                    :: [i_region] "m" (region), [svc_code] "I" (DISABLE_UMPU):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 #endif
