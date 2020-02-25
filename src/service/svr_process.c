@@ -24,8 +24,8 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
     uint32_t error = ERROR_NONE;
     uint32_t proc_obj_ptr;
     uint32_t proc_arg;
-    uint8_t i;
-    uint8_t j;
+    uint32_t i;
+    uint32_t j;
     uint8_t search_index;
     uint8_t lower_index;
     uint32_t *pheap_ptr;
