@@ -28,6 +28,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
     uint8_t j;
     uint8_t search_index;
     uint8_t lower_index;
+    uint32_t *pheap_ptr;
 
     proc_obj_ptr = arguments[0];
     proc_arg = arguments[1];
@@ -132,14 +133,15 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         proc_continue:
 
         PSP_Array[i] = ((unsigned int) (PSP_Array[i])) + ((PROCESS_STACK_SIZE - 1) * 4) - 18 * 4;
+        pheap_ptr = (uint32_t*)PSP_Array[i];
 
         /* Stack Initialization */
-        HWREG(PSP_Array[i] + (10 << 2)) = (uint32_t)proc_arg;
-        HWREG(PSP_Array[i] + (15 << 2)) = (uint32_t)&resolve_end;
-        HWREG(PSP_Array[i] + (16 << 2)) = (unsigned int) proc_obj[i]->ptr_func;
-        HWREG(PSP_Array[i] + (17 << 2)) = 0x01000000;
-        HWREG(PSP_Array[i] ) = 0xFFFFFFFD;
-        HWREG(PSP_Array[i] + (1 << 2)) = 0x3;
+        pheap_ptr[0] = 0xFFFFFFFD;
+        pheap_ptr[1] = 0x3;
+        pheap_ptr[10] = (uint32_t)proc_arg;
+        pheap_ptr[15] = (uint32_t)&resolve_end;
+        pheap_ptr[16] = (unsigned int) proc_obj[i]->ptr_func;
+        pheap_ptr[17] = 0x01000000;
 
 
         total_process_count++;

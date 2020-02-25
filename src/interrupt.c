@@ -18,60 +18,6 @@
 
 
 
-uint32_t __attribute__((naked)) global_interrupt_enable(){
-
-    uint32_t ret;
-
-    /* Read PRIMASK and enable interrupts. */
-    __asm("    mrs     r0, PRIMASK\n"
-          "    cpsie   i\n"
-          "    bx      lr\n"
-          : "=r" (ret));
-
-    /* The return is handled in the inline assembly, but the compiler will
-     * still complain if there is not an explicit return here (despite the fact
-     * that this does not result in any code being produced because of the
-     * naked attribute).
-     */
-    return(ret);
-
-}
-
-uint32_t __attribute__((naked)) global_interrupt_disable(){
-
-    uint32_t ui32Ret;
-
-    /* Read PRIMASK and disable interrupts. */
-    __asm("    mrs     r0, PRIMASK\n"
-          "    cpsid   i\n"
-          "    bx      lr\n"
-          : "=r" (ui32Ret));
-
-    /* The return is handled in the inline assembly, but the compiler will
-        still complain if there is not an explicit return here (despite the fact
-        that this does not result in any code being produced because of the
-        naked attribute).*/
-    return(ui32Ret);
-
-}
-
-uint32_t __attribute__((naked)) ipsr(){
-    
-    uint32_t ui32Ret;
-
-    /* Read PRIMASK and disable interrupts. */
-    __asm("    mrs     r0, ipsr\n"
-          "    bx      lr\n"
-          : "=r" (ui32Ret));
-
-    /* The return is handled in the inline assembly, but the compiler will
-        still complain if there is not an explicit return here (despite the fact
-        that this does not result in any code being produced because of the
-        naked attribute).*/
-    return(ui32Ret);
-
-}
-
 uint8_t interrupt_enable(uint8_t interrupt){
 
     uint8_t error;
