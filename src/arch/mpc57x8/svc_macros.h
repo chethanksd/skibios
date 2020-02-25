@@ -36,35 +36,35 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 
 
 // INT_ENABLE
-#define SVC_INT_ENABLE(interrrupt) call_kernel_service(INT_ENABLE, interrupt, 0, 0, 0)
+#define SVC_INT_ENABLE(interrrupt, error) error = call_kernel_service(INT_ENABLE, interrupt, 0, 0, 0)
 
 
 // INT_DISABLE
-#define SVC_INT_DISABLE(interrupt) call_kernel_service(INT_DISABLE, interrupt, 0, 0, 0)
+#define SVC_INT_DISABLE(interrupt, error) error = call_kernel_service(INT_DISABLE, interrupt, 0, 0, 0)
 
 
 // INT_REGISTER
-#define SVC_INT_REGISTER(interrupt, handler) call_kernel_service(INT_REGISTER, interrupt, (uint32_t)handler, 0, 0)
+#define SVC_INT_REGISTER(interrupt, handler, error) error = call_kernel_service(INT_REGISTER, interrupt, (uint32_t)handler, 0, 0)
 
 
 // SET_PRIORITY
-#define SVC_SET_PRIORITY(interrupt, priority) call_kernel_service(SET_PRIORITY, interrupt, priority, 0, 0)
+#define SVC_SET_PRIORITY(interrupt, priority, error) error = call_kernel_service(SET_PRIORITY, interrupt, priority, 0, 0)
 
 
 // INVOKE_BASE
-#define SVC_INVOKE_BASE(argument) call_kernel_service(INVOKE_BASE, argument, 0, 0, 0)
+#define SVC_INVOKE_BASE(argument, error) error = call_kernel_service(INVOKE_BASE, argument, 0, 0, 0)
 
 
 // RELEASE_BASE
-#define SVC_RELEASE_BASE(error) call_kernel_service(RELEASE_BASE, error, 0, 0, 0)
+#define SVC_RELEASE_BASE(error, return_error) return_error = call_kernel_service(RELEASE_BASE, error, 0, 0, 0)
 
 
 // GRANT_PERMISSION
-#define SVC_GRANT_PERMISSION(process_id, permission) call_kernel_service(GRANT_PERMISSION, process_id, permission, 0, 0)
+#define SVC_GRANT_PERMISSION(process_id, permission, error) error = call_kernel_service(GRANT_PERMISSION, process_id, permission, 0, 0)
 
 
 // CPU_FREQ
-#define SVC_CPU_FREQ_UPDATE(frequency) call_kernel_service(CPU_FREQ, frequency, 0, 0, 0)
+#define SVC_CPU_FREQ_UPDATE(frequency, error) error = call_kernel_service(CPU_FREQ, frequency, 0, 0, 0)
 
 
 // ENABLE_UMPU

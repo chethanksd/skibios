@@ -58,62 +58,70 @@
 
 
 // INT_ENABLE
-#define SVC_INT_ENABLE(interrupt)   \
+#define SVC_INT_ENABLE(interrupt, error)   \
     __asm volatile (" MOV R0, %[i_interrupt]    \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_ENABLE):)
+                    :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_ENABLE):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // INT_DISABLE
-#define SVC_INT_DISABLE(interrupt)  \
+#define SVC_INT_DISABLE(interrupt, error)  \
     __asm volatile (" MOV R0, %[i_interrupt]    \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_DISABLE):)
+                    :: [i_interrupt] "r" (interrupt),  [svc_code] "I" (INT_DISABLE):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // INT_REGISTER
-#define SVC_INT_REGISTER(interrupt, handler)  \
+#define SVC_INT_REGISTER(interrupt, handler, error)  \
     __asm volatile (" MOV R0, %[i_interrupt]    \n" \
                     " MOV R1, %[i_handler]      \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_interrupt] "r" (interrupt), [i_handler] "r" (handler), [svc_code] "I" (INT_REGISTER):)
+                    :: [i_interrupt] "r" (interrupt), [i_handler] "r" (handler), [svc_code] "I" (INT_REGISTER):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // SET_PRIORITY
-#define SVC_SET_PRIORITY(interrupt, priority) \
+#define SVC_SET_PRIORITY(interrupt, priority, error) \
     __asm volatile (" MOV R0, %[i_interrupt]    \n" \
                     " MOV R1, %[i_priority]     \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_interrupt] "r" (interrupt), [i_priority] "r" (priority),  [svc_code] "I" (SET_PRIORITY):)
+                    :: [i_interrupt] "r" (interrupt), [i_priority] "r" (priority),  [svc_code] "I" (SET_PRIORITY):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // INVOKE_BASE
-#define SVC_INVOKE_BASE(argument) \
+#define SVC_INVOKE_BASE(argument, error) \
     __asm volatile (" LDR R0, %[i_argument]     \n" \
                     " SVC %[svc_code]           \n" \
-                    ::[i_argument] "m" (argument), [svc_code] "I" (INVOKE_BASE):)
+                    ::[i_argument] "m" (argument), [svc_code] "I" (INVOKE_BASE):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // RELEASE_BASE
-#define SVC_RELEASE_BASE(error)  \
+#define SVC_RELEASE_BASE(error, return_error)  \
     __asm volatile (" LDR R0, %[i_error]        \n" \
                     " SVC %[svc_code]           \n" \
-                    ::[i_error] "m" (error), [svc_code] "I" (RELEASE_BASE):)
+                    ::[i_error] "m" (error), [svc_code] "I" (RELEASE_BASE):); \
+    GET_SVC_RETURN_CODE(return_error)
 
 
 // GRANT_PERMISSION
-#define SVC_GRANT_PERMISSION(process_id, permission) \
+#define SVC_GRANT_PERMISSION(process_id, permission, error) \
     __asm volatile (" LDR   R0, %[i_process_id] \n" \
                     " LDRH  R1, %[i_permission] \n" \
                     " SVC %[svc_code]           \n" \
-                    ::[i_process_id] "m" (process_id), [i_permission] "m" (permission), [svc_code] "I" (GRANT_PERMISSION):)
+                    ::[i_process_id] "m" (process_id), [i_permission] "m" (permission), [svc_code] "I" (GRANT_PERMISSION):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // CPU_FREQ
-#define SVC_CPU_FREQ_UPDATE(frequency) \
+#define SVC_CPU_FREQ_UPDATE(frequency, error) \
     __asm volatile (" LDR R1, %[i_freq]         \n" \
                     " SVC %[svc_code]           \n" \
-                     :: [i_freq] "m" (frequency), [svc_code] "I" (CPU_FREQ):)
+                     :: [i_freq] "m" (frequency), [svc_code] "I" (CPU_FREQ):); \
+    GET_SVC_RETURN_CODE(error)
 
 
 // ENABLE_UMPU

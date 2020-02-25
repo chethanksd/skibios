@@ -314,9 +314,7 @@ uint8_t cpu_freq_update(uint32_t frequency) {
 
     uint8_t error;
 
-    SVC_CPU_FREQ_UPDATE(frequency);
-
-    GET_SVC_RETURN_CODE(error);
+    SVC_CPU_FREQ_UPDATE(frequency, error);
 
     return error;
 

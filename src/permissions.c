@@ -22,9 +22,7 @@ uint8_t base_run(void *args) {
         return ERROR_BASE_PROCESS;
     }
 
-    SVC_INVOKE_BASE((uint32_t)args);
-
-    GET_SVC_RETURN_CODE(error);
+    SVC_INVOKE_BASE((uint32_t)args, error);
 
     if(error == ERROR_NONE) {
         error = hib_value[current_task];
@@ -40,9 +38,7 @@ uint8_t base_release(uint8_t error) {
         return ERROR_ACCESS_DENIED;
     }
 
-    SVC_RELEASE_BASE(error);
-
-    GET_SVC_RETURN_CODE(error);
+    SVC_RELEASE_BASE(error, error);
 
     return error;
     
@@ -73,9 +69,7 @@ uint8_t grant_permission(uint32_t pid, uint16_t permission) {
         return ERROR_ACCESS_DENIED;
     }
 
-    SVC_GRANT_PERMISSION(pid, permission);
-
-    GET_SVC_RETURN_CODE(error);
+    SVC_GRANT_PERMISSION(pid, permission, error);
 
     return error;
 
