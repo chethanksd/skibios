@@ -7,6 +7,7 @@
  *
  */
 
+#include <svc.h>
 
 
 .section .text, "ax"
@@ -34,6 +35,12 @@ switch_mcu_mode:
        mtmsr       r3
        msync
        isync
+
+       // call kernel service START_SCHEDULER
+       e_li       r3, START_SCHEDULER
+       se_sc
+
+       // code will never reach here
        se_blr
 
 

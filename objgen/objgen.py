@@ -194,8 +194,6 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 7
 
-    #ToDo: create stage for this
-
     generate_param_header()
 
 

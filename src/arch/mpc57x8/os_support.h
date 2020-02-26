@@ -20,10 +20,10 @@ extern void scheduler();
 #define GET_CORE_ID()	MFSPR(286)
 
 // Enable SYSTICK timer to run scheduler
-#define ENABLE_SCHEDULER() 
+#define ENABLE_SCHEDULER() *((uint32_t*) &STM->CR) = 0x903
 
 // Disable SYSTICK timer to stop scheduler
-#define DISABLE_SCHEDULER()
+#define DISABLE_SCHEDULER() *((uint32_t*) &STM->CR) = 0x902
 
 // Trigger SYSTICK interrupt to run scheduler immediately
 #define TRIGGER_SCHEDULER() scheduler()
