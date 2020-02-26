@@ -5,6 +5,7 @@
 #include <svc_macros.h>
 #include <arch_interrupt.h>
 
+extern void scheduler();
 
 #define svc(code) \
     asm volatile ("e_li    3, %[i_code]     \n\t" \
@@ -25,12 +26,12 @@
 #define DISABLE_SCHEDULER()
 
 // Trigger SYSTICK interrupt to run scheduler immediately
-#define TRIGGER_SCHEDULER() 
+#define TRIGGER_SCHEDULER() scheduler()
 
 // Clear STM timer value
-#define SCHEDULER_TIMER_RESET()
+#define SCHEDULER_TIMER_RESET() *((uint32_t*) &STM->CNT) = 0
 
-// Triiger Context Switch ISR
+// Trigger Context Switch ISR
 #define TRIGGER_CONTEXT_SWITCH()
 
 // Device reset

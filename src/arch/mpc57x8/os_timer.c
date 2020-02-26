@@ -8,6 +8,7 @@
  *    2) STM timer is freezed when debugger is active
  */
 
+#include <os_timer.h>
 #include <regmap.h>
 #include <error.h>
 #include <param.h>
@@ -19,6 +20,31 @@ extern uint32_t __VECTOR_RAM[];
 uint32_t os_timer_init(uint32_t new_cpu_freq) {
 
     uint32_t error = ERROR_NONE;
+
+    error = os_timer_config(new_cpu_freq);
+
+    if(error) {
+        goto quit_error;
+    }
+
+    // source interrupt to core0
+    INTC->PSR[STM_0_CHANNEL_0_INT].PRC_SELN = (8 >> 0);
+
+    // register interrupt handler
+    __VECTOR_RAM[STM_0_CHANNEL_0_INT] = (uint32_t)(os_timer_int_handler);
+
+    // enable STM interrupt in INTC
+    INTC->PSR[STM_0_CHANNEL_0_INT].PRIN = INTERRUPT_PRIORITY_DEFAULT;
+
+quit_error:
+
+    return error;
+
+}
+
+uint32_t os_timer_config(uint32_t new_cpu_freq) {
+
+    uint8_t error = ERROR_NONE;
     uint64_t os_timer_load;
 
     // divide i/p of STM timer by 10 which will 
@@ -46,14 +72,9 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
     STM->CHANNEL[0].CCR.CEN = 1;
     STM->CHANNEL[0].CMP.CMP = os_timer_load;
 
-    // source interrupt to core0
-    INTC->PSR[STM_0_CHANNEL_0_INT].PRC_SELN = (8 >> 0);
+    // clear content STM CNT Register
+    *((uint32_t*) &STM->CNT) = 0;
 
-    // register interrupt handler
-    __VECTOR_RAM[STM_0_CHANNEL_0_INT] = (uint32_t)(os_timer_int_handler);
-
-    // enable STM interrupt in INTC
-    INTC->PSR[STM_0_CHANNEL_0_INT].PRIN = INTERRUPT_PRIORITY_DEFAULT;
 
 quit_error:
 
