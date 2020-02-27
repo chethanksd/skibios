@@ -178,9 +178,24 @@ uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
 
-    uint32_t new_cpu_freq = arguments[1];
+    uint32_t new_cpu_freq = arguments[0];
 
     error = os_timer_config(new_cpu_freq);
+
+    return error;
+
+}
+
+uint32_t svc_service_hwreg_write(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+
+    uint32_t hwreg = arguments[0];
+    uint32_t value = arguments[1];
+
+    // ToDo: Argument check
+
+    *((uint32_t*)hwreg) = value;
 
     return error;
 
@@ -315,6 +330,16 @@ uint8_t cpu_freq_update(uint32_t frequency) {
     uint8_t error;
 
     SVC_CPU_FREQ_UPDATE(frequency, error);
+
+    return error;
+
+}
+
+uint8_t hwreg_write(uint32_t register_address, uint32_t value) {
+
+    uint8_t error;
+
+    SVC_HWREG_WRITE(register_address, value, error);
 
     return error;
 

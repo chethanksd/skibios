@@ -74,4 +74,7 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 // DISABLE_UMPU
 #define SVC_DISABLE_UMPU(region, error) error = call_kernel_service(DISABLE_UMPC, region, 0, 0, 0)
 
+// HWREG_WRITE
+#define SVC_HWREG_WRITE(register_address, value, error) error = call_kernel_service(HWREG_WRITE, register_address, value, 0, 0)
+
 #endif

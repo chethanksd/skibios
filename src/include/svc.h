@@ -22,6 +22,7 @@
 #define DISABLE_UMPU        42
 #define CPU_FREQ            43
 #define GRANT_PERMISSION    44
+#define HWREG_WRITE         45
 #define GHEAP_ALLOCATE      60
 #define GHEAP_RELEASE       61
 
