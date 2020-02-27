@@ -74,8 +74,9 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
 
 
         /* Clear all locations of process stack */
-        for( j = 0; j < PROCESS_STACK_SIZE; j++) {
-            *((uint32_t*)(PSP_Array[i] + j)) = 0;
+        pheap_ptr = (uint32_t*)PSP_Array[i];
+        for( j = 0; j < (PROCESS_STACK_SIZE/4); j++) {
+            pheap_ptr[j] = 0;
         }
 
         /* calculation for jump list */
@@ -133,7 +134,6 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         proc_continue:
 
         PSP_Array[i] = ((unsigned int) (PSP_Array[i])) + ((PROCESS_STACK_SIZE - 1) * 4) - 18 * 4;
-        pheap_ptr = (uint32_t*)PSP_Array[i];
 
         /* Stack Initialization */
         pheap_ptr[0] = 0xFFFFFFFD;

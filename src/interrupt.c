@@ -18,7 +18,7 @@
 
 
 
-uint8_t interrupt_enable(uint8_t interrupt){
+uint8_t interrupt_enable(uint32_t interrupt){
 
     uint8_t error;
 
@@ -29,7 +29,7 @@ uint8_t interrupt_enable(uint8_t interrupt){
 }
 
 
-uint8_t interrupt_disable(uint8_t interrupt) {
+uint8_t interrupt_disable(uint32_t interrupt) {
 
     uint8_t error;
 
@@ -48,7 +48,7 @@ uint8_t interrupt_register(uint32_t interrupt, void (*pfnHandler)(void)){
     return error;
 }
 
-uint8_t interrupt_set_priority(uint8_t interrupt, uint8_t priority){
+uint8_t interrupt_set_priority(uint32_t interrupt, uint8_t priority){
 
     uint8_t error;
 
