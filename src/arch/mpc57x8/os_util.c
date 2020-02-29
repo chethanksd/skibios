@@ -23,7 +23,28 @@ extern void resolve_end(void);
 // external variables
 extern uint32_t __VECTOR_RAM[];
 
+extern uint32_t __kdat_load__;
+extern uint32_t __kdat_start__;
+extern uint32_t __kdat_end__;
+extern uint32_t __kbss_start__;
+extern uint32_t __kbss_end__;
+
+
 uint8_t arch_kernel_init() {
+
+    uint32_t *source, *destination;
+
+    // kdat initialization
+    source = &__kdat_load__;
+    for(destination = &__kdat_start__; destination < &__kdat_end__; ) {
+        *destination++ = *source++;
+    }
+
+    // kbss initialization
+    for(destination = &__kbss_start__; destination < &__kbss_end__; ) {
+        *destination++ = 0;
+    }
+
 
     // source context switch sw interrupt interrupt to core0
     INTC->PSR[CONTEXT_SWITCH_SW_INT].PRC_SELN = (8 >> 0);
