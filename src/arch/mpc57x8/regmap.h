@@ -6,7 +6,9 @@
 
 #define NUMBER_OF_CORES                 3
 #define STM_0_CHANNEL_0_INT             36
-#define INTERRUPT_PRIORITY_DEFAULT      15
+#define INTERRUPT_PRIORITY_DEFAULT      6
+
+#define CONTEXT_SWITCH_SW_INT           0
 
 
 #ifdef __cplusplus

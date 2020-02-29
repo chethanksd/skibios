@@ -34,7 +34,8 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
     __VECTOR_RAM[STM_0_CHANNEL_0_INT] = (uint32_t)(scheduler);
 
     // enable STM interrupt in INTC
-    INTC->PSR[STM_0_CHANNEL_0_INT].PRIN = INTERRUPT_PRIORITY_DEFAULT;
+    // setup priority higher than context switch isr
+    INTC->PSR[STM_0_CHANNEL_0_INT].PRIN = 2;
 
 quit_error:
 

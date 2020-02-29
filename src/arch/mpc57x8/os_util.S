@@ -44,11 +44,22 @@ switch_mcu_mode:
        se_blr
 
 
+// at start current_stask is set as 0, which is always base_task
+// start_process prepares entire stack. When start_scheduler is called
+// mcu will use base_task SP and some data will be pushed to base_task SP when
+// servicing START_SCHEDULER kernel service. We can ignore this push and bring 
+// back base_task SP 
 .type btask_psp_co4rrection, %function
 .global btask_psp_correction
 
 btask_psp_correction:
-       e_addi   r3, r3, 0
+
+       e_lis       r3, task_sp@h
+       e_or2i      r3, task_sp@l
+
+       e_lis       r4, PSP_Array@h
+       e_or2i      r4, PSP_Array@l
+       se_lwz      r3, 0(r4)
        se_blr
 
 

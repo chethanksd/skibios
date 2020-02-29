@@ -32,7 +32,7 @@ extern void scheduler();
 #define SCHEDULER_TIMER_RESET() *((uint32_t*) &STM->CNT) = 0
 
 // Trigger Context Switch ISR
-#define TRIGGER_CONTEXT_SWITCH()
+#define TRIGGER_CONTEXT_SWITCH() STM->CHANNEL[0].CIR.CIF = 1; INTC->SSCIR[CONTEXT_SWITCH_SW_INT].SET = 1
 
 // Device reset
 #define TRIGGER_DEVICE_RESET()
