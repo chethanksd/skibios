@@ -131,11 +131,8 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         
         proc_continue:
 
-        PSP_Array[i] = ((unsigned int) (PSP_Array[i])) + ((PROCESS_STACK_SIZE - 1) * 4) - 18 * 4;
-        pheap_ptr = (uint32_t*)PSP_Array[i]
-        ;
         /* Stack Initialization */
-        arch_task_stack_init(&pheap_ptr[0], (unsigned int)proc_obj[i]->ptr_func, proc_arg);
+        arch_task_stack_init(i, (unsigned int)proc_obj[i]->ptr_func, proc_arg);
 
 
         total_process_count++;

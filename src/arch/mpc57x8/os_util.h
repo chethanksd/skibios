@@ -9,7 +9,7 @@ extern "C" {
 
 extern uint8_t arch_kernel_init();
 extern uint8_t arch_mpu_init();
-extern uint8_t arch_task_stack_init(uint32_t *pheap_ptr, uint32_t ptr_func, uint32_t proc_arg);
+extern uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t proc_arg);
 extern void heap_init();
 
 #ifdef __cplusplus
