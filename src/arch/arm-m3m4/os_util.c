@@ -12,12 +12,14 @@
 #include <access.h>
 #include <error.h>
 #include <param.h>
+#include <kvar.h>
 #include <os_support.h>
 #include <interrupt.h>
 
 // external functions
 extern void svc_handler(void);
 extern void pendsv_handler(void);
+extern void resolve_end(void);
 
 // external variables
 extern const uint32_t  mpu_table[];
@@ -135,6 +137,19 @@ uint8_t arch_mpu_init() {
     __asm("DSB");
 
     __asm("ISB");
+
+    return ERROR_NONE;
+
+}
+
+uint8_t arch_task_stack_init(uint32_t *pheap_ptr, uint32_t ptr_func, uint32_t proc_arg) {
+
+    pheap_ptr[0] = 0xFFFFFFFD;
+    pheap_ptr[1] = 0x3;
+    pheap_ptr[10] = (uint32_t)proc_arg;
+    pheap_ptr[15] = (uint32_t)&resolve_end;
+    pheap_ptr[16] = ptr_func;
+    pheap_ptr[17] = 0x01000000;
 
     return ERROR_NONE;
 

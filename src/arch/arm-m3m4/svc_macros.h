@@ -142,4 +142,13 @@
     GET_SVC_RETURN_CODE(error)
 
 
+// HWREG_WRITE
+#define SVC_HWREG_WRITE(register_address, value, error) \
+    __asm volatile (" LDR   R0, %[i_reg_addr]   \n" \
+                    " LDR   R1, %[i_value]      \n" \
+                    " SVC   %[svc_code]         \n" \
+                    :: [i_reg_addr] "m" (register_address), [i_value] "m" (value), [svc_code] "I" (DISABLE_UMPU):); \
+    GET_SVC_RETURN_CODE(error)                    
+
+
 #endif
