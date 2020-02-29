@@ -48,7 +48,7 @@ context_switch_handler:
         // clear sw0 interrupt
         e_lis       r4, 0xFC040040@h
         e_or2i      r4, 0xFC040040@l
-        e_li        r5, 0x80
+        e_li        r5, 1
         e_stb       r5, 0(r4)
 
         se_blr

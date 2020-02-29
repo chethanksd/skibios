@@ -12,11 +12,13 @@
 #include <access.h>
 #include <error.h>
 #include <param.h>
+#include <kvar.h>
 #include <interrupt.h>
 #include <os_support.h>
 
 // external functions
 extern void context_switch_handler();
+extern void resolve_end(void);
 
 // external variables
 extern uint32_t __VECTOR_RAM[];
@@ -44,6 +46,16 @@ uint8_t arch_mpu_init() {
 }
 
 uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t proc_arg) {
+
+    uint32_t *pheap_ptr;
+
+    PSP_Array[task_index] = ((unsigned int) (PSP_Array[task_index])) + ((PROCESS_STACK_SIZE - 1) * 4) - 20 * 4;
+    pheap_ptr = (uint32_t*)PSP_Array[task_index];
+
+    pheap_ptr[3] = ptr_func;
+    pheap_ptr[4] = 0x9000;
+    pheap_ptr[6] = (uint32_t) &resolve_end;
+    pheap_ptr[10] = proc_arg;
 
     return ERROR_NONE;
 
