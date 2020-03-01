@@ -19,6 +19,7 @@ ARCH_CFLAGS += -mvle
 ARCH_CFLAGS += -mregnames
 ARCH_CFLAGS += -mhard-float
 ARCH_CFLAGS += -mlsp
+ARCH_CFLAGS += -fomit-frame-pointer
 
 #
 # Arch specific Include search paths

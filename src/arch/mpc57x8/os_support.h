@@ -6,12 +6,10 @@
 #include <arch_interrupt.h>
 
 extern void scheduler();
+extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4);
 
-#define svc(code) \
-    asm volatile ("e_li    3, %[i_code]     \n\t" \
-                  "se_sc                    \n\t" \
-                  :: [i_code] "I" (code) :  \
-                  )
+
+#define svc(code) call_kernel_service(code, 0, 0, 0, 0)
 
 #define MFSPR( rn )        ({unsigned int rval; __asm__ volatile("mfspr %0,%1" : "=r" (rval) : "I" (rn)); rval;})
 
