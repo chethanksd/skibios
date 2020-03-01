@@ -1,16 +1,17 @@
 # skibios
-small RTOS developed as an hobby project than runs on any MCU supporting ARM cortex M3/M4  architecture.
+small RTOS developed as an hobby project than runs on any MCU supporting ARM cortex M3/M4 and MPC57xx (Power architecture-e200)  architecture.
+
+Note: MPC57xx support is not full, still there are some ongoing integration works
 
 # features
 
 -  Pre-emptive scheduler with priority inversion
--  Kernel resources like vector table, main stack, kernel variables and heap makers are protected by MPU
+-  Kernel resources like vector table, main stack, kernel variables and heap makers are protected by MPU (if available)
 -  Process stack are also protected by MPU
 -  2 layers of security (1 layer of hardware based with MPU and 1 layer of software defined security)
 -  3 user defined MPU regions
 -  supports on the go isr update with Vector Table proetected by MPU
 -  supports meta data based heap management api's
--  mutex locks, semaphores and spiclocks for resource sharing
 
 # SRAM allocation
 
@@ -46,7 +47,7 @@ heap region
 
 # compiling
 
-use skibios.exe to generate obj files. See Makefile for sample invovation. You have to define BIN to locate arm-gcc bin folder. There are few configuration variables in makefile which you can ignore for all mcu that has SRAM size greater than or equal to 32KB. Here are some details of these configuration variables:
+run start.py (in objgen folder) to generate obj files. See Makefile for sample invovation. You have to define BIN to locate arm-gcc bin folder. There are few configuration variables to be defined in param.xml:
 
 1) KERNEL_REGION_SIZE: Define total SRAM size in KB that kernel region can occupy. Here are the supported values : 8, 10, 12, 14, 16, 20, 24, 28, 32, 40, 48, 56, 64.
 
@@ -68,7 +69,9 @@ use skibios.exe to generate obj files. See Makefile for sample invovation. You h
 
 Rest of the configuration ignore it for now. Detailed documentation for skibios is on progress.
 
-Don't define your own startup or use any other startup codes. You must linker script supplied in this repository only as an input for linking
+tm4c1294ncpdt.xml has device specific details
+
+You can use your own startup code, but for arm make sure that startup.c is excluded for build by registering it in arm-m3m4/scripts/arch_source.mak. For MPC57xx you has to define your own startup code, after all initialization you can call kernel_init
 
 
   
