@@ -126,5 +126,5 @@ exit_unlock:
        e_lwz    r6, 8(r1) 
        e_lwz    r5, 4(r1)
        e_lwz    r4, 0(r1)      
-       e_addi   r1, r1, 12
+       e_addi   r1, r1, 16
        se_blr
