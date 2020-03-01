@@ -118,7 +118,9 @@ mutex_unlock:
        cmpw     r6, r7
        e_bne    exit_unlock
 
-       // ToDo: priority_demote() kernel service call
+       // call priority_demote kernel service call
+       e_li     r3, PRIORITY_DEMOTE
+       se_sc    
 
 exit_unlock:
        // epilogue
