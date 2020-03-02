@@ -20,11 +20,11 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 
 
 // KILL_PROCESS for direct process kill
-#define SVC_KILL_PROCESS_DIRECT(process_id) call_kernel_service(KILL_PROCESS, 0, 0, 0, 0)
+#define SVC_KILL_PROCESS_DIRECT(process_id) call_kernel_service(KILL_PROCESS, process_id, 0, 0, 0)
  
 
 // KILL_PROCESS to resolve end of process
-#define SVC_KILL_PROCESS_RESOLVE_END(process_id) call_kernel_service(KILL_PROCESS, 1, 0, 0, 0)
+#define SVC_KILL_PROCESS_RESOLVE_END(process_id) call_kernel_service(KILL_PROCESS, process_id, 1, 0, 0)
 
 
 // HIBERNATE 

@@ -113,7 +113,14 @@ mutex_unlock:
        // get stashed mutex
        e_lis    r4, mutex_stash@h
        e_or2i   r4, mutex_stash@l
-       lx    	  r6, r4, r5
+       lwzx     r6, r4, r5
+
+       // check if mutex_stash for given process is empty
+       e_li		r4, 0
+       cmpw		r6, r4
+       e_beq	exit_unlock
+
+       se_lwz   r6, 0(r6)
 
        // check if stashed and mutex to unlocked are same?
        cmpw     r6, r7
