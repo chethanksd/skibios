@@ -17,7 +17,7 @@
 #include <os_support.h>
 
 // external functions
-extern void context_switch_handler();
+extern void pre_context_switch_handler();
 extern void resolve_end(void);
 
 // external variables
@@ -50,7 +50,7 @@ uint8_t arch_kernel_init() {
     INTC->PSR[CONTEXT_SWITCH_SW_INT].PRC_SELN = (8 >> 0);
 
     // register context switch sw interrupt handler
-    __VECTOR_RAM[CONTEXT_SWITCH_SW_INT] = (uint32_t)(context_switch_handler);
+    __VECTOR_RAM[CONTEXT_SWITCH_SW_INT] = (uint32_t)(pre_context_switch_handler);
 
     // enable STM interrupt in INTC
     // setup lowest priority to context switch sw interrupt

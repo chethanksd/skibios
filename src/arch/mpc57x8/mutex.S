@@ -13,6 +13,7 @@
  *
  */
 
+#include <svc.h>
 
 
 .section .text, "ax"

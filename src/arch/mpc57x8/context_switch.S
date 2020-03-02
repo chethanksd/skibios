@@ -14,6 +14,7 @@
 .extern next_task
 .extern PSP_Array
 .extern task_sp
+.extern __VECTOR_RAM
 
 .type context_switch_handler, %function
 .globl    context_switch_handler
@@ -50,5 +51,48 @@ context_switch_handler:
         e_or2i      r4, 0xFC040040@l
         e_li        r5, 1
         e_stb       r5, 0(r4)
+
+        se_blr
+
+
+.type pre_context_switch_handler, %function
+.globl    pre_context_switch_handler
+.align 4
+
+pre_context_switch_handler:
+
+        e_lis       r3, PSP_Array@h
+        e_or2i      r3, PSP_Array@l
+
+        e_lis       r4, next_task@h
+        e_or2i      r4, next_task@l
+        se_lwz      r4, 0(r4)
+        e_slwi      r6, r4, 2
+
+        // load next_task SP <-- PSP_Array[next_task]
+        lwzx        r1, r3, r6
+
+        // current_task <-- next_task
+        e_lis       r5, current_task@h
+        e_or2i      r5, current_task@l
+        se_stw      r4, 0(r5)
+
+        // clear sw0 interrupt
+        e_lis       r4, 0xFC040040@h
+        e_or2i      r4, 0xFC040040@l
+        e_li        r5, 1
+        e_stb       r5, 0(r4)
+
+        // change context switch handler
+        e_lis       r3, __VECTOR_RAM@h
+        e_or2i      r3, __VECTOR_RAM@l
+
+        e_lis       r4, context_switch_handler@h
+        e_or2i      r4, context_switch_handler@l
+
+        e_stw       r4, 0(r3)
+
+        msync
+        isync
 
         se_blr
