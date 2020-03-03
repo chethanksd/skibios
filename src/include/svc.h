@@ -23,6 +23,7 @@
 #define CPU_FREQ            43
 #define GRANT_PERMISSION    44
 #define HWREG_WRITE         45
+#define HWREG_READ          46
 #define GHEAP_ALLOCATE      60
 #define GHEAP_RELEASE       61
 

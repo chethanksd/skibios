@@ -32,6 +32,8 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_cpu_freq_update(uint32_t *svc_num, uint32_t *arguments);
 uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_hwreg_write(uint32_t *svc_num, uint32_t *arguments);
+uint32_t svc_service_hwreg_read(uint32_t *svc_num, uint32_t *arguments);
 
 void scheduler(void);
 
@@ -201,6 +203,20 @@ uint32_t svc_service_hwreg_write(uint32_t *svc_num, uint32_t *arguments) {
 
 }
 
+uint32_t svc_service_hwreg_read(uint32_t *svc_num, uint32_t *arguments) {
+
+    uint32_t error = ERROR_NONE;
+
+    uint32_t hwreg = arguments[0];
+    uint32_t return_value = arguments[1];
+
+    // ToDo: Argument check
+
+    *((uint32_t*)return_value) = *((uint32_t*)hwreg);
+
+    return error;
+}
+
 uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments) {
 
     // Perform a software reset request.  This request causes the device to
@@ -340,6 +356,16 @@ uint8_t hwreg_write(uint32_t register_address, uint32_t value) {
     uint8_t error;
 
     SVC_HWREG_WRITE(register_address, value, error);
+
+    return error;
+
+}
+
+uint8_t hwreg_read(uint32_t register_address, uint32_t *value) {
+
+    uint8_t error;
+
+    SVC_HWREG_READ(register_address, (uint32_t)value, error);
 
     return error;
 

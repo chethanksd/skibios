@@ -19,6 +19,7 @@ extern uint8_t device_reset();
 extern uint8_t cpu_freq_update(uint32_t frequency);
 
 extern uint8_t hwreg_write(uint32_t register_address, uint32_t value);
+extern uint8_t hwreg_read(uint32_t register_address, uint32_t *value);
 
 #ifdef	__cplusplus
 }

@@ -30,7 +30,7 @@ switch_mcu_mode:
        e_lwz       r1, 0(r4)
 
        mfmsr       r3
-       e_li        r4, 0x4000
+       e_li        r4, 0xD000
        se_or       r3, r4
        mtmsr       r3
        msync
