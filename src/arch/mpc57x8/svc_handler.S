@@ -26,7 +26,8 @@
 svc_handler:
 
     // store r4, r5, r6, r7, r8, r9 to stack
-    e_addi      r1, r1, -24
+    // store SRR0-1 to stack
+    e_addi      r1, r1, -32
     se_stw      r4, 0(r1)
     se_stw      r5, 4(r1)
     se_stw      r6, 8(r1)
@@ -34,8 +35,10 @@ svc_handler:
     e_stw       r8, 16(r1)
     e_stw       r9, 20(r1)
 
+    e_stmvsrrw  24(r1)
+
     // store svc arg address in ADDR
-    e_addi      ADDR, r1, 24
+    e_addi      ADDR, r1, 32
 
 	// check cpu mode
     mfspr       r5, SRR1
@@ -153,12 +156,16 @@ skip_check:
 epilouge_sp_banking_exit:
 
     // restore r4, r5, r6, r7, r8, r9 from stack
+    // restore SRR0-1 from stack
+
+    e_lmvsrrw   24(r1)
+
     e_lwz       r9, 20(r1)
     e_lwz       r8, 16(r1)
     se_lwz      r7, 12(r1)
     se_lwz      r6, 8(r1)
     se_lwz      r5, 4(r1)
     se_lwz      r4, 0(r1)
-    e_addi      r1, r1, 24
+    e_addi      r1, r1, 32
     
     se_rfi
