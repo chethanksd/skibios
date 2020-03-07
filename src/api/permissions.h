@@ -6,12 +6,7 @@
 
 
 // permission bits
-#define PERMISSION_UMPU0_W      0
-#define PERMISSION_UMPU0_R      1
-#define PERMISSION_UMPU1_W      2
-#define PERMISSION_UMPU1_R      3
-#define PERMISSION_UMPU2_W      4
-#define PERMISSION_UMPU2_R      5
+#define PERMISSION_HWREG        5
 #define PERMISSION_INTCTRL      6
 #define PERMISSION_PROCESS      7
 #define PERMISSION_SCHHALT      8
