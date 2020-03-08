@@ -147,12 +147,17 @@
     __asm volatile (" LDR   R0, %[i_reg_addr]   \n" \
                     " LDR   R1, %[i_value]      \n" \
                     " SVC   %[svc_code]         \n" \
-                    :: [i_reg_addr] "m" (register_address), [i_value] "m" (value), [svc_code] "I" (DISABLE_UMPU):); \
+                    :: [i_reg_addr] "m" (register_address), [i_value] "m" (value), [svc_code] "I" (HWREG_WRITE):); \
     GET_SVC_RETURN_CODE(error) 
 
 
 // HWREG_READ
-#define SVC_HWREG_READ(register_address, value, error) 
+#define SVC_HWREG_READ(register_address, value, error) \
+    __asm volatile (" LDR   R0, %[i_reg_addr]   \n" \
+                    " LDR   R1, %[i_value]      \n" \
+                    " SVC   %[svc_code]         \n" \
+                    :: [i_reg_addr] "m" (register_address), [i_value] "m" (value), [svc_code] "I" (HWREG_READ):); \
+    GET_SVC_RETURN_CODE(error) 
 
 
 #endif
