@@ -405,7 +405,7 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
 
         if(state[i] == PROCESS_STATE_HOLD) {
 
-            if(op1[i] == (uint32_t*)mutex_stash[current_task]){
+            if((uint32_t)op1[i] == mutex_stash[current_task]){
 
                 state[i] = PROCESS_STATE_SLEEP;
                 break;
