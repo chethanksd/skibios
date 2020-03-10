@@ -13,7 +13,8 @@ SZ = size.exe
 #
 # Arch specific GCC complier flags
 #
-#ARCH_CFLAGS += NULL
+ARCH_CFLAGS += -Wno-pointer-to-int-cast 
+ARCH_CFLAGS += -Wno-int-to-pointer-cast 
 
 #
 # Arch specific Include search paths
