@@ -14,7 +14,6 @@
 #include <kernel.h>
 #include <process.h>
 #include <access.h>
-#include <regmap.h>
 #include <defines.h>
 
 uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {

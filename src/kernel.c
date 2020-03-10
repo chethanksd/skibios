@@ -18,7 +18,6 @@
 #include <kvar.h>
 #include <param.h>
 #include <access.h>
-#include <regmap.h>
 #include <svctable.h>
 #include <defines.h>
 #include <os_timer.h>

@@ -6,7 +6,7 @@
 
 CC = gcc.exe
 OC = objcopy.exe
-OD = obj_dump.exe
+OD = objdump.exe
 SZ = size.exe
 
 

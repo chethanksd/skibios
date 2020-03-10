@@ -5,7 +5,6 @@
  *
  */
 
-#include <regmap.h>
 #include <error.h>
 #include <param.h>
 #include <kvar.h>

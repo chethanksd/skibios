@@ -11,7 +11,6 @@
 #include <param.h>
 #include <svc.h>
 #include <access.h>
-#include <regmap.h>
 #include <kernel.h>
 #include <permissions.h>
 #include <svr_interrupts.h>

@@ -12,7 +12,6 @@
 #include <share.h>
 #include <param.h>
 #include <kernel.h>
-#include <regmap.h>
 #include <kvar.h>
 #include <os_support.h>
 
