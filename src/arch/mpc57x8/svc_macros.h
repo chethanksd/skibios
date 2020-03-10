@@ -1,6 +1,17 @@
 #ifndef _SVC_MACROS_H_
 #define _SVC_MACROS_H_
 
+#ifdef ARCH_SVC_VERSION_MAJOR
+#error "ARCH_SVC_VERSION_MAJOR is defined elsewhere in the program"
+#endif
+
+#ifdef ARCH_SVC_VERSION_MINOR
+#error "ARCH_SVC_VERSION_MINOR is defined elsewhere in the program"
+#endif
+
+#define ARCH_SVC_VERSION_MAJOR      1
+#define ARCH_SVC_VERSION_MINOR      1
+
 // defined in os_util.S 
 extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4);
 

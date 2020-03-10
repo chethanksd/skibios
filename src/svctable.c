@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include <os_support.h>
 #include <svctable.h>
 #include <svc.h>
 
@@ -16,6 +17,17 @@
 #include <svr_process.h>
 #include <svr_umpu.h>
 #include <svr_heap.h>
+
+// SVC version check
+
+#if(SVC_VERSION_MAJOR != ARCH_SVC_VERSION_MAJOR)
+#error "SVC version mismatch"
+#endif
+
+#if(SVC_VERSION_MINOR != ARCH_SVC_VERSION_MINOR)
+#error "SVC version mismatch"
+#endif
+
 
 // extern svc service functions
 extern uint32_t svc_service_device_reset(uint32_t *svc_num, uint32_t *arguments);

@@ -1,6 +1,18 @@
 #ifndef SVC_H
 #define SVC_H
 
+#ifdef SVC_VERSION_MAJOR
+#error "SVC_VERSION_MAJOR is defined elsewhere in the program"
+#endif
+
+#ifdef SVC_VERSION_MINOR
+#error "SVC_VERSION_MINOR is defined elsewhere in the program"
+#endif
+
+// SVC Version
+#define SVC_VERSION_MAJOR   1
+#define SVC_VERSION_MINOR   1
+
 // SVCall service codes
 #define CREATE_PROCESS      10
 #define HAND_OVER           11
