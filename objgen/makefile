@@ -113,7 +113,8 @@ compile_init:
 %_c.o : %.c
 	$(eval OUTPUT = $(subst /allsrc,/obj,$@))
 	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/compile_list.txt
-	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)
+	@echo 'converting $(notdir $<) to $(notdir $(OUTPUT))'
+	@$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)
 	
 
 # Build targets for asm files
@@ -121,4 +122,5 @@ compile_init:
 %_S.o : %.S
 	$(eval OUTPUT = $(subst /allsrc,/obj,$@))
 	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/compile_list.txt
-	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)
+	@echo 'converting $(notdir $<) to $(notdir $(OUTPUT))'
+	@$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)

@@ -258,12 +258,20 @@ def call_make_target(target, param, error_code):
     make_invoke = make_invoke + param
 
     try:
-        process_obj = subprocess.Popen(make_invoke, stdout=subprocess.PIPE, shell=True)
+        process_obj = subprocess.Popen(make_invoke, stdout=subprocess.PIPE, universal_newlines=True, shell=True)
+        if(target == 'compile_allsrc'):
+            while True:
+                output = process_obj.stdout.readline()
+                if output == '' and process_obj.poll() is not None:
+                    break
+                if output:
+                    print(output.strip())
     except:
         diagnostics.error = error_code
         exit(1)
 
     try:
+
         (process_output, process_error) = process_obj.communicate()
         process_rcode = process_obj.returncode
     except:
