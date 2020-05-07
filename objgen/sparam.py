@@ -42,6 +42,7 @@ def parse_param_file():
         pfile_tree = xml.dom.minidom.parse(svar.pfile_path)
     except:
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
+        diagnostics.error = 'syntax error in skibios param xml'
         exit(1)
 
     #
@@ -51,6 +52,23 @@ def parse_param_file():
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
         diagnostics.error_message = '<param> tag not found'
         exit(1)
+
+    #
+    # There should be 'basic' tag name as Second child
+    #
+    param_node = pfile_tree.firstChild
+
+    basic_tag_found = False
+    for second_node in param_node.childNodes:
+        if(second_node.nodeName == 'basic'):
+            basic_tag_found = True
+            break;
+    
+    if(basic_tag_found == False):
+        diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
+        diagnostics.error_message = '<basic> tag not found inside <param> tag in skibios param xml'
+        exit(1)
+
 
     #
     # Start retriving data

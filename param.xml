@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <param>
-    <kernel_sram_address>536870912</kernel_sram_address>
-    <kernel_section_size>16</kernel_section_size>
-    <upper_region_size>3</upper_region_size>
-    <ghmb_region_size>1</ghmb_region_size>
-    <process_stack_size>512</process_stack_size>
-    <enable_safe_lock>1</enable_safe_lock>
-    <disable_buffer>1</disable_buffer>
-    <process_id_start>1000</process_id_start>
-    <process_per_sec>100</process_per_sec>   
+    <basic>
+        <kernel_sram_address>536870912</kernel_sram_address>
+        <kernel_section_size>16</kernel_section_size>
+        <upper_region_size>3</upper_region_size>
+        <ghmb_region_size>1</ghmb_region_size>
+        <process_stack_size>512</process_stack_size>
+        <enable_safe_lock>1</enable_safe_lock>
+        <disable_buffer>1</disable_buffer>
+        <process_id_start>1000</process_id_start>
+        <process_per_sec>100</process_per_sec>  
+    </basic> 
 </param>
