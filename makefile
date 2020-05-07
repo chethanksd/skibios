@@ -43,4 +43,4 @@ objgen: arg_check
 #
 .PHONY: ossim
 ossim: arg_check
-	$(PYTHON) $(START_SCRIPT) $(OSSIM_PATH)/ossim_device.xml $(OSSIM_PATH)/param.xml $(OSSIM_BUILD) $(BIN)
+	$(PYTHON) $(START_SCRIPT) $(OSSIM_PATH)/ossim_device.xml $(OSSIM_PATH)/ossim_param.xml $(OSSIM_BUILD) $(BIN)
