@@ -58,79 +58,80 @@ def parse_param_file():
     #
     param_node = pfile_tree.firstChild
 
-    basic_tag_found = False
+    basic_node_found = False
     for second_node in param_node.childNodes:
         if(second_node.nodeName == 'basic'):
-            basic_tag_found = True
+            basic_node_found = True
+            basic_node = second_node
             break;
     
-    if(basic_tag_found == False):
+    if(basic_node_found == False):
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
         diagnostics.error_message = '<basic> tag not found inside <param> tag in skibios param xml'
         exit(1)
 
 
     #
-    # Start retriving data
+    # Start retriving basic skibios data
     #
     try:
-        kernel_sram_address = (pfile_tree.getElementsByTagName("kernel_sram_address")[0]).firstChild.data
+        kernel_sram_address = (basic_node.getElementsByTagName("kernel_sram_address")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <kernel_sram_address> tag'
         exit(1)    
 
     try:
-        kernel_section_size = (pfile_tree.getElementsByTagName("kernel_section_size")[0]).firstChild.data
+        kernel_section_size = (basic_node.getElementsByTagName("kernel_section_size")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <kernel_section_size> tag'
         exit(1)
 
     try:
-        upper_region_size = (pfile_tree.getElementsByTagName("upper_region_size")[0]).firstChild.data
+        upper_region_size = (basic_node.getElementsByTagName("upper_region_size")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <upper_region_size> tag'
         exit(1)
     
     try:
-        process_stack_size = (pfile_tree.getElementsByTagName("process_stack_size")[0]).firstChild.data
+        process_stack_size = (basic_node.getElementsByTagName("process_stack_size")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <process_stack_size> tag'
         exit(1)
 
     try:
-        ghmb_region_size = (pfile_tree.getElementsByTagName("ghmb_region_size")[0]).firstChild.data
+        ghmb_region_size = (basic_node.getElementsByTagName("ghmb_region_size")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <ghmb_region_size> tag'
         exit(1)
 
     try:
-        process_id_start = (pfile_tree.getElementsByTagName("process_id_start")[0]).firstChild.data
+        process_id_start = (basic_node.getElementsByTagName("process_id_start")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <process_id_start> tag'
         exit(1)  
 
     try:
-        process_per_sec = (pfile_tree.getElementsByTagName("process_per_sec")[0]).firstChild.data
+        process_per_sec = (basic_node.getElementsByTagName("process_per_sec")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <process_per_sec> tag'
         exit(1)
 
     try:
-        enable_safe_lock = (pfile_tree.getElementsByTagName("enable_safe_lock")[0]).firstChild.data
+        enable_safe_lock = (basic_node.getElementsByTagName("enable_safe_lock")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <enable_safe_lock> tag'
         exit(1)
 
     try:
-        disable_buffer = (pfile_tree.getElementsByTagName("disable_buffer")[0]).firstChild.data
+        disable_buffer = (basic_node.getElementsByTagName("disable_buffer")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <disable_buffer> tag'
