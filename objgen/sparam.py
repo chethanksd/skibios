@@ -13,6 +13,8 @@ import sys, os
 import xml.dom.minidom
 import importlib
 
+from lxml import etree
+
 
 def parse_param_file():
 
@@ -36,13 +38,28 @@ def parse_param_file():
     global ghmb_address
 
     #
+    # Validate param xml with XSD schema defined for sparam
+    #
+    xmlschema_doc = etree.parse(svar.repo_path + "objgen/xsd_schema/sparam_schema.xsd")
+    xmlschema = etree.XMLSchema(xmlschema_doc)
+
+    xml_doc = etree.parse(svar.pfile_path)
+    result = xmlschema.validate(xml_doc)
+    
+    if(result == False):
+        diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
+        diagnostics.error_message = 'lxml syntax error in skibios param xml'
+        exit(1)    
+
+
+    #
     # Try creating param tree
     #
     try:
         pfile_tree = xml.dom.minidom.parse(svar.pfile_path)
     except:
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
-        diagnostics.error = 'syntax error in skibios param xml'
+        diagnostics.error_message = 'syntax error in skibios param xml'
         exit(1)
 
     #

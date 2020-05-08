@@ -1,0 +1,47 @@
+<!-- XSD Schema file for skibios params -->
+<!-- author : chetandev.ksd@gmail.com -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="param">
+        <xs:complexType>
+            <xs:all>
+
+                <xs:element name="basic">
+                    <xs:complexType>
+                        <xs:all>
+
+                            <xs:element name="kernel_sram_address" type="xs:integer"/>
+
+
+                            <xs:element name="kernel_section_size" type="xs:integer"/>
+
+                            
+                            <xs:element name="upper_region_size" type="xs:integer"/>
+
+                            
+                            <xs:element name="ghmb_region_size" type="xs:integer"/>
+
+
+                            <xs:element name="process_stack_size" type="xs:integer"/>
+
+                            
+                            <xs:element name="enable_safe_lock" type="xs:integer"/>
+                            
+                            
+                            <xs:element name="disable_buffer" type="xs:integer"/>
+
+
+                            <xs:element name="process_id_start" type="xs:integer"/>
+                            
+                            
+                            <xs:element name="process_per_sec" type="xs:integer"/>
+
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
