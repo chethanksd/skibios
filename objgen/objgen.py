@@ -146,7 +146,7 @@ def run_objgen():
     diagnostics.objgen_stage = 5
 
     temp = 0
-    temp = int(sparam.upper_region_size) + int(sparam.ghmb_region_size)
+    temp = sparam.slist['upper_region_size'] + int(sparam.ghmb_region_size)
     temp = sparam.slist['kernel_section_size'] - temp
     temp = temp * 1024
     temp = temp / int(sparam.process_stack_size)
@@ -164,7 +164,7 @@ def run_objgen():
     kstack_size = kstack_size + (upc_kdat_size - mpc_array_kdat_size)
     kstack_size = kstack_size + (int(device.intvec_size) * 4)
 
-    kstack_size = (int(sparam.upper_region_size) * 1024) - kstack_size
+    kstack_size = (sparam.slist['upper_region_size'] * 1024) - kstack_size
 
     if(kstack_size < 1024):
         diagnostics.error = ecode.ERROR_KERNEL_STACK_SIZE_VIOLATION
@@ -185,7 +185,7 @@ def run_objgen():
     sparam.app_base_address = sparam.slist['kernel_sram_address'] + (sparam.slist['kernel_section_size'] * 1024)
     sparam.ghmb_address = sparam.app_base_address - (int(sparam.ghmb_region_size) * 1024)
 
-    sparam.proc_heap_address = sparam.slist['kernel_sram_address'] + (int(sparam.upper_region_size) * 1024)
+    sparam.proc_heap_address = sparam.slist['kernel_sram_address'] + (sparam.slist['upper_region_size'] * 1024)
     sparam.kernel_stack_end_address = sparam.proc_heap_address - 4
 
     #
