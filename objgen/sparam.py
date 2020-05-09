@@ -130,13 +130,6 @@ def parse_param_file():
     # Start retriving basic skibios data
     #
     try:
-        process_stack_size = (basic_node.getElementsByTagName("process_stack_size")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <process_stack_size> tag'
-        exit(1)
-
-    try:
         ghmb_region_size = (basic_node.getElementsByTagName("ghmb_region_size")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD

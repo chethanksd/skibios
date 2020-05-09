@@ -146,7 +146,7 @@ def run_objgen():
     diagnostics.objgen_stage = 5
 
     temp = 0
-    temp = sparam.slist['upper_region_size'] + int(sparam.ghmb_region_size)
+    temp = sparam.slist['upper_region_size'] + sparam.slist['ghmb_region_size']
     temp = sparam.slist['kernel_section_size'] - temp
     temp = temp * 1024
     temp = temp / sparam.slist['process_stack_size']
@@ -183,7 +183,7 @@ def run_objgen():
 
     sparam.kernel_base_address = sparam.slist['kernel_sram_address'] + int(device.intvec_size) * 4
     sparam.app_base_address = sparam.slist['kernel_sram_address'] + (sparam.slist['kernel_section_size'] * 1024)
-    sparam.ghmb_address = sparam.app_base_address - (int(sparam.ghmb_region_size) * 1024)
+    sparam.ghmb_address = sparam.app_base_address - (sparam.slist['ghmb_region_size'] * 1024)
 
     sparam.proc_heap_address = sparam.slist['kernel_sram_address'] + (sparam.slist['upper_region_size'] * 1024)
     sparam.kernel_stack_end_address = sparam.proc_heap_address - 4
@@ -318,7 +318,7 @@ def generate_param_header():
     temp = "#define PROCESS_PER_SEC " + sparam.process_per_sec + "\n"
     param_header.write(temp)
 
-    temp = "#define HEAP_BOOKEEPING_SIZE " + str(int(sparam.ghmb_region_size) * 256) + "\n"
+    temp = "#define HEAP_BOOKEEPING_SIZE " + str(sparam.slist['ghmb_region_size'] * 256) + "\n"
     param_header.write(temp)
 
     temp = "#define KERNEL_START_ADDRESS " + str(sparam.slist['kernel_sram_address']) + "\n"

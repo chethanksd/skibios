@@ -106,7 +106,7 @@ def generate_summary_report():
     temp = temp + "kernel section size      : " + str(sparam.slist['kernel_section_size']) + "\n"
     temp = temp + "upper region size        : " + str(sparam.slist['upper_region_size']) + "\n"
     temp = temp + "process_stack_size       : " + str(sparam.slist['process_stack_size']) + "\n"
-    temp = temp + "ghmb_region_size         : " + sparam.ghmb_region_size + "\n"
+    temp = temp + "ghmb_region_size         : " + str(sparam.slist['ghmb_region_size']) + "\n"
     temp = temp + "process per sec          : " + sparam.process_per_sec + "\n"
 
     summary_report.write(temp)
