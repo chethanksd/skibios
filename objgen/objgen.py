@@ -315,7 +315,7 @@ def generate_param_header():
     temp = "#define ENABLE_SKIBIOS 1 \n"
     param_header.write(temp)
 
-    temp = "#define PROCESS_PER_SEC " + sparam.process_per_sec + "\n"
+    temp = "#define PROCESS_PER_SEC " + str(sparam.slist['process_per_sec']) + "\n"
     param_header.write(temp)
 
     temp = "#define HEAP_BOOKEEPING_SIZE " + str(sparam.slist['ghmb_region_size'] * 256) + "\n"
