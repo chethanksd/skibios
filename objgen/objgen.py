@@ -149,7 +149,7 @@ def run_objgen():
     temp = sparam.slist['upper_region_size'] + int(sparam.ghmb_region_size)
     temp = sparam.slist['kernel_section_size'] - temp
     temp = temp * 1024
-    temp = temp / int(sparam.process_stack_size)
+    temp = temp / sparam.slist['process_stack_size']
 
     sparam.max_process_count = temp
     
@@ -309,7 +309,7 @@ def generate_param_header():
     temp = "#define MAX_PROCESS_COUNT " + str(int(sparam.max_process_count)) + "\n"
     param_header.write(temp)
 
-    temp = "#define PROCESS_STACK_SIZE " + str(int(int(sparam.process_stack_size) / 4)) + "\n"
+    temp = "#define PROCESS_STACK_SIZE " + str(int(sparam.slist['process_stack_size'] / 4)) + "\n"
     param_header.write(temp)
 
     temp = "#define ENABLE_SKIBIOS 1 \n"
