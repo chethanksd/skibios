@@ -324,6 +324,15 @@ def generate_param_header():
     temp = "#define KERNEL_START_ADDRESS " + str(sparam.slist['kernel_sram_address']) + "\n"
     param_header.write(temp)
 
+    temp = "#define ENABLE_SAFE_LOCK " + str(sparam.slist['enable_safe_lock']) + "\n"
+    param_header.write(temp)
+
+    temp = "#define DISABLE_BUFFER " + str(sparam.slist['disable_buffer']) + "\n"
+    param_header.write(temp)
+
+    temp = "#define PROCESS_ID_START " + str(sparam.slist['process_id_start']) + "\n"
+    param_header.write(temp)
+
     param_header.write("\n\n")
     param_header.write("#endif")
     param_header.close()
