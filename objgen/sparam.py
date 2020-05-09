@@ -153,8 +153,3 @@ def parse_param_file():
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <disable_buffer> tag'
         exit(1)
-
-
-    
-def validate_skibios_param():
-    print('Todo: define skibios param validation')

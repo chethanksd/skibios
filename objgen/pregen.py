@@ -47,18 +47,10 @@ def run_pregen():
 
 
     #
-    # PREGEN STAGE 4: SKIBIOS Param validation
+    # PREGEN STAGE 4: Create allsrc folder
     #
     #
     diagnostics.pregen_stage = 4
-    
-    sparam.validate_skibios_param()
-
-    #
-    # PREGEN STAGE 5: Create allsrc folder
-    #
-    #
-    diagnostics.pregen_stage = 5
 
     apath_exists = os.path.isdir(svar.build_path + '/allsrc')
     if not apath_exists:

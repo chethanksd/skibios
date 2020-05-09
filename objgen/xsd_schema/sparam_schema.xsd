@@ -3,6 +3,24 @@
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+    <xs:simpleType name="U32HexInt">
+        <xs:union>
+
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="0x[0-9A-Fa-f]{8}"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:maxExclusive value="4294967296"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+        </xs:union>
+    </xs:simpleType>
+
     <xs:element name="param">
         <xs:complexType>
             <xs:all>
@@ -11,7 +29,7 @@
                     <xs:complexType>
                         <xs:all>
 
-                            <xs:element name="kernel_sram_address"  type="xs:integer"/>
+                            <xs:element name="kernel_sram_address"  type="U32HexInt"/>
 
 
                             <xs:element name="kernel_section_size"  type="xs:integer"/>
@@ -43,9 +61,15 @@
 
 
                 <xs:element name="objgen_debug" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:all>
 
+                            <xs:element name="skip_objgen"          type="xs:integer"   minOccurs="0"   maxOccurs="1"/>
+
+                        </xs:all>
+                    </xs:complexType> 
                 </xs:element>
-                
+
 
                 <xs:element name="objgen_config" minOccurs="0" maxOccurs="1">
 
