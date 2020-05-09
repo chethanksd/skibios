@@ -48,7 +48,8 @@ def parse_param_file():
     
     if(result == False):
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
-        diagnostics.error_message = 'lxml syntax error in skibios param xml'
+        for error in xmlschema.error_log:
+            diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
         exit(1)    
 
 
@@ -93,6 +94,10 @@ def parse_param_file():
     #
     try:
         kernel_sram_address = (basic_node.getElementsByTagName("kernel_sram_address")[0]).firstChild.data
+
+        if('0x' in kernel_sram_address):
+            kernel_sram_address = int(kernel_sram_address, 16)
+
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = 'error retriving <kernel_sram_address> tag'
