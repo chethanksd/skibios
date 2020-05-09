@@ -38,11 +38,26 @@ def parse_param_file():
     global ghmb_address
 
     #
-    # Validate param xml with XSD schema defined for sparam
+    # Load XSD file
     #
     xmlschema_doc = etree.parse(svar.repo_path + "objgen/xsd_schema/sparam_schema.xsd")
     xmlschema = etree.XMLSchema(xmlschema_doc)
 
+
+    #
+    # Extract list of param and its data type using XPATH
+    #
+    namespaces = {"xs": "http://www.w3.org/2001/XMLSchema"}
+    param_list = xmlschema_doc.xpath("//xs:element[@name and @type]/@name", namespaces=namespaces)
+    param_type_dict = {}
+
+    for param in param_list:
+        param_type_dict[param] = xmlschema_doc.xpath("//xs:element[@name='" + str(param) + "']/@type", namespaces=namespaces)[0]
+        
+
+    #
+    # Validate param xml with XSD schema defined for sparam
+    #
     xml_doc = etree.parse(svar.pfile_path)
     result = xmlschema.validate(xml_doc)
     
@@ -50,7 +65,12 @@ def parse_param_file():
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
         for error in xmlschema.error_log:
             diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
-        exit(1)    
+        exit(1)   
+
+    #
+    # Extract paramters value from input param xml file
+    #
+    sparam = {}
 
 
     #
