@@ -71,6 +71,21 @@ def parse_param_file():
     # Extract paramters value from input param xml file
     #
     sparam = {}
+    for param in param_list:
+        
+        try:
+            value =  xml_doc.xpath("//" + str(param) + "/text()", namespaces=namespaces)[0]
+        except:
+            sparam[param] = '0'
+        
+        if(param_type_dict[param] == 'U32HexInt'):
+            if('0x' in value):
+                sparam[param] = int(value, 16)
+            else:
+                sparam[param] = int(value)
+
+        if(param_type_dict[param] == 'xs:integer'):
+            sparam[param] = int(value)
 
 
     #
