@@ -147,7 +147,7 @@ def run_objgen():
 
     temp = 0
     temp = int(sparam.upper_region_size) + int(sparam.ghmb_region_size)
-    temp = int(sparam.kernel_section_size) - temp
+    temp = sparam.slist['kernel_section_size'] - temp
     temp = temp * 1024
     temp = temp / int(sparam.process_stack_size)
 
@@ -182,7 +182,7 @@ def run_objgen():
     diagnostics.objgen_stage = 6
 
     sparam.kernel_base_address = sparam.slist['kernel_sram_address'] + int(device.intvec_size) * 4
-    sparam.app_base_address = sparam.slist['kernel_sram_address'] + (int(sparam.kernel_section_size) * 1024)
+    sparam.app_base_address = sparam.slist['kernel_sram_address'] + (sparam.slist['kernel_section_size'] * 1024)
     sparam.ghmb_address = sparam.app_base_address - (int(sparam.ghmb_region_size) * 1024)
 
     sparam.proc_heap_address = sparam.slist['kernel_sram_address'] + (int(sparam.upper_region_size) * 1024)

@@ -130,13 +130,6 @@ def parse_param_file():
     # Start retriving basic skibios data
     #
     try:
-        kernel_section_size = (basic_node.getElementsByTagName("kernel_section_size")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <kernel_section_size> tag'
-        exit(1)
-
-    try:
         upper_region_size = (basic_node.getElementsByTagName("upper_region_size")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD

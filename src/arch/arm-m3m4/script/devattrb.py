@@ -41,7 +41,7 @@ def arch_specific_objgen():
         diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
         exit(1)
 
-    next_fit_mpu_region = next_power_of_2(int(sparam.kernel_section_size))
+    next_fit_mpu_region = next_power_of_2(sparam.slist['kernel_section_size'])
     next_fix_mpu_region_in_kb = next_fit_mpu_region * 1024
 
     if(sparam.slist['kernel_sram_address'] % next_fix_mpu_region_in_kb != 0):
@@ -59,7 +59,7 @@ def arch_specific_objgen():
 
     srd_shift = 0
     srd_bit = 0
-    srd_shift = (next_fit_mpu_region - int(sparam.kernel_section_size)) * 8
+    srd_shift = (next_fit_mpu_region - sparam.slist['kernel_section_size']) * 8
     srd_shift = srd_shift / next_fit_mpu_region
 
     srd_bit = 8 - srd_shift
@@ -159,7 +159,7 @@ def append_arch_constants():
 
     param_header.write("// Arch Specific Symbolic Constants\n\n")
 
-    temp = "#define KERNEL_REGION_SIZE " + kernel_region_to_string(int(sparam.kernel_section_size)) + "\n"
+    temp = "#define KERNEL_REGION_SIZE " + kernel_region_to_string(sparam.slist['kernel_section_size']) + "\n"
     param_header.write(temp)
 
     temp = "#define MPU_PSTACK_SIZE " + pstack_size_to_string(int(sparam.process_stack_size)) + "\n"
