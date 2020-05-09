@@ -31,12 +31,12 @@ def arch_specific_objgen():
     #
     #
 
-    if(int(sparam.kernel_sram_address) < int(device.sram_addr)):
+    if(sparam.slist['kernel_sram_address'] < int(device.sram_addr)):
         diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
         diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
         exit(1)
 
-    if(int(sparam.kernel_sram_address) >= (int(device.sram_addr) + int(device.sram_size))):
+    if(sparam.slist['kernel_sram_address'] >= (int(device.sram_addr) + int(device.sram_size))):
         diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
         diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
         exit(1)
@@ -44,7 +44,7 @@ def arch_specific_objgen():
     next_fit_mpu_region = next_power_of_2(int(sparam.kernel_section_size))
     next_fix_mpu_region_in_kb = next_fit_mpu_region * 1024
 
-    if(int(sparam.kernel_sram_address) % next_fix_mpu_region_in_kb != 0):
+    if(sparam.slist['kernel_sram_address'] % next_fix_mpu_region_in_kb != 0):
         diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
         diagnostics.error_message = '<kernel_sram_address> is not in par with ARM M3/M4 mpu region alignment requirement'
         exit(1)

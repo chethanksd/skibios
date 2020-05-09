@@ -181,11 +181,11 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 6
 
-    sparam.kernel_base_address = int(sparam.kernel_sram_address) + int(device.intvec_size) * 4
-    sparam.app_base_address = int(sparam.kernel_sram_address) + (int(sparam.kernel_section_size) * 1024)
+    sparam.kernel_base_address = sparam.slist['kernel_sram_address'] + int(device.intvec_size) * 4
+    sparam.app_base_address = sparam.slist['kernel_sram_address'] + (int(sparam.kernel_section_size) * 1024)
     sparam.ghmb_address = sparam.app_base_address - (int(sparam.ghmb_region_size) * 1024)
 
-    sparam.proc_heap_address = int(sparam.kernel_sram_address) + (int(sparam.upper_region_size) * 1024)
+    sparam.proc_heap_address = sparam.slist['kernel_sram_address'] + (int(sparam.upper_region_size) * 1024)
     sparam.kernel_stack_end_address = sparam.proc_heap_address - 4
 
     #
@@ -321,7 +321,7 @@ def generate_param_header():
     temp = "#define HEAP_BOOKEEPING_SIZE " + str(int(sparam.ghmb_region_size) * 256) + "\n"
     param_header.write(temp)
 
-    temp = "#define KERNEL_START_ADDRESS " + str(int(sparam.kernel_sram_address)) + "\n"
+    temp = "#define KERNEL_START_ADDRESS " + str(sparam.slist['kernel_sram_address']) + "\n"
     param_header.write(temp)
 
     param_header.write("\n\n")

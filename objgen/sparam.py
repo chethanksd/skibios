@@ -28,6 +28,7 @@ def parse_param_file():
     global process_per_sec
     global enable_safe_lock
     global disable_buffer
+    global slist
 
     #output parameters
     global max_process_count
@@ -36,6 +37,7 @@ def parse_param_file():
     global proc_heap_address
     global kernel_stack_end_address
     global ghmb_address
+
 
     #
     # Load XSD file
@@ -70,22 +72,22 @@ def parse_param_file():
     #
     # Extract paramters value from input param xml file
     #
-    sparam = {}
+    slist = {}
     for param in param_list:
         
         try:
             value =  xml_doc.xpath("//" + str(param) + "/text()", namespaces=namespaces)[0]
         except:
-            sparam[param] = '0'
+            slist[param] = '0'
         
         if(param_type_dict[param] == 'U32HexInt'):
             if('0x' in value):
-                sparam[param] = int(value, 16)
+                slist[param] = int(value, 16)
             else:
-                sparam[param] = int(value)
+                slist[param] = int(value)
 
         if(param_type_dict[param] == 'xs:integer'):
-            sparam[param] = int(value)
+                slist[param] = int(value)
 
 
     #
@@ -127,17 +129,6 @@ def parse_param_file():
     #
     # Start retriving basic skibios data
     #
-    try:
-        kernel_sram_address = (basic_node.getElementsByTagName("kernel_sram_address")[0]).firstChild.data
-
-        if('0x' in kernel_sram_address):
-            kernel_sram_address = int(kernel_sram_address, 16)
-
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <kernel_sram_address> tag'
-        exit(1)    
-
     try:
         kernel_section_size = (basic_node.getElementsByTagName("kernel_section_size")[0]).firstChild.data
     except:

@@ -53,7 +53,7 @@ def generate_support_linker_script():
 
     param_lds = open(svar.build_path + "/param.lds", "w+")
 
-    temp = '_kernel_start_address = ' + str(sparam.kernel_sram_address) + ';\n'
+    temp = '_kernel_start_address = ' + str(sparam.slist['kernel_sram_address']) + ';\n'
     param_lds.write(temp)
 
     temp = '_kernel_base_address = ' + str(sparam.kernel_base_address) + ';\n'
@@ -148,13 +148,13 @@ def generate_summary_report():
 
     temp = ""
     temp = temp + "********************************************\n"
-    temp = temp + "Kernel Start             : " + str(hex(int(sparam.kernel_sram_address))) + "\n"
+    temp = temp + "Kernel Start             : " + str(hex(int(sparam.slist['kernel_sram_address']))) + "\n"
     temp = temp + "********************************************\n"
-    temp = temp + "Vector Table Start       : " + str(hex(int(sparam.kernel_sram_address))) + "\n"
+    temp = temp + "Vector Table Start       : " + str(hex(int(sparam.slist['kernel_sram_address']))) + "\n"
     temp = temp + "********************************************\n"
 
     total_vtable_size = int(device.intvec_size) * 4
-    vector_table_end_address = int(sparam.kernel_sram_address) + total_vtable_size - 1
+    vector_table_end_address = sparam.slist['kernel_sram_address'] + total_vtable_size - 1
     temp = temp + "Vector Table\n"
     temp = temp + "Size                     : " + device.intvec_size + " x 4 = " + str(total_vtable_size) + "B\n"
     temp = temp + "********************************************\n"
