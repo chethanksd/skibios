@@ -68,7 +68,14 @@ def parse_param_file():
         try:
             value =  xml_doc.xpath("//" + str(param) + "/text()", namespaces=namespaces)[0]
         except:
-            slist[param] = '0'
+
+            try:
+                value = xmlschema_doc.xpath("//xs:element[@name='" + str(param) + "']/@default", namespaces=namespaces)[0]
+            except:
+                diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
+                diagnostics.error_message = param + " is a optional parameter with not default value defined in XSD"
+                exit(1)
+
         
         if(param_type_dict[param] == 'U32HexInt'):
             if('0x' in value):

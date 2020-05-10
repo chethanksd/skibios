@@ -64,7 +64,7 @@
                     <xs:complexType>
                         <xs:all>
 
-                            <xs:element name="skip_objgen"          type="xs:integer"   minOccurs="0"   maxOccurs="1"/>
+                            <xs:element name="skip_objgen"          type="xs:integer"   minOccurs="0"   maxOccurs="1"  default="0"/>
 
                         </xs:all>
                     </xs:complexType> 
