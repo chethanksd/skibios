@@ -19,7 +19,8 @@ def parse_param_file():
 
     # input parameters
     global slist
-    global paramgen_list
+    global param_gen_list
+    global param_gen_sym
 
     #output parameters
     global max_process_count
@@ -61,7 +62,7 @@ def parse_param_file():
         exit(1)   
 
     #
-    # Extract paramters value from input param xml file
+    # Extract paramters value from input param xml file using XPATH
     #
     slist = {}
     for param in param_list:
@@ -87,8 +88,29 @@ def parse_param_file():
         if(param_type_dict[param] == 'Integer'):
             slist[param] = int(value)
 
+        if(param_type_dict[param] == 'String'):
+            slist[param] = value
+
 
     #
-    # Create list of parameters to be included in param.h
+    # Create list of parameters to be included in param.h using XPATH
     #
-    paramgen_list = {}
+    param_gen_list = {}
+    param_gen_sym  = {}
+
+    try:
+        param_gen_list = xmlschema_doc.xpath("//xs:element[@name='param_gen']/xs:complexType/xs:all/xs:element/@name", namespaces=namespaces)
+    except:
+        diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
+        diagnostics.error_message = "invalid <param_gen> entries"
+        exit(1)
+
+    for param in param_gen_list:
+        try:
+            symbol =  xmlschema_doc.xpath("//xs:element[@name='param_gen']//xs:element[@name='" + str(param) + "']//xs:element/@name", namespaces=namespaces)[0]    
+        except:
+            diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
+            diagnostics.error_message = "symbol name not defined for " + param + " . It is included in param_gen list"
+            exit(1) 
+        
+        param_gen_sym[param] = symbol
