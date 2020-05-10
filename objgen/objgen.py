@@ -238,6 +238,10 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 10
 
+    if(sparam.slist['skip_compile'] == 1):
+        print('***** Skipping Compilation of source files *****')
+        return
+
     print('***** Compiling source files *****')
 
     opath_exists = os.path.isdir(svar.build_path + '/obj')
