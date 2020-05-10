@@ -124,3 +124,13 @@ def parse_param_file():
         print("***** Printing parameter list *****")
         for param in param_list:
             print(param + " : " + str(slist[param]))
+
+
+    #
+    # Print param gen list if enabled
+    #
+
+    if(slist['print_param_gen'] == 1):
+        print("***** Printing param.h include list *****")
+        for param in param_gen_list:
+            print(param + " : " + str(param_gen_sym[param]))
