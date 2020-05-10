@@ -114,3 +114,13 @@ def parse_param_file():
             exit(1) 
         
         param_gen_sym[param] = symbol
+
+    
+    #
+    # Print parameter list if enabled
+    #
+
+    if(slist['print_param_list'] == 1):
+        print("***** Printing parameter list *****")
+        for param in param_list:
+            print(param + " : " + str(slist[param]))

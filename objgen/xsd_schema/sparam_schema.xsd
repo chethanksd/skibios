@@ -54,6 +54,9 @@
 
                             <xs:element name="skip_objgen"          type="Integer"   minOccurs="0"   maxOccurs="1"  default="0"/>
 
+
+                            <xs:element name="print_param_list"     type="Integer"   minOccurs="0"   maxOccurs="1"  default="0"/>
+
                         </xs:all>
                     </xs:complexType> 
                 </xs:element>
