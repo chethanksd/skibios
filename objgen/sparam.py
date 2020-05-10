@@ -19,6 +19,7 @@ def parse_param_file():
 
     # input parameters
     global slist
+    global paramgen_list
 
     #output parameters
     global max_process_count
@@ -83,5 +84,11 @@ def parse_param_file():
             else:
                 slist[param] = int(value)
 
-        if(param_type_dict[param] == 'xs:integer'):
-                slist[param] = int(value)
+        if(param_type_dict[param] == 'Integer'):
+            slist[param] = int(value)
+
+
+    #
+    # Create list of parameters to be included in param.h
+    #
+    paramgen_list = {}

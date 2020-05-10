@@ -1,0 +1,59 @@
+<!-- 
+   * XSD Schema file for skibios params
+   *
+   * author : chetandev.ksd@gmail.com
+   *
+   -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!--
+       * U32HexInt Data type
+       * 
+       * Usage: data can be entered in hex format with 0x prefix or decimal format.
+       * Max decimal value supported is 4294967296 (2 to the power 32)
+       * Hex value must be entered in 8 digit format eg: 0x0000200A 
+       * Note: both lowercase & upper case HEX digits are supported
+       *
+      -->
+    <xs:simpleType name="U32HexInt">
+        <xs:union>
+
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="0x[0-9A-Fa-f]{8}"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:maxExclusive value="4294967296"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+        </xs:union>
+    </xs:simpleType>
+
+
+    <!--
+       * Integer Data type
+       * 
+       * usage replacement of name xs:integer
+       *
+      -->
+    <xs:simpleType name="Integer">
+        <xs:restriction base="xs:integer"/>
+    </xs:simpleType>
+
+
+    <!--
+       * String Data type
+       * 
+       * usage replacement of name xs:string
+       *
+      -->
+    <xs:simpleType name="String">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+</xs:schema>

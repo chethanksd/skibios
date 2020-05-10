@@ -1,25 +1,13 @@
-<!-- XSD Schema file for skibios params -->
-<!-- author : chetandev.ksd@gmail.com -->
+<!-- 
+   * XSD Schema file for skibios params
+   *
+   * author : chetandev.ksd@gmail.com 
+   *
+   -->
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:include schemaLocation="./data_type.xsd"/>
 
-    <xs:simpleType name="U32HexInt">
-        <xs:union>
-
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="0x[0-9A-Fa-f]{8}"/>
-                </xs:restriction>
-            </xs:simpleType>
-
-            <xs:simpleType>
-                <xs:restriction base="xs:integer">
-                    <xs:maxExclusive value="4294967296"/>
-                </xs:restriction>
-            </xs:simpleType>
-
-        </xs:union>
-    </xs:simpleType>
 
     <xs:element name="param">
         <xs:complexType>
@@ -32,28 +20,28 @@
                             <xs:element name="kernel_sram_address"  type="U32HexInt"/>
 
 
-                            <xs:element name="kernel_section_size"  type="xs:integer"/>
+                            <xs:element name="kernel_section_size"  type="Integer"/>
 
                             
-                            <xs:element name="upper_region_size"    type="xs:integer"/>
+                            <xs:element name="upper_region_size"    type="Integer"/>
 
                             
-                            <xs:element name="ghmb_region_size"     type="xs:integer"/>
+                            <xs:element name="ghmb_region_size"     type="Integer"/>
 
 
-                            <xs:element name="process_stack_size"   type="xs:integer"/>
+                            <xs:element name="process_stack_size"   type="Integer"/>
 
                             
-                            <xs:element name="enable_safe_lock"     type="xs:integer"/>
+                            <xs:element name="enable_safe_lock"     type="Integer"/>
+
                             
-                            
-                            <xs:element name="disable_buffer"       type="xs:integer"/>
+                            <xs:element name="disable_buffer"       type="Integer"/>
 
 
-                            <xs:element name="process_id_start"     type="xs:integer"/>
+                            <xs:element name="process_id_start"     type="Integer"/>
                             
                             
-                            <xs:element name="process_per_sec"      type="xs:integer"/>
+                            <xs:element name="process_per_sec"      type="Integer"/>
 
                         </xs:all>
                     </xs:complexType>
@@ -64,7 +52,7 @@
                     <xs:complexType>
                         <xs:all>
 
-                            <xs:element name="skip_objgen"          type="xs:integer"   minOccurs="0"   maxOccurs="1"  default="0"/>
+                            <xs:element name="skip_objgen"          type="Integer"   minOccurs="0"   maxOccurs="1"  default="0"/>
 
                         </xs:all>
                     </xs:complexType> 
