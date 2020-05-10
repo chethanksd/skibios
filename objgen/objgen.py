@@ -39,6 +39,15 @@ def run_objgen():
     basic_param = basic_param + ' ARCH_PATH=' + svar.repo_path + '/src/arch/' + device.arch
 
     #
+    # OBJGEN SKIP Check
+    #
+    #
+    if(sparam.slist['skip_objgen'] == 1):
+        print('***** Skipping Objgen *****')
+        print('Done!')
+        exit(0)
+
+    #
     # OBJGEN STAGE 1: Invoke symgen
     #
     #
