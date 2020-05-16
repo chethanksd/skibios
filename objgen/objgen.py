@@ -171,7 +171,7 @@ def run_objgen():
     kstack_size = kstack_size + (mpc_array_kdat_size * int(sparam.max_process_count))
     kstack_size = kstack_size + (upc_kbss_size - mpc_array_kbss_size)
     kstack_size = kstack_size + (upc_kdat_size - mpc_array_kdat_size)
-    kstack_size = kstack_size + (int(device.intvec_size) * 4)
+    kstack_size = kstack_size + (device.dlist['intcnt'] * 4)
 
     kstack_size = (sparam.slist['upper_region_size'] * 1024) - kstack_size
 
@@ -190,7 +190,7 @@ def run_objgen():
     #
     diagnostics.objgen_stage = 6
 
-    sparam.kernel_base_address = sparam.slist['kernel_sram_address'] + int(device.intvec_size) * 4
+    sparam.kernel_base_address = sparam.slist['kernel_sram_address'] + device.dlist['intcnt'] * 4
     sparam.app_base_address = sparam.slist['kernel_sram_address'] + (sparam.slist['kernel_section_size'] * 1024)
     sparam.ghmb_address = sparam.app_base_address - (sparam.slist['ghmb_region_size'] * 1024)
 
@@ -316,7 +316,7 @@ def generate_param_header():
 
     param_header.write("// Common Symbolic Constants\n\n")
 
-    temp = "#define NUM_OF_INTERRUPTS " + device.intvec_size + "\n"
+    temp = "#define NUM_OF_INTERRUPTS " + str(device.dlist['intcnt']) + "\n"
     param_header.write(temp)
 
     temp = "#define MAX_PROCESS_COUNT " + str(int(sparam.max_process_count)) + "\n"

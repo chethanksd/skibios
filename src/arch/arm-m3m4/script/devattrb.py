@@ -31,12 +31,12 @@ def arch_specific_objgen():
     #
     #
 
-    if(sparam.slist['kernel_sram_address'] < int(device.sram_addr)):
+    if(sparam.slist['kernel_sram_address'] < device.dlist['sram_addr']):
         diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
         diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
         exit(1)
 
-    if(sparam.slist['kernel_sram_address'] >= (int(device.sram_addr) + int(device.sram_size))):
+    if(sparam.slist['kernel_sram_address'] >= (device.dlist['sram_addr'] + device.dlist['sram_size'])):
         diagnostics.error = ecode.ERROR_DEVICE_ATTRIBUTES_FAILED
         diagnostics.error_message = '<kernel_sram_address> is out of bound with device xml specified sram region'
         exit(1)

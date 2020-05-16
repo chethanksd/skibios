@@ -137,7 +137,7 @@ def generate_summary_report():
     temp = temp + "sram start address       : " + str(hex(device.dlist['sram_addr'])) + "\n"
     temp = temp + "\n"
 
-    temp = temp + "interrupt vector count   : " + str(int(device.intvec_size)) + "\n"
+    temp = temp + "interrupt vector count   : " + str(device.dlist['intcnt']) + "\n"
 
     summary_report.write(temp)
     summary_report.write("\n\n")
@@ -153,10 +153,10 @@ def generate_summary_report():
     temp = temp + "Vector Table Start       : " + str(hex(int(sparam.slist['kernel_sram_address']))) + "\n"
     temp = temp + "********************************************\n"
 
-    total_vtable_size = int(device.intvec_size) * 4
+    total_vtable_size = int(device.dlist['intcnt']) * 4
     vector_table_end_address = sparam.slist['kernel_sram_address'] + total_vtable_size - 1
     temp = temp + "Vector Table\n"
-    temp = temp + "Size                     : " + device.intvec_size + " x 4 = " + str(total_vtable_size) + "B\n"
+    temp = temp + "Size                     : " + str(device.dlist['intcnt']) + " x 4 = " + str(total_vtable_size) + "B\n"
     temp = temp + "********************************************\n"
     temp = temp + "Vector Table End         : " + str(hex(vector_table_end_address)) + "\n"
     temp = temp + "********************************************\n"
