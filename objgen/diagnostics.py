@@ -6,6 +6,7 @@
 #
 
 import ecode
+import sparam
 
 start_stage     = 0
 pregen_stage    = 0
@@ -27,3 +28,25 @@ def run_diagnostics():
         print('script failed at objgen stage: ', objgen_stage)
     elif(objgen_stage != STAGE_DONE):
         print('script failed at postgen stage: ', postgen_stage)
+
+
+def run_objgen_debug_commands():
+
+    #
+    # Print parameter list if enabled
+    #
+
+    if(sparam.slist['print_param_list'] == 1):
+        print("***** Printing parameter list *****")
+        for param in sparam.param_list:
+            print(param + " : " + str(sparam.slist[param]))
+
+
+    #
+    # Print param gen list if enabled
+    #
+
+    if(sparam.slist['print_param_gen'] == 1):
+        print("***** Printing param.h include list *****")
+        for param in sparam.param_gen_list:
+            print(param + " : " + str(sparam.param_gen_sym[param]))

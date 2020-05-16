@@ -56,6 +56,16 @@ def run_pregen():
     if not apath_exists:
         os.mkdir(svar.build_path + '/allsrc')
 
+    
+    #
+    # PREGEN STAGGE 5: Run objgen_debug diagnostics
+    #
+    #
+    diagnostics.pregent_stage = 5
+
+    diagnostics.run_objgen_debug_commands()
+
+
     #
     # PREGEN STAGE: DONE
     #
