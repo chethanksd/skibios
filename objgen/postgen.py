@@ -133,8 +133,8 @@ def generate_summary_report():
     temp = temp + "sram size                : " + str(int(device.dlist['sram_size']/1024)) + "KB \n"
     temp = temp + "\n"
 
-    temp = temp + "flash start address      : " + str(hex(int(device.flash_addr))) + "\n"
-    temp = temp + "sram start address       : " + str(hex(int(device.sram_addr))) + "\n"
+    temp = temp + "flash start address      : " + str(hex(device.dlist['flash_addr'])) + "\n"
+    temp = temp + "sram start address       : " + str(hex(device.dlist['sram_addr'])) + "\n"
     temp = temp + "\n"
 
     temp = temp + "interrupt vector count   : " + str(int(device.intvec_size)) + "\n"

@@ -127,20 +127,6 @@ def parse_device_file():
         exit(1)
 
     try:
-        flash_addr = (dfile_tree.getElementsByTagName("flash_addr")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <flash_addr> tag'
-        exit(1)
-
-    try:
-        sram_addr = (dfile_tree.getElementsByTagName("sram_addr")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <sram_addr> tag'
-        exit(1)
-
-    try:
         arch = (dfile_tree.getElementsByTagName("arch")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
@@ -183,20 +169,6 @@ def parse_device_file():
 
 
 def validate_device_params():
-
-    try:
-        int(sram_addr)
-    except ValueError:
-        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
-        diagnostics.error_message = 'sram address provided in device file is not valid'
-        exit(1)
-
-    try:
-        int(flash_addr)
-    except ValueError:
-        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
-        diagnostics.error_message = 'flash address provided in device file is not valid'
-        exit(1)
 
     try:
         int(intvec_size)

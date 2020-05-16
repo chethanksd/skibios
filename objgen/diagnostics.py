@@ -69,6 +69,6 @@ def run_objgen_debug_commands():
     #
 
     if(sparam.slist['print_devp_list'] == 1):
-        print("***** Printing device include list *****")
+        print("***** Printing device param list *****")
         for param in device.devp_list:
             print(param + " : " + str(device.dlist[param]))
