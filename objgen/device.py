@@ -13,6 +13,8 @@ import sys, os
 import xml.dom.minidom
 import importlib
 
+from lxml import etree
+
 
 def parse_device_file():
 
@@ -27,6 +29,77 @@ def parse_device_file():
     global arch
     global partno
     global devattrb_module
+
+    global dlist
+    global devp_list
+
+    #
+    # Load XSD file
+    #
+    devschema_doc = etree.parse(svar.repo_path + "objgen/xsd_schema/device_schema.xsd")
+    xmlschema = etree.XMLSchema(devschema_doc)
+
+
+    #
+    # Extract list of param and its data type using XPATH
+    #
+    namespaces = {"xs": "http://www.w3.org/2001/XMLSchema"}
+    devp_list = devschema_doc.xpath("//xs:element[@name and @type]/@name", namespaces=namespaces)
+    devp_type_dict = {}
+
+    for param in devp_list:
+        devp_type_dict[param] = devschema_doc.xpath("//xs:element[@name='" + str(param) + "']/@type", namespaces=namespaces)[0]
+
+
+    #
+    # Validate param xml with XSD schema defined for sparam
+    #
+    xml_doc = etree.parse(svar.dfile_path)
+    result = xmlschema.validate(xml_doc)
+    
+    if(result == False):
+        diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
+        for error in xmlschema.error_log:
+            diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
+        exit(1)   
+
+
+    #
+    # Extract paramters value from input param xml file using XPATH
+    #
+    dlist = {}
+    for param in devp_list:
+        
+        try:
+            value =  xml_doc.xpath("//" + str(param) + "/text()", namespaces=namespaces)[0]
+        except:
+
+            try:
+                value = devschema_doc.xpath("//xs:element[@name='" + str(param) + "']/@default", namespaces=namespaces)[0]
+            except:
+                diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
+                diagnostics.error_message = param + " is a optional parameter with not default value defined in XSD"
+                exit(1)
+
+        
+        if(devp_type_dict[param] == 'U32HexInt'):
+            if('0x' in value):
+                dlist[param] = int(value, 16)
+            else:
+                dlist[param] = int(value)
+
+        if(devp_type_dict[param] == 'BinarySwitch'):
+            if(('True' in value) or ('1' in value)):
+                dlist[param] = 1
+            if(('False' in value) or ('0' in value)):
+                dlist[param] = 0
+
+        if(devp_type_dict[param] == 'Integer'):
+            dlist[param] = int(value)
+
+        if(devp_type_dict[param] == 'String'):
+            dlist[param] = value
+
 
     #
     # Try creating device tree

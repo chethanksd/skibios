@@ -1,0 +1,49 @@
+<!-- 
+   * XSD Schema file for device params
+   *
+   * author : chetandev.ksd@gmail.com 
+   *
+   -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:include schemaLocation="./data_type.xsd"/>
+
+
+    <xs:element name="device">
+        <xs:complexType>
+            <xs:all>
+
+                <xs:element name="basic" minOccurs="1" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:all>
+
+                            <xs:element name="partno"           type="String"/>
+
+
+                            <xs:element name="arch"             type="String"/>
+
+                            
+                            <xs:element name="intcnt"           type="Integer"/>
+
+                            
+                            <xs:element name="flash_size"       type="U32HexInt"/>
+
+
+                            <xs:element name="sram_size"        type="U32HexInt"/>
+
+                            
+                            <xs:element name="flash_addr"       type="U32HexInt"/>
+
+                            
+                            <xs:element name="sram_addr"        type="U32HexInt"/>
+
+
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

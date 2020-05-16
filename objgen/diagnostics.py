@@ -7,6 +7,7 @@
 
 import ecode
 import sparam
+import device
 
 OBJGEN_VERSION_MAJOR = 1
 OBJGEN_VERSION_MINOR = 0
@@ -48,7 +49,7 @@ def run_objgen_debug_commands():
     #
 
     if(sparam.slist['print_param_list'] == 1):
-        print("***** Printing parameter list *****")
+        print("***** Printing SKIBIOS parameter list *****")
         for param in sparam.param_list:
             print(param + " : " + str(sparam.slist[param]))
 
@@ -61,3 +62,13 @@ def run_objgen_debug_commands():
         print("***** Printing param.h include list *****")
         for param in sparam.param_gen_list:
             print(param + " : " + str(sparam.param_gen_sym[param]))
+
+
+    #
+    # Print device param list if enabled
+    #
+
+    if(sparam.slist['print_devp_list'] == 1):
+        print("***** Printing device include list *****")
+        for param in device.devp_list:
+            print(param + " : " + str(device.dlist[param]))

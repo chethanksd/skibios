@@ -63,6 +63,9 @@
                         
                             <xs:element name="print_param_gen"      type="BinarySwitch"   minOccurs="0"   maxOccurs="1"  default="0"/>
 
+
+                            <xs:element name="print_devp_list"      type="BinarySwitch"   minOccurs="0"   maxOccurs="1"   default="0"/>
+
                         </xs:all>
                     </xs:complexType> 
                 </xs:element>
