@@ -36,6 +36,33 @@
 
 
     <!--
+       * BinarySwitch Data type
+       *
+       * Usage: following values are supported 0, 1, True, False
+       *
+    -->
+    <xs:simpleType name="BinarySwitch">
+        <xs:union>
+
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="True"/>
+                    <xs:enumeration value="False"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType>
+                <xs:restriction base="xs:integer">
+                    <xs:pattern value="[0-1]"/>
+                    <xs:maxExclusive value="2"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+        </xs:union>
+    </xs:simpleType>
+    
+
+    <!--
        * Integer Data type
        * 
        * usage replacement of name xs:integer

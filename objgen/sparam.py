@@ -86,6 +86,12 @@ def parse_param_file():
             else:
                 slist[param] = int(value)
 
+        if(param_type_dict[param] == 'BinarySwitch'):
+            if(('True' in value) or ('1' in value)):
+                slist[param] = 1
+            if(('False' in value) or ('0' in value)):
+                slist[param] = 0
+
         if(param_type_dict[param] == 'Integer'):
             slist[param] = int(value)
 
