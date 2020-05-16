@@ -8,6 +8,7 @@
 import svar
 import ecode
 import diagnostics
+import utility
 
 import sys, os
 import importlib
@@ -80,23 +81,7 @@ def parse_param_file():
                 exit(1)
 
         
-        if(param_type_dict[param] == 'U32HexInt'):
-            if('0x' in value):
-                slist[param] = int(value, 16)
-            else:
-                slist[param] = int(value)
-
-        if(param_type_dict[param] == 'BinarySwitch'):
-            if(('True' in value) or ('1' in value)):
-                slist[param] = 1
-            if(('False' in value) or ('0' in value)):
-                slist[param] = 0
-
-        if(param_type_dict[param] == 'Integer'):
-            slist[param] = int(value)
-
-        if(param_type_dict[param] == 'String'):
-            slist[param] = value
+        slist[param] = utility.extract_value_xsd(value, param_type_dict[param])
 
 
     #

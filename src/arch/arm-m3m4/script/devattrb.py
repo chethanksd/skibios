@@ -19,6 +19,7 @@ var2 = 1
 def process_devattrb():
     var1 = 0
     var2 = 1
+    
 
 
 def arch_specific_objgen():

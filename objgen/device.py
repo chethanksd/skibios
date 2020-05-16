@@ -8,6 +8,7 @@
 import svar
 import ecode
 import diagnostics
+import utility
 
 import sys, os
 import xml.dom.minidom
@@ -24,7 +25,7 @@ def parse_device_file():
     global devp_list
 
     #
-    # Load XSD file
+    # Load core device XSD file
     #
     devschema_doc = etree.parse(svar.repo_path + "objgen/xsd_schema/device_schema.xsd")
     xmlschema = etree.XMLSchema(devschema_doc)
@@ -34,11 +35,13 @@ def parse_device_file():
     # Extract list of param and its data type using XPATH
     #
     namespaces = {"xs": "http://www.w3.org/2001/XMLSchema"}
-    devp_list = devschema_doc.xpath("//xs:element[@name and @type]/@name", namespaces=namespaces)
+    devp_xpath = "//xs:element[@name='device']//xs:element[@name='basic']"
+
+    devp_list = devschema_doc.xpath(devp_xpath + "//xs:element/@name", namespaces=namespaces)
     devp_type_dict = {}
 
     for param in devp_list:
-        devp_type_dict[param] = devschema_doc.xpath("//xs:element[@name='" + str(param) + "']/@type", namespaces=namespaces)[0]
+        devp_type_dict[param] = devschema_doc.xpath(devp_xpath + "//xs:element[@name='" + str(param) + "']/@type", namespaces=namespaces)[0]
 
 
     #
@@ -48,7 +51,7 @@ def parse_device_file():
     result = xmlschema.validate(xml_doc)
     
     if(result == False):
-        diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
+        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         for error in xmlschema.error_log:
             diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
         exit(1)   
@@ -71,42 +74,27 @@ def parse_device_file():
                 diagnostics.error_message = param + " is a optional parameter with not default value defined in XSD"
                 exit(1)
 
-        
-        if(devp_type_dict[param] == 'U32HexInt'):
-            if('0x' in value):
-                dlist[param] = int(value, 16)
-            else:
-                dlist[param] = int(value)
-
-        if(devp_type_dict[param] == 'BinarySwitch'):
-            if(('True' in value) or ('1' in value)):
-                dlist[param] = 1
-            if(('False' in value) or ('0' in value)):
-                dlist[param] = 0
-
-        if(devp_type_dict[param] == 'Integer'):
-            dlist[param] = int(value)
-
-        if(devp_type_dict[param] == 'String'):
-            dlist[param] = value
+        dlist[param] = utility.extract_value_xsd(value, devp_type_dict[param])
 
 
     #
-    # Try creating device tree
+    # Load arch specific XSD file
     #
-    try:
-        dfile_tree = xml.dom.minidom.parse(svar.dfile_path)
-    except:
+    #
+    archschema_doc = etree.parse(svar.repo_path + "src/arch/" + dlist['arch'] + "/script/devattrb_schema.xsd")
+    archschema = etree.XMLSchema(archschema_doc)
+
+
+    #
+    # Validate param xml with XSD schema defined for sparam
+    #
+    result = archschema.validate(xml_doc)
+    
+    if(result == False):
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        exit(1)
-
-    #
-    # First child tag name should be 'device'
-    #
-    if(dfile_tree.firstChild.tagName != 'device'):
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = '<device> tag not found'
-        exit(1)
+        for error in archschema.error_log:
+            diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
+        exit(1)  
             
 
     #

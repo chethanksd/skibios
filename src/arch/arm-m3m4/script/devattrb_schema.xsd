@@ -1,0 +1,37 @@
+<!-- 
+   * XSD Schema file for architecture specific paramaters
+   *
+   * author : chetandev.ksd@gmail.com 
+   *
+   -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:include schemaLocation="./../../../../objgen/xsd_schema/data_type.xsd"/>
+
+    <xs:element name="device">
+        <xs:complexType>
+            <xs:all>
+
+                <xs:element name="devattrb"  minOccurs="1" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:all>
+
+                            <xs:element name="sample"   type="Integer" minOccurs="0" maxOccurs="1"/>
+
+                        </xs:all>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="basic" minOccurs="1" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:any  processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

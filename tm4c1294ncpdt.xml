@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <device>
+
   <basic>
     <partno>TM4C1294NCPDT</partno>
     <arch>arm-m3m4</arch>
@@ -9,4 +10,9 @@
     <flash_addr>1000</flash_addr>
     <sram_addr>536870912</sram_addr>
   </basic>
+
+  <devattrb>
+    <sample>0</sample>
+  </devattrb>
+
 </device>

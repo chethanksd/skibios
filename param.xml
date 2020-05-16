@@ -11,4 +11,12 @@
         <process_id_start>1000</process_id_start>
         <process_per_sec>100</process_per_sec>  
     </basic> 
+
+    <objgen_debug>
+        <print_param_list>1</print_param_list>
+        <print_param_gen>0</print_param_gen>
+        <print_devp_list>1</print_devp_list>
+        <skip_objgen>1</skip_objgen>
+        <version>0</version>
+    </objgen_debug>
 </param>
