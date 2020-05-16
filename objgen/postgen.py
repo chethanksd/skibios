@@ -90,8 +90,8 @@ def generate_summary_report():
     summary_report.write(temp)
 
     temp = ""
-    temp = temp + "Target arch: " + device.arch + "    "
-    temp = temp + "Target device: " + device.partno + "\n"
+    temp = temp + "Target arch: " + device.dlist['arch'] + "    "
+    temp = temp + "Target device: " + device.dlist['partno'] + "\n"
     summary_report.write(temp)
 
     temp = "---------------------------------------------------------\n\n"

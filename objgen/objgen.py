@@ -36,7 +36,7 @@ def run_objgen():
 
     basic_param = ' BIN_PATH=' + svar.bin_path
     basic_param = basic_param + ' ROOT_DIR=' + svar.repo_path
-    basic_param = basic_param + ' ARCH_PATH=' + svar.repo_path + '/src/arch/' + device.arch
+    basic_param = basic_param + ' ARCH_PATH=' + svar.repo_path + '/src/arch/' + device.dlist['arch']
 
     #
     # OBJGEN SKIP Check

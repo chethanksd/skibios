@@ -27,30 +27,21 @@ def run_pregen():
 
     device.parse_device_file()
 
-
+    
     #
-    # PREGEN STAGE 2: Device parameters validation
+    # PREGEN STAGE 2: Param file parsing
     #
     #
     diagnostics.pregen_stage = 2
-    
-    device.validate_device_params()
-
-    
-    #
-    # PREGEN STAGE 3: Param file parsing
-    #
-    #
-    diagnostics.pregen_stage = 3
 
     sparam.parse_param_file()
 
 
     #
-    # PREGEN STAGE 4: Create allsrc folder
+    # PREGEN STAGE 3: Create allsrc folder
     #
     #
-    diagnostics.pregen_stage = 4
+    diagnostics.pregen_stage = 3
 
     apath_exists = os.path.isdir(svar.build_path + '/allsrc')
     if not apath_exists:
@@ -58,10 +49,10 @@ def run_pregen():
 
     
     #
-    # PREGEN STAGGE 5: Run objgen_debug diagnostics
+    # PREGEN STAGGE 4: Run objgen_debug diagnostics
     #
     #
-    diagnostics.pregent_stage = 5
+    diagnostics.pregent_stage = 4
 
     diagnostics.run_objgen_debug_commands()
 

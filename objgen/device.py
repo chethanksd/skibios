@@ -18,14 +18,6 @@ from lxml import etree
 
 def parse_device_file():
 
-    global sram_addr
-    global flash_addr
-
-    global intvec_size
-    global core_count
-
-    global arch
-    global partno
     global devattrb_module
 
     global dlist
@@ -115,37 +107,14 @@ def parse_device_file():
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         diagnostics.error_message = '<device> tag not found'
         exit(1)
-    
-    #
-    # Start retriving core tags
-    #
-    try:
-        intvec_size = (dfile_tree.getElementsByTagName("intcnt")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <intcnt> tag'
-        exit(1)
-
-    try:
-        arch = (dfile_tree.getElementsByTagName("arch")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <arch> tag'
-        exit(1)
-
-    try:
-        partno = (dfile_tree.getElementsByTagName("partno")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <partno> tag'
-        exit(1)         
+            
 
     #
     # Parse device attribute
     #
     #
     
-    devattrb_path = svar.repo_path + 'src\\arch\\' + arch + '\\script\\devattrb'
+    devattrb_path = svar.repo_path + 'src\\arch\\' + dlist['arch'] + '\\script\\devattrb'
     devattrb_dir = os.path.dirname(devattrb_path)
     modname = os.path.basename(devattrb_path)
     sys.path.append(devattrb_dir)
@@ -165,14 +134,4 @@ def parse_device_file():
     except Exception as e:
         diagnostics.error = ecode.ERROR_PROCESS_DEVATTRIB_NOT_DEFINED
         diagnostics.error_message = str(e)
-        exit(1)
-
-
-def validate_device_params():
-
-    try:
-        int(intvec_size)
-    except ValueError:
-        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
-        diagnostics.error_message = 'interrupt count provided in device file is not valid'
         exit(1)
