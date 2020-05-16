@@ -72,3 +72,13 @@ def run_objgen_debug_commands():
         print("***** Printing device param list *****")
         for param in device.devp_list:
             print(param + " : " + str(device.dlist[param]))
+
+
+    #
+    # Print arch specific param list if enabled
+    #
+
+    if(sparam.slist['print_archp_list'] == 1):
+        print("***** Printing arch specific param list *****")
+        for param in device.archp_list:
+            print(param + " : " + str(device.alist[param]))

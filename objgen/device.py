@@ -24,6 +24,10 @@ def parse_device_file():
     global dlist
     global devp_list
 
+    global alist
+    global archp_list
+
+
     #
     # Load core device XSD file
     #
@@ -32,7 +36,7 @@ def parse_device_file():
 
 
     #
-    # Extract list of param and its data type using XPATH
+    # Extract list of param and its data type using XPATH for core device paramaters
     #
     namespaces = {"xs": "http://www.w3.org/2001/XMLSchema"}
     devp_xpath = "//xs:element[@name='device']//xs:element[@name='basic']"
@@ -45,7 +49,7 @@ def parse_device_file():
 
 
     #
-    # Validate param xml with XSD schema defined for sparam
+    # Validate param xml with XSD schema defined for core device paramaters
     #
     xml_doc = etree.parse(svar.dfile_path)
     result = xmlschema.validate(xml_doc)
@@ -53,6 +57,7 @@ def parse_device_file():
     if(result == False):
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         for error in xmlschema.error_log:
+            diagnostics.error_message = 'error in device file \n'
             diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
         exit(1)   
 
@@ -86,16 +91,49 @@ def parse_device_file():
 
 
     #
-    # Validate param xml with XSD schema defined for sparam
+    # Validate param xml with XSD schema defined for devattrb tag
     #
     result = archschema.validate(xml_doc)
     
     if(result == False):
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
         for error in archschema.error_log:
+            diagnostics.error_message = 'error in device file \n'
             diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
         exit(1)  
-            
+
+
+    #
+    # Extract list of param and its data type using XPATH for devattrb paramaters
+    #
+    archp_xpath = "//xs:element[@name='device']//xs:element[@name='devattrb']"
+
+    archp_list = archschema_doc.xpath(archp_xpath + "//xs:element/@name", namespaces=namespaces)
+    archp_type_dict = {}
+
+    for param in archp_list:
+        archp_type_dict[param] = archschema_doc.xpath(archp_xpath + "//xs:element[@name='" + str(param) + "']/@type", namespaces=namespaces)[0]
+
+
+    #
+    # Extract paramters value from input param xml file using XPATH
+    #
+    alist = {}
+    for param in archp_list:
+        
+        try:
+            value =  xml_doc.xpath("//" + str(param) + "/text()", namespaces=namespaces)[0]
+        except:
+
+            try:
+                value = archschema_doc.xpath("//xs:element[@name='" + str(param) + "']/@default", namespaces=namespaces)[0]
+            except:
+                diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
+                diagnostics.error_message = param + " is a optional parameter with not default value defined in XSD"
+                exit(1)
+
+        alist[param] = utility.extract_value_xsd(value, archp_type_dict[param])
+        
 
     #
     # Parse device attribute

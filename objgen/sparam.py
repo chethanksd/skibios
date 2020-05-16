@@ -60,6 +60,7 @@ def parse_param_file():
     if(result == False):
         diagnostics.error = ecode.ERROR_PARAM_FILE_BAD
         for error in xmlschema.error_log:
+            diagnostics.error_message = 'error in skibios param file \n'
             diagnostics.error_message = diagnostics.error_message + '\nLine ' + str(error.line) + ' : ' + error.message
         exit(1)   
 

@@ -16,6 +16,7 @@
         <print_param_list>1</print_param_list>
         <print_param_gen>1</print_param_gen>
         <print_devp_list>1</print_devp_list>
+        <print_archp_list>1</print_archp_list>
         <skip_objgen>1</skip_objgen>
         <version>0</version>
     </objgen_debug>
