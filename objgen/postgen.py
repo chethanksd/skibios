@@ -129,8 +129,8 @@ def generate_summary_report():
     summary_report.write(temp)
 
     temp = ""
-    temp = temp + "flash size               : " + str(int(int(device.flash_size)/1024)) + "KB \n"
-    temp = temp + "sram size                : " + str(int(int(device.sram_size)/1024)) + "KB \n"
+    temp = temp + "flash size               : " + str(int(device.dlist['flash_size']/1024)) + "KB \n"
+    temp = temp + "sram size                : " + str(int(device.dlist['sram_size']/1024)) + "KB \n"
     temp = temp + "\n"
 
     temp = temp + "flash start address      : " + str(hex(int(device.flash_addr))) + "\n"

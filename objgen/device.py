@@ -18,9 +18,7 @@ from lxml import etree
 
 def parse_device_file():
 
-    global sram_size
     global sram_addr
-    global flash_size
     global flash_addr
 
     global intvec_size
@@ -122,20 +120,6 @@ def parse_device_file():
     # Start retriving core tags
     #
     try:
-        flash_size = (dfile_tree.getElementsByTagName("flash_size")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <flash_size> tag'
-        exit(1)
-    
-    try:
-        sram_size  = (dfile_tree.getElementsByTagName("sram_size")[0]).firstChild.data
-    except:
-        diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
-        diagnostics.error_message = 'error retriving <sram_size> tag'
-        exit(1)
-
-    try:
         intvec_size = (dfile_tree.getElementsByTagName("intcnt")[0]).firstChild.data
     except:
         diagnostics.error = ecode.ERROR_DEVICE_FILE_BAD
@@ -199,20 +183,6 @@ def parse_device_file():
 
 
 def validate_device_params():
-
-    try:
-        int(sram_size)
-    except ValueError:
-        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
-        diagnostics.error_message = 'sram size provided in device file is not valid'
-        exit(1)
-    
-    try:
-        int(flash_size)
-    except ValueError:
-        diagnostics.error = ecode.ERROR_DEVICE_PARAM_BAD
-        diagnostics.error_message = 'flash size provided in device file is not valid'
-        exit(1)
 
     try:
         int(sram_addr)
