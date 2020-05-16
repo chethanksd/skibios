@@ -52,6 +52,9 @@
                     <xs:complexType>
                         <xs:all>
 
+                            <xs:element name="version"              type="BinarySwitch"   minOccurs="0"   maxOccurs="1"  default="0"/>
+
+
                             <xs:element name="skip_objgen"          type="BinarySwitch"   minOccurs="0"   maxOccurs="1"  default="0"/>
 
 
@@ -70,45 +73,6 @@
                         <xs:all>
 
                             <xs:element name="skip_compile"          type="BinarySwitch"   minOccurs="0"   maxOccurs="1"  default="0"/>
-
-                        </xs:all>
-                    </xs:complexType>
-                </xs:element>
-
-
-            <!--
-                * param.h generator parameter list
-                * 
-                * register those parameters that needs to be included in param.h
-                *
-                -->
-                <xs:element name="param_gen" minOccurs="0" maxOccurs="0">
-                    <xs:complexType>
-                        <xs:all>
-
-                            <xs:element name="enable_safe_lock">
-                                <xs:complexType>
-                                    <xs:all>
-                                        <xs:element name="ENABLE_SAFE_LOCK"/>
-                                    </xs:all>
-                                </xs:complexType>
-                            </xs:element>
-
-                            <xs:element name="process_id_start">
-                                <xs:complexType>
-                                    <xs:all>
-                                        <xs:element name="PROCESS_ID_START"/>
-                                    </xs:all>
-                                </xs:complexType>
-                            </xs:element>
-
-                            <xs:element name="disable_buffer">
-                                <xs:complexType>
-                                    <xs:all>
-                                        <xs:element name="DISABLE_BUFFER"/>
-                                    </xs:all>
-                                </xs:complexType>
-                            </xs:element>
 
                         </xs:all>
                     </xs:complexType>

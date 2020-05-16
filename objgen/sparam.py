@@ -105,8 +105,11 @@ def parse_param_file():
     param_gen_list = {}
     param_gen_sym  = {}
 
+    param_gen_doc = etree.parse(svar.repo_path + "objgen/xsd_schema/param_gen.xml")
+
+
     try:
-        param_gen_list = xmlschema_doc.xpath("//xs:element[@name='param_gen']/xs:complexType/xs:all/xs:element/@name", namespaces=namespaces)
+        param_gen_list = param_gen_doc.xpath("/param_gen//symbol/@param_name", namespaces=namespaces)
     except:
         diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
         diagnostics.error_message = "invalid <param_gen> entries"
@@ -114,10 +117,10 @@ def parse_param_file():
 
     for param in param_gen_list:
         try:
-            symbol =  xmlschema_doc.xpath("//xs:element[@name='param_gen']//xs:element[@name='" + str(param) + "']//xs:element/@name", namespaces=namespaces)[0]    
+            symbol =  param_gen_doc.xpath("/param_gen//symbol[@param_name='" + str(param) + "']/@symbol_name", namespaces=namespaces)[0]    
         except:
             diagnostics.error = ecode.ERROR_BAD_XSD_SCHEMA
-            diagnostics.error_message = "symbol name not defined for " + param + " . It is included in param_gen list"
+            diagnostics.error_message = "symbol name not defined for " + param + ". It is included in param_gen list"
             exit(1) 
         
         param_gen_sym[param] = symbol

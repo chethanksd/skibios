@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!--
+    * param.h generator parameter list
+    * 
+    * register those parameters that needs to be included in param.h
+    *
+    -->
+
+<param_gen>
+
+    <symbol     param_name="enable_safe_lock"      symbol_name="ENABLE_SAFE_LOCK"/>
+
+    <symbol     param_name="process_id_start"      symbol_name="PROCESS_ID_START"/>
+
+    <symbol     param_name="disable_buffer"        symbol_name="DISABLE_BUFFER"/>
+
+</param_gen>

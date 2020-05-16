@@ -45,7 +45,6 @@ svar.repo_path = os.path.abspath(__file__)
 svar.repo_path = svar.repo_path.replace("objgen\start.py", "")
 svar.repo_path = svar.repo_path.replace("\\","/") 
 
-print('repopath :', svar.repo_path)
 
 #
 # START STAGE 2: Get device file argument
@@ -84,7 +83,7 @@ if not pfile_exists:
     exit(1)
 
 #
-# START STAGE 3: Check if build path exists
+# START STAGE 4: Check if build path exists
 #
 #
 diagnostics.start_stage = 4
@@ -108,7 +107,7 @@ if not bpath_exists:
     os.mkdir(svar.build_path)
 
 #
-# START STAGE 4: Check if bin path exists
+# START STAGE 5: Check if bin path exists
 #
 #
 diagnostics.start_stage = 5

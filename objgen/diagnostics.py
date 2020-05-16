@@ -8,6 +8,9 @@
 import ecode
 import sparam
 
+OBJGEN_VERSION_MAJOR = 1
+OBJGEN_VERSION_MINOR = 0
+
 start_stage     = 0
 pregen_stage    = 0
 objgen_stage    = 0
@@ -31,6 +34,14 @@ def run_diagnostics():
 
 
 def run_objgen_debug_commands():
+
+    #
+    # Print version info
+    #
+    if(sparam.slist['version'] == 1):
+        print("***** Verion info *****")
+        print("SKIBIOS Objgen Version " + str(OBJGEN_VERSION_MAJOR) + "." + str(OBJGEN_VERSION_MINOR))
+
 
     #
     # Print parameter list if enabled
