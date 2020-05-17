@@ -20,7 +20,5 @@ int main() {
 
     start_scheduler();
 
-    getch();
-
     return 0;
 }

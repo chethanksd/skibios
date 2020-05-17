@@ -15,7 +15,8 @@
 #include <interrupt.h>
 #include <os_support.h>
 
-
+// global variables
+uint32_t _proc_heap_addr = 0;
 
 uint8_t arch_kernel_init() {
 
@@ -70,4 +71,46 @@ uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority)  {
 
     return ERROR_NONE;
 
+}
+
+uint8_t switch_mcu_mode() {
+    
+    return ERROR_NONE;
+
+}
+
+uint8_t heap_init() {
+
+    return ERROR_NONE;
+    
+}
+
+uint8_t btask_psp_correction() {
+
+    return ERROR_NONE;
+
+}
+
+uint8_t mutex_lock() {
+
+    return ERROR_NONE;
+
+}
+
+uint8_t mutex_unlock() {
+
+    return ERROR_NONE;
+
+}
+
+uint8_t arch_semaphore_inc() {
+
+    return ERROR_NONE;
+
+}
+
+uint8_t arch_semaphore_dec() {
+
+    return ERROR_NONE;
+    
 }
