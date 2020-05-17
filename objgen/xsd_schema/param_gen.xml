@@ -9,6 +9,10 @@
 
 <param_gen>
 
+    <symbol     param_name="kernel_sram_address"   symbol_name="KERNEL_START_ADDRESS"/>
+
+    <symbol     param_name="process_per_sec"       symbol_name="PROCESS_PER_SEC"/>
+
     <symbol     param_name="enable_safe_lock"      symbol_name="ENABLE_SAFE_LOCK"/>
 
     <symbol     param_name="process_id_start"      symbol_name="PROCESS_ID_START"/>

@@ -325,17 +325,9 @@ def generate_param_header():
     temp = "#define PROCESS_STACK_SIZE " + str(int(sparam.slist['process_stack_size'] / 4)) + "\n"
     param_header.write(temp)
 
-    temp = "#define ENABLE_SKIBIOS 1 \n"
-    param_header.write(temp)
-
-    temp = "#define PROCESS_PER_SEC " + str(sparam.slist['process_per_sec']) + "\n"
-    param_header.write(temp)
-
     temp = "#define HEAP_BOOKEEPING_SIZE " + str(sparam.slist['ghmb_region_size'] * 256) + "\n"
     param_header.write(temp)
 
-    temp = "#define KERNEL_START_ADDRESS " + str(sparam.slist['kernel_sram_address']) + "\n"
-    param_header.write(temp)
 
     #
     # include OSSIM_RUN based on  arch is ossim or not (ToDo: make it part of xsd)
@@ -343,7 +335,7 @@ def generate_param_header():
     if(device.dlist['arch'] == 'ossim'):
         temp = "#define OSSIM_RUN 1 \n"
     else:
-        temp = "#definE OSSIM_RUN 0 \n"
+        temp = "#define OSSIM_RUN 0 \n"
     
     param_header.write(temp)
 
