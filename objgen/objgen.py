@@ -338,6 +338,17 @@ def generate_param_header():
     param_header.write(temp)
 
     #
+    # include OSSIM_RUN based on  arch is ossim or not (ToDo: make it part of xsd)
+    #
+    if(device.dlist['arch'] == 'ossim'):
+        temp = "#define OSSIM_RUN 1 \n"
+    else:
+        temp = "#definE OSSIM_RUN 0 \n"
+    
+    param_header.write(temp)
+
+
+    #
     # inlcude parameters registered in <param_gen> of XSD schema
     #
     for param in sparam.param_gen_list:
