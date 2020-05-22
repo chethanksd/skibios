@@ -35,13 +35,15 @@ def arch_specific_objgen():
 
 def append_arch_constants():
 
-    param_header = open(svar.build_path + "/allsrc/arch_param.h", "w+")
+    param_header = open(svar.build_path + "/hdr/arch_param.h", "w+")
 
     param_header.write("#ifndef _ARCH_PARAM_H_\n")
     param_header.write("#define _ARCH_PARAM_H_\n")
     param_header.write("\n")
 
     param_header.write("// Arch Specific Symbolic Constants\n\n")
+
+    param_header.write("#define OSSIM_RUN   1\n")
 
     param_header.write("\n\n")
     param_header.write("#endif")

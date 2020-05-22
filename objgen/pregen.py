@@ -38,14 +38,26 @@ def run_pregen():
 
 
     #
-    # PREGEN STAGE 3: Create allsrc folder
+    # PREGEN STAGE 3: Create allsrc, misc, hdr and api folder
     #
     #
     diagnostics.pregen_stage = 3
 
-    apath_exists = os.path.isdir(svar.build_path + '/allsrc')
-    if not apath_exists:
+    path_exists = os.path.isdir(svar.build_path + '/allsrc')
+    if not path_exists:
         os.mkdir(svar.build_path + '/allsrc')
+
+    path_exists = os.path.isdir(svar.build_path + '/misc')
+    if not path_exists:
+        os.mkdir(svar.build_path + '/misc')
+
+    path_exists = os.path.isdir(svar.build_path + '/hdr')
+    if not path_exists:
+        os.mkdir(svar.build_path + '/hdr')
+
+    path_exists = os.path.isdir(svar.build_path + '/api')
+    if not path_exists:
+        os.mkdir(svar.build_path + '/api')        
 
     
     #

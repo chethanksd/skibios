@@ -62,7 +62,7 @@ symgen: arg_check
 	$(GRP_TOOL) "OFFSET_OF" $(SYMGEN_PATH)/symgen.S > $(SYMGEN_PATH)/symgen.txt
 	$(GRP_TOOL) "SIZE_OF" $(SYMGEN_PATH)/symgen.S >> $(SYMGEN_PATH)/symgen.txt
 	$(CAT_TOOL) $(SYMGEN_PATH)/symgen.S | $(AWK_TOOL) '($$1 == "->") { print "#define " $$2 " " $$3 }' > $(SYMGEN_PATH)/symgen.h
-	$(CP_TOOL) $(SYMGEN_PATH)/symgen.h $(ALLSRC_PATH)/symgen.h
+	$(CP_TOOL) $(SYMGEN_PATH)/symgen.h $(HDR_PATH)/symgen.h
 
 #
 # UPC resource calculation target

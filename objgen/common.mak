@@ -38,6 +38,8 @@ ALLSRC_PATH = $(BUILD_PATH)/allsrc
 SYMGEN_PATH = $(BUILD_PATH)/symgen
 OBJ_PATH    = $(BUILD_PATH)/obj
 RESOURCE_PATH = $(BUILD_PATH)/resource_cal
+HDR_PATH = $(BUILD_PATH)/hdr
+API_PATH = $(BUILD_PATH)/api
 
 
 

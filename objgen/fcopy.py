@@ -19,23 +19,12 @@ def run_allsrc_copy():
     #
     # creat misc, inc and api directory
     #
-    path_exists = os.path.isdir(svar.build_path + '/misc')
-    if not path_exists:
-        os.mkdir(svar.build_path + '/misc')
 
-    path_exists = os.path.isdir(svar.build_path + '/hdr')
-    if not path_exists:
-        os.mkdir(svar.build_path + '/hdr')
-
-    path_exists = os.path.isdir(svar.build_path + '/api')
-    if not path_exists:
-        os.mkdir(svar.build_path + '/api')
 
 
     #
     # Get list of files in allsrc
     #
-
     allsrc_files = os.listdir(svar.build_path + '/allsrc')
 
 
@@ -43,6 +32,20 @@ def run_allsrc_copy():
     # Generate source copy file list
     #
     objgen.call_make_target('gen_copy_list', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
+
+
+    #
+    # Copy source files to allsrc
+    #
+
+    #
+    # Copy include files to hdr
+    #
+
+    #
+    # Copy api include file to api
+    #
+
 
 
 

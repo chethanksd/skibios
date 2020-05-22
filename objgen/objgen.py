@@ -307,7 +307,7 @@ def call_make_target(target, param, error_code):
 
 def generate_param_header():
 
-    param_header = open(svar.build_path + "/allsrc/param.h", "w+")
+    param_header = open(svar.build_path + "/hdr/param.h", "w+")
 
     param_header.write("#ifndef _PARAM_H_\n")
     param_header.write("#define _PARAM_H_\n")
