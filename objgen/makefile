@@ -90,6 +90,23 @@ allsrc_copy: arg_check
 	$(CP_TOOL) $(COPY_LIST) $(ALLSRC_PATH)
 
 
+gen_copy_list: arg_check gen_src_list gen_hdr_list gen_api_list
+
+gen_src_list:
+	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(COMMON_SRC_EXC), $(CREATE_EXCLUDE_ARG)))
+	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(ARCH_SRC_EXC), $(CREATE_EXCLUDE_ARG)))
+	$(FIND_TOOL) $(SOURCE_PATHS) -maxdepth 1 -type f \( -name '*.c' -o -name '*.S' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/misc/src_list.txt
+
+gen_hdr_list:
+	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(COMMON_HDR_EXC), $(CREATE_EXCLUDE_ARG)))
+	$(FIND_TOOL) $(COMMON_HDR_INC) -maxdepth 1 -type f \( -name '*.h' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/misc/hdr_list.txt
+
+gen_api_list:
+	$(FIND_TOOL) $(COMMON_API_INC) -maxdepth 1 -type f \( -name '*.h' \) > $(BUILD_PATH)/misc/api_list.txt
+	$(eval API_FILES += $(foreach API_FILE, $(COMMON_API_HDR_INC), "$(API_FILE)\n"))
+	@echo -e $(API_FILES) >> $(BUILD_PATH)/misc/api_list.txt
+
+
 #
 # source file compilation target
 #

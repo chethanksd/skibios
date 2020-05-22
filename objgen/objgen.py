@@ -15,6 +15,7 @@ import ecode
 import svar
 import device
 import sparam
+import fcopy
 
 
 def run_objgen():
@@ -229,6 +230,7 @@ def run_objgen():
     diagnostics.objgen_stage = 9
 
     print('***** Copying required files to allsrc *****')
+    fcopy.run_allsrc_copy()
 
     call_make_target('allsrc_copy', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
 
@@ -326,17 +328,6 @@ def generate_param_header():
     param_header.write(temp)
 
     temp = "#define HEAP_BOOKEEPING_SIZE " + str(sparam.slist['ghmb_region_size'] * 256) + "\n"
-    param_header.write(temp)
-
-
-    #
-    # include OSSIM_RUN based on  arch is ossim or not (ToDo: make it part of xsd)
-    #
-    if(device.dlist['arch'] == 'ossim'):
-        temp = "#define OSSIM_RUN 1 \n"
-    else:
-        temp = "#define OSSIM_RUN 0 \n"
-    
     param_header.write(temp)
 
 

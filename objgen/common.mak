@@ -40,14 +40,4 @@ OBJ_PATH    = $(BUILD_PATH)/obj
 RESOURCE_PATH = $(BUILD_PATH)/resource_cal
 
 
-#
-# Common Include search path
-#
-COMMON_IPATH  = -I$(ROOT_DIR)/src/include
-COMMON_IPATH += -I$(ROOT_DIR)/src/api
-COMMON_IPATH += -I$(ROOT_DIR)/src/service
-COMMON_IPATH += -I$(BUILD_PATH)
-COMMON_IPATH += -I$(ALLSRC_PATH)
-
-
 
