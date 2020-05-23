@@ -1,5 +1,6 @@
 import sys, os
 import subprocess
+import shutil
 import time
 
 import diagnostics
@@ -37,6 +38,20 @@ def run_allsrc_copy():
     #
     # Copy source files to allsrc
     #
+    try:
+        src_list_file = open(svar.build_path + "/misc/src_list.txt", 'r') 
+        src_list = src_list_file.readlines() 
+        src_list_file.close()
+    except:
+        diagnostics.error = ecode.ERROR_SRC_LIST_NOT_FOUND
+        exit(1)
+
+    for file in src_list:
+        file = file.replace('//', '/')
+        file = file.strip()
+        file_name = os.path.basename(file)
+        file_name = file_name.strip()
+        shutil.copyfile(file, svar.build_path + '/allsrc/' + file_name)
 
     #
     # Copy include files to hdr

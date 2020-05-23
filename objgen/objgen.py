@@ -232,8 +232,6 @@ def run_objgen():
     print('***** Copying required files to allsrc *****')
     fcopy.run_allsrc_copy()
 
-    call_make_target('allsrc_copy', basic_param, ecode.ERROR_SOURCE_FILE_COPY_ERROR)
-
     #
     # OBJGEN STAGE 10: Compile files in allsrc to generate obj files
     #

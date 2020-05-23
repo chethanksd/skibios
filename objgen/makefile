@@ -82,20 +82,12 @@ resource: arg_check get_include_spath
 
 
 #
-# source file copy to allsrc target
+# source & include file copy target
 #
 
 define CREATE_EXCLUDE_ARG
 ! -name '$(EXCLUDE_FILE)'
 endef
-
-allsrc_copy: arg_check
-	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(COMMON_SRC_EXC), $(CREATE_EXCLUDE_ARG)))
-	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(ARCH_SRC_EXC), $(CREATE_EXCLUDE_ARG)))
-	$(FIND_TOOL) $(SOURCE_PATHS) -maxdepth 1 -type f \( -name '*.c' -o -name '*.S' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/copy_list.txt
-	$(eval COPY_LIST = $(shell $(FIND_TOOL) $(SOURCE_PATHS)  -maxdepth 1 -type f \( -name '*.c' -o -name '*.S' \) $(EXCLUDE_ARG)))
-	$(CP_TOOL) $(COPY_LIST) $(ALLSRC_PATH)
-
 
 gen_copy_list: arg_check gen_src_list gen_hdr_list gen_api_list
 
@@ -104,9 +96,11 @@ gen_src_list:
 	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(ARCH_SRC_EXC), $(CREATE_EXCLUDE_ARG)))
 	$(FIND_TOOL) $(SOURCE_PATHS) -maxdepth 1 -type f \( -name '*.c' -o -name '*.S' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/misc/src_list.txt
 
+
 gen_hdr_list:
 	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(COMMON_HDR_EXC), $(CREATE_EXCLUDE_ARG)))
 	$(FIND_TOOL) $(COMMON_HDR_INC) -maxdepth 1 -type f \( -name '*.h' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/misc/hdr_list.txt
+
 
 gen_api_list:
 	$(FIND_TOOL) $(COMMON_API_INC) -maxdepth 1 -type f \( -name '*.h' \) > $(BUILD_PATH)/misc/api_list.txt
@@ -130,13 +124,13 @@ compile_allsrc: arg_check compile_init $(AS_PROGS) $(CC_PROGS)
 # pre compile rules
 
 compile_init:
-	@echo > $(BUILD_PATH)/compile_list.txt
+	@echo > $(BUILD_PATH)/misc/compile_list.txt
 
 # Build targets for c files
 
 %_c.o : %.c
 	$(eval OUTPUT = $(subst /allsrc,/obj,$@))
-	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/compile_list.txt
+	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/misc/compile_list.txt
 	@echo 'converting $(notdir $<) to $(notdir $(OUTPUT))'
 	@$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)
 	
@@ -145,6 +139,6 @@ compile_init:
 
 %_S.o : %.S
 	$(eval OUTPUT = $(subst /allsrc,/obj,$@))
-	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/compile_list.txt
+	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/misc/compile_list.txt
 	@echo 'converting $(notdir $<) to $(notdir $(OUTPUT))'
 	@$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)

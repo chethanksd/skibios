@@ -38,6 +38,7 @@ ERROR_DEVICE_ATTRIBUTES_FAILED              =   122
 ERROR_SOURCE_FILE_COPY_ERROR                =   123
 ERROR_OBJECT_GENERATION_ERROR               =   124
 ERROR_BAD_XSD_SCHEMA                        =   125
+ERROR_SRC_LIST_NOT_FOUND                    =   126
 
 #
 # Error description
@@ -120,3 +121,6 @@ Possibly one or more modified skibios source files has syntax error'
 
 error_description[ERROR_BAD_XSD_SCHEMA] = 'Error in XSD schema. \
 Check XSD schema file inside objgen folder'
+
+error_description[ERROR_SRC_LIST_NOT_FOUND] = 'src_list.txt not found in misc folder of build path. \
+CHeck your source list in makefile'
