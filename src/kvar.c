@@ -27,7 +27,7 @@ volatile uint8_t   KSECTION(.kdat) lstash_ptr               = 1;
 volatile uint32_t  KSECTION(.kbss) pstack_addr;
 volatile uint32_t  KSECTION(.kbss) cpu_freq;
 
-volatile task_t KSECTION(.kbss) *proc_obj[MAX_PROCESS_COUNT];
+volatile task_t    KSECTION(.kbss) *proc_obj[MAX_PROCESS_COUNT];
 volatile uint32_t  KSECTION(.kbss) PSP_Array[MAX_PROCESS_COUNT];
 volatile uint8_t   KSECTION(.kbss) priority_Array[MAX_PROCESS_COUNT][2];
 volatile uint32_t  KSECTION(.kbss) mutex_stash[MAX_PROCESS_COUNT];

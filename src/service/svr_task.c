@@ -5,7 +5,7 @@
  *
  */
 
-#include <svr_process.h>
+#include <svr_task.h>
 #include <os_support.h>
 #include <kvar.h>
 #include <svc.h>
@@ -16,7 +16,7 @@
 #include <access.h>
 #include <defines.h>
 
-uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
+uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t error = ERROR_NONE;
     uint32_t proc_obj_ptr;

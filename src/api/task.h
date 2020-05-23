@@ -1,5 +1,5 @@
-#ifndef PROCESS_H
-#define PROCESS_H
+#ifndef _TASK_H_
+#define _TASK_H_
 
 #include <stdint.h>
 #include <stdbool.h>
