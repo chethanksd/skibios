@@ -1,5 +1,5 @@
-#ifndef _PROC_OBJ_H_
-#define _PROC_OBJ_H_
+#ifndef _TASK_OBJ_H_
+#define _TASK_OBJ_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -9,9 +9,9 @@
 #endif
 
 #ifdef OSSIM_RUN
-#define PROCESS_RETURN_T  DWORD WINAPI
+#define TASK_RETURN_T  DWORD WINAPI
 #else
-#define PROCESS_RETURN_T  void
+#define TASK_RETURN_T  void
 #endif
 
 typedef struct {
@@ -19,7 +19,7 @@ typedef struct {
     uint8_t error;
     uint32_t process_id;
     uint8_t priority;
-    PROCESS_RETURN_T *ptr_func;
+    TASK_RETURN_T *ptr_func;
     
     // hibernate variables
     uint8_t hibernate;
@@ -27,7 +27,7 @@ typedef struct {
     uint32_t *op2;
     uint32_t value;
 
-} process_t;
+} task_t;
 
 
 #endif

@@ -42,18 +42,18 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         }
 
         /* Check if priority level request is valid */
-        if(((process_t*)proc_obj_ptr)->priority > 127) {
+        if(((task_t*)proc_obj_ptr)->priority > 127) {
 
-            ((process_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
+            ((task_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
             error = ERROR_INVALID_TASK_PRIORITY;
             goto quit_error;
             
         }
 
         /* Check if Base process creation is attempted */
-        if(((process_t*)proc_obj_ptr)->priority == 0 && first_start == true) {
+        if(((task_t*)proc_obj_ptr)->priority == 0 && first_start == true) {
 
-            ((process_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
+            ((task_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
             error = ERROR_INVALID_TASK_PRIORITY;
             goto quit_error;
 
@@ -63,7 +63,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         /* Dynamically initialize the Process Stack & Check if it is successful */
         if(!(PSP_Array[i] = pstack_addr + (i * PROCESS_STACK_SIZE * 4))) {
 
-            ((process_t*)proc_obj_ptr)->error=ERROR_OUT_OF_MEMORY;
+            ((task_t*)proc_obj_ptr)->error=ERROR_OUT_OF_MEMORY;
             error = ERROR_OUT_OF_MEMORY;
             goto quit_error;
 
@@ -89,7 +89,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
             
         }
 
-        proc_obj[i] = (process_t*) proc_obj_ptr;
+        proc_obj[i] = (task_t*) proc_obj_ptr;
         proc_obj[i]->process_id = (i << 16) | (total_process_count + 1);
         process_id[i] = (i << 16) | (total_process_count + 1);
 
@@ -169,7 +169,7 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
 
     } else {
 
-        ((process_t*)proc_obj_ptr)->error=ERROR_MAX_PROCESS_COUNT;
+        ((task_t*)proc_obj_ptr)->error=ERROR_MAX_PROCESS_COUNT;
         error = ERROR_MAX_PROCESS_COUNT;
 
     }

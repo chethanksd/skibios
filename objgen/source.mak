@@ -20,7 +20,7 @@ COMMON_HDR_INC      += $(BUILD_PATH)
 COMMON_HDR_INC      += $(ALLSRC_PATH)
 
 COMMON_HDR_EXC       = svc.h
-COMMON_HDR_EXC      += proc_obj.h
+COMMON_HDR_EXC      += task_obj.h
 
 
 #
@@ -29,5 +29,5 @@ COMMON_HDR_EXC      += proc_obj.h
 COMMON_API_INC      += $(ROOT_DIR)/src/api
 
 COMMON_API_HDR_INC   = $(ROOT_DIR)/src/include/svc.h
-COMMON_API_HDR_INC  += $(ROOT_DIR)/src/include/proc_obj.h
+COMMON_API_HDR_INC  += $(ROOT_DIR)/src/include/task_obj.h
 COMMON_API_HDR_INC  += $(ARCH_PATH)/app_support.h

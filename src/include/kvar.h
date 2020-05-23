@@ -1,7 +1,7 @@
 #ifndef KVAR_H
 #define KVAR_H
 
-#include <proc_obj.h>
+#include <task_obj.h>
 
 #ifndef NO_KERNEL_SECTION
 #define KSECTION(str) __attribute__ ((section ("" #str "")))
@@ -29,7 +29,7 @@ extern volatile uint8_t  lstash_ptr;
 extern volatile uint32_t  pstack_addr;
 extern volatile uint32_t  cpu_freq;
 
-extern volatile process_t  *proc_obj[];
+extern volatile task_t  *proc_obj[];
 extern volatile uint32_t PSP_Array[];
 extern volatile uint8_t  priority_Array[][2];
 extern volatile uint32_t mutex_stash[];
@@ -43,7 +43,7 @@ extern volatile uint32_t *op1[];
 extern volatile uint32_t *op2[];
 extern volatile uint32_t hib_value[];
 
-extern process_t  base_task;
+extern task_t  base_task;
 extern uint32_t invocated_task;
 extern uint32_t invocated_args;
 
