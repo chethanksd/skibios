@@ -12,13 +12,28 @@
 #include <error.h>
 #include <param.h>
 #include <kvar.h>
+#include <arch_kvar.h>
 #include <interrupt.h>
 #include <os_support.h>
+
+#include <stdio.h>
 
 // global variables
 uint32_t _proc_heap_addr = 0;
 
 uint8_t arch_kernel_init() {
+
+    // attempt to create kernel_servie_lock mutex
+    // default security attributes
+    // initially not owned
+    // unnamed mutex
+    kernel_service_lock = CreateMutex(NULL, FALSE, NULL);             
+
+    if (kernel_service_lock == NULL) 
+    {
+        printf("Failed to create kernel service mutex error: %lu\n", GetLastError());
+        exit(1);
+    }
 
     return ERROR_NONE;
 

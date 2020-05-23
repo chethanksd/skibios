@@ -118,9 +118,11 @@ void  start_scheduler(void) {
     // to user mode and then call kernel service START_SCHEDULER
     switch_mcu_mode();
 
+#ifndef OSSIM_RUN
     while(1) {
         // This part of code should never be reached
     }
+#endif
 
 }
 

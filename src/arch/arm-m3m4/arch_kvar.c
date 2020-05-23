@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include <kvar.h>
+#include <arch_kvar.h>
 
 #ifndef UPC_RESOURCE_CAL
 #include <param.h>

@@ -6,9 +6,10 @@
  */
 
 #include <stdint.h>
-#include <kvar.h>
+#include <arch_kvar.h>
 
 #ifndef UPC_RESOURCE_CAL
 #include <param.h>
 #endif
 
+HANDLE kernel_service_lock;
