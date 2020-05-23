@@ -8,7 +8,7 @@
 #include <share.h>
 #include <param.h>
 #include <kernel.h>
-#include <process.h>
+#include <task.h>
 #include <error.h>
 #include <svc.h>
 #include <kvar.h>

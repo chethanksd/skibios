@@ -11,7 +11,7 @@
 #include <kernel.h>
 #include <share.h>
 #include <param.h>
-#include <process.h>
+#include <task.h>
 #include <error.h>
 #include <access.h>
 #include <kvar.h>

@@ -12,7 +12,7 @@
 #include <error.h>
 #include <param.h>
 #include <kernel.h>
-#include <process.h>
+#include <task.h>
 #include <access.h>
 #include <defines.h>
 

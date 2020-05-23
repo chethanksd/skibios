@@ -7,7 +7,7 @@
 #include <error.h>
 #include <kernel.h>
 #include <share.h>
-#include <process.h>
+#include <task.h>
 #include <interrupt.h>
 #include <svc.h>
 #include <param.h>

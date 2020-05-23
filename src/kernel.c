@@ -10,7 +10,7 @@
 #include <kernel.h>
 #include <heap.h>
 #include <share.h>
-#include <process.h>
+#include <task.h>
 #include <interrupt.h>
 #include <permissions.h>
 #include <svc.h>
