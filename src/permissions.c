@@ -35,7 +35,7 @@ uint8_t base_run(void *args) {
 uint8_t base_release(uint8_t error) {
 
     if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     SVC_RELEASE_BASE(error, error);
@@ -47,7 +47,7 @@ uint8_t base_release(uint8_t error) {
 uint8_t get_invocation_args(uint32_t *pid, void **args) {
 
     if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     if(invocated_task == 0) {
@@ -66,7 +66,7 @@ uint8_t grant_permission(uint32_t pid, uint16_t permission) {
     uint8_t error = ERROR_NONE;
 
     if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     SVC_GRANT_PERMISSION(pid, permission, error);

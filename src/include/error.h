@@ -12,9 +12,9 @@
 #define ERROR_WRONG_HEAP_POINTER                 8
 #define ERROR_EMPTY_HEAP                         9
 #define ERROR_FULL_HEAP                          10
-#define ERROR_ACCESS_DENIED                      11
+#define ERROR_INSUFFICIENT_PERMISSION            11
 #define ERROR_MPU_UNSUPPORTED                    12
-#define ERROR_INVALID_PRIORITY                   13
+#define ERROR_INVALID_TASK_PRIORITY              13
 #define ERROR_INVALID_MPU_REGION                 14
 #define ERROR_INVALID_MPU_ADDRESS                15
 #define ERROR_BASE_PROCESS                       16

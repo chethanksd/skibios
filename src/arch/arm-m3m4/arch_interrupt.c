@@ -53,7 +53,7 @@ uint8_t arch_interrupt_enable(uint32_t interrupt) {
 
     // valid interrupt number?
     if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     // enable specified interrupt
@@ -68,7 +68,7 @@ uint8_t arch_interrupt_disable(uint32_t interrupt) {
 
     // valid interrupt number?
     if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     // disable specified interrupt
@@ -83,7 +83,7 @@ uint8_t arch_interrupt_register(uint32_t interrupt, uint32_t handler) {
 
     // valid interrupt number?
     if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     // save the interrupt handler
@@ -97,7 +97,7 @@ uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority) {
 
     // valid interrupt number?
     if(interrupt < 16) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     HWREG(prioreg[(interrupt - 16)/4]) |= (PRIORITY_WRITE_MASK & (uint32_t)priority) << (8 * ((interrupt - 16) & 3));

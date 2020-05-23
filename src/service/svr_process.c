@@ -44,8 +44,8 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         /* Check if priority level request is valid */
         if(((process_t*)proc_obj_ptr)->priority > 127) {
 
-            ((process_t*)proc_obj_ptr)->error = ERROR_INVALID_PRIORITY;
-            error = ERROR_INVALID_PRIORITY;
+            ((process_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
+            error = ERROR_INVALID_TASK_PRIORITY;
             goto quit_error;
             
         }
@@ -53,8 +53,8 @@ uint32_t svc_service_create_process(uint32_t *svc_num, uint32_t *arguments) {
         /* Check if Base process creation is attempted */
         if(((process_t*)proc_obj_ptr)->priority == 0 && first_start == true) {
 
-            ((process_t*)proc_obj_ptr)->error = ERROR_INVALID_PRIORITY;
-            error = ERROR_INVALID_PRIORITY;
+            ((process_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
+            error = ERROR_INVALID_TASK_PRIORITY;
             goto quit_error;
 
         }

@@ -26,7 +26,7 @@ uint32_t svc_service_int_enable(uint32_t *svc_num, uint32_t *arguments) {
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
@@ -47,7 +47,7 @@ uint32_t svc_service_int_disable(uint32_t *svc_num, uint32_t *arguments) {
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
@@ -70,7 +70,7 @@ uint32_t svc_service_int_set_priority(uint32_t *svc_num, uint32_t *arguments) {
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
@@ -93,7 +93,7 @@ uint32_t svc_service_int_register(uint32_t *svc_num, uint32_t *arguments) {
 
     // check access permission of currrent_task for Interrupt control
     if((permissions[current_task] & (1 << PERMISSION_INTCTRL)) != (1 << PERMISSION_INTCTRL)) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 

@@ -196,7 +196,7 @@ uint32_t svc_service_hwreg_write(uint32_t *svc_num, uint32_t *arguments) {
 
     // check access permission of currrent_task for hwreg operation
     if((permissions[current_task] & (1 << PERMISSION_HWREG)) != (1 << PERMISSION_HWREG)) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
@@ -219,7 +219,7 @@ uint32_t svc_service_hwreg_read(uint32_t *svc_num, uint32_t *arguments) {
 
     // check access permission of currrent_task for hwreg operation
     if((permissions[current_task] & (1 << PERMISSION_HWREG)) != (1 << PERMISSION_HWREG)) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
@@ -394,7 +394,7 @@ uint8_t device_reset() {
 
     // only BaseTask have access to device_reset function
     if(current_task != 0) {
-        return ERROR_ACCESS_DENIED;
+        return ERROR_INSUFFICIENT_PERMISSION;
     }
 
     svc(DEVICE_RESET);

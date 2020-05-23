@@ -49,7 +49,7 @@ uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
 
     // only base task can use this service
     if(current_task != 0) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
@@ -89,7 +89,7 @@ uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
     permission = arguments[1];
 
     if(current_task != 0) {
-        error = ERROR_ACCESS_DENIED;
+        error = ERROR_INSUFFICIENT_PERMISSION;
         goto quit_error;
     }
 
