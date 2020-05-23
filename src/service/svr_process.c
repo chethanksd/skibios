@@ -179,7 +179,7 @@ quit_error:
     return error;
 }
 
-uint32_t svc_service_process_kill(uint32_t *svc_num, uint32_t *arguments) {
+uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
     
     uint32_t error = ERROR_NONE;
     uint32_t pid;

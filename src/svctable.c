@@ -49,7 +49,7 @@ const svc_dispatch_table_t svc_dispatch[] = {
     {.svc_code = HWREG_WRITE,       .svc_service = svc_service_hwreg_write      },
     {.svc_code = HWREG_READ,        .svc_service = svc_service_hwreg_read       },
     {.svc_code = CREATE_PROCESS,    .svc_service = svc_service_create_process   },
-    {.svc_code = KILL_PROCESS,      .svc_service = svc_service_process_kill     },
+    {.svc_code = KILL_PROCESS,      .svc_service = svc_service_task_kill     },
     {.svc_code = INVOKE_BASE,       .svc_service = svc_service_invoke_base      },
     {.svc_code = RELEASE_BASE,      .svc_service = svc_service_release_base     },
     {.svc_code = GRANT_PERMISSION,  .svc_service = svc_service_grant_permission },

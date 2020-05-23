@@ -91,10 +91,10 @@ uint32_t kernel_init(void) {
     // which implies if current_task = 0 means BaseTask
     // is in active state
     // 
-    process_init(&base_task);
+    task_init(&base_task);
     base_task.ptr_func = (void*)&BaseTask;
     base_task.priority = 0;
-    process_start(&base_task);
+    task_start(&base_task);
     
     // base task should have all permissions
     permissions[0] = 0xFFFF;
