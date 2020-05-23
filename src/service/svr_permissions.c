@@ -27,7 +27,7 @@ uint32_t svc_service_invoke_base(uint32_t *svc_num, uint32_t *arguments) {
         goto quit_error;
     }
 
-    invocated_task = process_id[current_task];
+    invocated_task = task_id[current_task];
     invocated_args = invocation_arg;
     arguments[0] = (uint32_t)&base_mutex;
 
@@ -55,7 +55,7 @@ uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
 
     // store invocation error on hib_value of task that invocated base
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-        if(process_id[i] == invocated_task) {
+        if(task_id[i] == invocated_task) {
             hib_value[i] = return_error;
             break;
         }
@@ -94,7 +94,7 @@ uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
     }
 
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-        if(process_id[i] == pid) {
+        if(task_id[i] == pid) {
             permissions[i] = permission;
             break;
         }

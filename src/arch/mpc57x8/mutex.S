@@ -19,7 +19,7 @@
 .section .text, "ax"
 
 .extern current_task
-.extern process_id
+.extern task_id
 .extern mutex_stash
 
 .type mutex_lock, %function
@@ -50,8 +50,8 @@ mutex_lock:
        se_lwz   r4, 0(r6)
        e_slwi   r4, r4, 2
 
-       e_lis    r6, process_id@h
-       e_or2i   r6, process_id@l
+       e_lis    r6, task_id@h
+       e_or2i   r6, task_id@l
        e_addi   r6, r6, 2
        lhax     r6, r6, r4
 
@@ -60,8 +60,8 @@ mutex_lock:
 
        // locking is sucessful
        // write remaining msb
-       e_lis    r6, process_id@h
-       e_or2i   r6, process_id@l
+       e_lis    r6, task_id@h
+       e_or2i   r6, task_id@l
        lhax     r6, r6, r4
 
        e_addi   r3, r3, -2

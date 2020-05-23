@@ -29,14 +29,14 @@ extern volatile uint8_t  lstash_ptr;
 extern volatile uint32_t  pstack_addr;
 extern volatile uint32_t  cpu_freq;
 
-extern volatile task_t  *proc_obj[];
+extern volatile task_t  *task_obj[];
 extern volatile uint32_t PSP_Array[];
 extern volatile uint8_t  priority_Array[][2];
 extern volatile uint32_t mutex_stash[];
 extern volatile uint8_t  level_stash[];
 extern volatile int8_t   jmp_list[];
 extern volatile uint8_t  state[];
-extern volatile uint32_t process_id[];
+extern volatile uint32_t task_id[];
 extern volatile uint16_t permissions[];
 
 extern volatile uint32_t *op1[];

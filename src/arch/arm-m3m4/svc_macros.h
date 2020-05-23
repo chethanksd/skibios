@@ -18,36 +18,36 @@
         : [i_error] "=m" (error)::)
 
 
-// CREATE_PROCESS without process argument
-#define SVC_CREATE_PROCESS_NO_ARG(proc_obj) \
+// CREATE_TASK without process argument
+#define SVC_CREATE_TASK_NO_ARG(task_obj) \
     __asm volatile (" LDR R0, %[i_proc_obj]     \n" \
                     " MOV R1, #0                \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_proc_obj] "m" (proc_obj), [svc_code] "I" (CREATE_PROCESS):)
+                    :: [i_proc_obj] "m" (task_obj), [svc_code] "I" (CREATE_TASK):)
 
 
-// CREATE_PROCESS with process argument
-#define SVC_CREATE_PROCESS_WITH_ARG(proc_obj, proc_arg) \
+// CREATE_TASK with process argument
+#define SVC_CREATE_TASK_WITH_ARG(task_obj, proc_arg) \
     __asm volatile (" LDR R0, %[i_proc_obj]     \n" \
                     " LDR R1, %[i_proc_arg]     \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_proc_obj] "m" (proc_obj), [i_proc_arg] "m" (proc_arg), [svc_code] "I" (CREATE_PROCESS):)
+                    :: [i_proc_obj] "m" (task_obj), [i_proc_arg] "m" (proc_arg), [svc_code] "I" (CREATE_TASK):)
 
 
-// KILL_PROCESS for direct process kill
-#define SVC_KILL_PROCESS_DIRECT(process_id) \
+// KILL_TASK for direct process kill
+#define SVC_KILL_TASK_DIRECT(task_id) \
     __asm volatile (" LDR R0, %[i_proc_id]      \n" \
                     " MOV R1, #0                \n" \
                     " SVC %[svc_code]           \n" \
-                    :: [i_proc_id] "m" (process_id), [svc_code] "I" (KILL_PROCESS):)
+                    :: [i_proc_id] "m" (task_id), [svc_code] "I" (KILL_TASK):)
  
 
- // KILL_PROCESS to resolve end of process
- #define SVC_KILL_PROCESS_RESOLVE_END(process_id) \
+ // KILL_TASK to resolve end of process
+ #define SVC_KILL_TASK_RESOLVE_END(task_id) \
      __asm volatile (" LDR R0, %[i_proc_id]      \n" \
                      " MOV R1, #1                \n" \
                      " SVC %[svc_code]           \n" \
-                    :: [i_proc_id] "m" (process_id), [svc_code] "I" (KILL_PROCESS):)
+                    :: [i_proc_id] "m" (task_id), [svc_code] "I" (KILL_TASK):)
 
 
 // HIBERNATE 
@@ -118,11 +118,11 @@
 
 
 // GRANT_PERMISSION
-#define SVC_GRANT_PERMISSION(process_id, permission, error) \
+#define SVC_GRANT_PERMISSION(task_id, permission, error) \
     __asm volatile (" LDR   R0, %[i_process_id] \n" \
                     " LDRH  R1, %[i_permission] \n" \
                     " SVC %[svc_code]           \n" \
-                    ::[i_process_id] "m" (process_id), [i_permission] "m" (permission), [svc_code] "I" (GRANT_PERMISSION):); \
+                    ::[i_process_id] "m" (task_id), [i_permission] "m" (permission), [svc_code] "I" (GRANT_PERMISSION):); \
     GET_SVC_RETURN_CODE(error)
 
 

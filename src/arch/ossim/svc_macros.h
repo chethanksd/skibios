@@ -14,20 +14,20 @@
 
 
 
-// CREATE_PROCESS without process argument
-#define SVC_CREATE_PROCESS_NO_ARG(proc_obj) call_kernel_service(CREATE_PROCESS, proc_obj, 0, 0, 0)
+// CREATE_TASK without process argument
+#define SVC_CREATE_TASK_NO_ARG(task_obj) call_kernel_service(CREATE_TASK, task_obj, 0, 0, 0)
 
 
-// CREATE_PROCESS with process argument
-#define SVC_CREATE_PROCESS_WITH_ARG(proc_obj, proc_arg) call_kernel_service(CREATE_PROCESS, proc_obj, proc_arg, 0, 0)
+// CREATE_TASK with process argument
+#define SVC_CREATE_TASK_WITH_ARG(task_obj, proc_arg) call_kernel_service(CREATE_TASK, task_obj, proc_arg, 0, 0)
 
 
-// KILL_PROCESS for direct process kill
-#define SVC_KILL_PROCESS_DIRECT(process_id) call_kernel_service(KILL_PROCESS, process_id, 0, 0, 0)
+// KILL_TASK for direct process kill
+#define SVC_KILL_TASK_DIRECT(task_id) call_kernel_service(KILL_TASK, task_id, 0, 0, 0)
  
 
-// KILL_PROCESS to resolve end of process
-#define SVC_KILL_PROCESS_RESOLVE_END(process_id) call_kernel_service(KILL_PROCESS, process_id, 1, 0, 0)
+// KILL_TASK to resolve end of process
+#define SVC_KILL_TASK_RESOLVE_END(task_id) call_kernel_service(KILL_TASK, task_id, 1, 0, 0)
 
 
 // HIBERNATE 
@@ -63,7 +63,7 @@
 
 
 // GRANT_PERMISSION
-#define SVC_GRANT_PERMISSION(process_id, permission, error) error = call_kernel_service(GRANT_PERMISSION, process_id, permission, 0, 0)
+#define SVC_GRANT_PERMISSION(task_id, permission, error) error = call_kernel_service(GRANT_PERMISSION, task_id, permission, 0, 0)
 
 
 // CPU_FREQ
@@ -71,7 +71,7 @@
 
 
 // ENABLE_UMPU
-#define SVC_ENABLE_UMPU(process_id, permission, error) error = call_kernel_service(ENABLE_UMPU, process_id, permission, 0, 0)
+#define SVC_ENABLE_UMPU(task_id, permission, error) error = call_kernel_service(ENABLE_UMPU, task_id, permission, 0, 0)
 
 
 // DISABLE_UMPU

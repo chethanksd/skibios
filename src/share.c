@@ -47,7 +47,7 @@ uint8_t spin_lock(uint32_t *mutex_st, uint16_t retry){
 
         } else {
 
-            if(process_id[index] != *mutex_st) {
+            if(task_id[index] != *mutex_st) {
 
                 mutex_unlock(mutex_st);
                 continue;

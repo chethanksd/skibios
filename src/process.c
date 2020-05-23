@@ -23,14 +23,14 @@ uint8_t task_init(task_t *myprocess) {
 
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(proc_obj[i] == myprocess) {
+        if(task_obj[i] == myprocess) {
             return ERROR_PROCESS_ALREADY_RUNNING;
         }
 
     }
 
     myprocess->priority = 1;
-    myprocess->process_id = 0;
+    myprocess->task_id = 0;
     myprocess->hibernate = 0;
     myprocess->op1 = 0;
     myprocess->op2 = 0;
@@ -47,13 +47,13 @@ uint8_t task_start(task_t *myprocess) {
     // check if process is already running
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(proc_obj[i] == myprocess) {
+        if(task_obj[i] == myprocess) {
             return ERROR_PROCESS_ALREADY_RUNNING;
         }
 
     }
 
-    SVC_CREATE_PROCESS_NO_ARG((uint32_t)myprocess);
+    SVC_CREATE_TASK_NO_ARG((uint32_t)myprocess);
 
     return ERROR_NONE;
 
@@ -66,13 +66,13 @@ uint8_t task_start_arg(task_t *myprocess, void *arg) {
     // check if process is already running
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(proc_obj[i] == myprocess) {
+        if(task_obj[i] == myprocess) {
             return ERROR_PROCESS_ALREADY_RUNNING;
         }
 
     }
 
-    SVC_CREATE_PROCESS_WITH_ARG((uint32_t)myprocess, (uint32_t)arg);
+    SVC_CREATE_TASK_WITH_ARG((uint32_t)myprocess, (uint32_t)arg);
 
     return ERROR_NONE;
 
@@ -85,19 +85,19 @@ uint8_t task_kill(task_t *myprocess) {
     // check if process is currently running
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(proc_obj[i] == myprocess) {
+        if(task_obj[i] == myprocess) {
             break;
         }
 
     }
 
-    if(proc_obj[i] != myprocess) {
+    if(task_obj[i] != myprocess) {
 
         return ERROR_PROCESS_IS_IDLE;
 
     }
 
-    SVC_KILL_PROCESS_DIRECT(process_id[i]);   
+    SVC_KILL_TASK_DIRECT(task_id[i]);   
 
     return ERROR_NONE;
 

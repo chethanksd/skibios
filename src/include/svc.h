@@ -1,5 +1,5 @@
-#ifndef SVC_H
-#define SVC_H
+#ifndef _SVC_H_
+#define _SVC_H_
 
 #ifdef SVC_VERSION_MAJOR
 #error "SVC_VERSION_MAJOR is defined elsewhere in the program"
@@ -14,9 +14,9 @@
 #define SVC_VERSION_MINOR   1
 
 // SVCall service codes
-#define CREATE_PROCESS      10
+#define CREATE_TASK         10
 #define HAND_OVER           11
-#define KILL_PROCESS        12
+#define KILL_TASK           12
 #define HIBERNATE           13
 #define ENABLE_DWS          14
 #define DISABLE_DWS         15

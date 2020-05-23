@@ -12,7 +12,7 @@
 .thumb
 
 .extern current_task
-.extern process_id
+.extern task_id
 .extern mutex_stash
 
 .type mutex_lock, %function
@@ -31,8 +31,8 @@ mutex_lock:
             LDR         R1, =current_task           
             LDR         R1, [R1]  
 
-            // get process_id of current_task
-            LDR         R2, =process_id              
+            // get task_id of current_task
+            LDR         R2, =task_id              
             LDR         R1, [R2, R1, LSL#2]
 
             // attempt to lock the mutex

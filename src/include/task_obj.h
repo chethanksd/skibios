@@ -17,7 +17,7 @@
 typedef struct {
 
     uint8_t error;
-    uint32_t process_id;
+    uint32_t task_id;
     uint8_t priority;
     TASK_RETURN_T *ptr_func;
     

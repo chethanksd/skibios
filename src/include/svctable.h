@@ -1,4 +1,4 @@
-#ifndef SVCTABLE_H
+#ifndef _SVCTABLE_H_
 
 #include <stdint.h>
 

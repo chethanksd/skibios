@@ -89,17 +89,17 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
             
         }
 
-        proc_obj[i] = (task_t*) proc_obj_ptr;
-        proc_obj[i]->process_id = (i << 16) | (total_process_count + 1);
-        process_id[i] = (i << 16) | (total_process_count + 1);
+        task_obj[i] = (task_t*) proc_obj_ptr;
+        task_obj[i]->task_id = (i << 16) | (total_process_count + 1);
+        task_id[i] = (i << 16) | (total_process_count + 1);
 
         /* Set Initial Process State */
-        if((proc_obj[i]->hibernate & HIBERNATE_STATE_MASK) != HIBERNATE_STATE_MASK){
+        if((task_obj[i]->hibernate & HIBERNATE_STATE_MASK) != HIBERNATE_STATE_MASK){
             state[i] = TASK_STATE_SLEEP;
         }
 
         /* Set current process priority */
-        priority_Array[i][TASK_PRIO_CURRENT] = proc_obj[i]->priority;
+        priority_Array[i][TASK_PRIO_CURRENT] = task_obj[i]->priority;
 
         //use j as higher pointer of binary search
         j = lstash_ptr;
@@ -131,7 +131,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         proc_continue:
 
         /* Stack Initialization */
-        arch_task_stack_init(i, (unsigned int)proc_obj[i]->ptr_func, proc_arg);
+        arch_task_stack_init(i, (unsigned int)task_obj[i]->ptr_func, proc_arg);
 
 
         total_process_count++;
@@ -231,9 +231,9 @@ uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
 pkill_continue:
 
     state[i] = TASK_STATE_IDLE;
-    proc_obj[i]->process_id = 0;
-    process_id[i] = 0;
-    proc_obj[i] = 0;
+    task_obj[i]->task_id = 0;
+    task_id[i] = 0;
+    task_obj[i] = 0;
 
     if(self_kill_flag == 1) {
 
@@ -428,6 +428,6 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
 
 void resolve_end(void) {
 
-    SVC_KILL_PROCESS_RESOLVE_END(process_id[current_task]);
+    SVC_KILL_TASK_RESOLVE_END(task_id[current_task]);
 
 }
