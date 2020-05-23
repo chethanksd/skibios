@@ -41,5 +41,11 @@ RESOURCE_PATH = $(BUILD_PATH)/resource_cal
 HDR_PATH = $(BUILD_PATH)/hdr
 API_PATH = $(BUILD_PATH)/api
 
+#
+# Compile include paths
+#
+
+COMPILER_IPATH   = -I$(BUILD_PATH)/hdr
+COMPILER_IPATH  += -I$(BUILD_PATH)/api
 
 

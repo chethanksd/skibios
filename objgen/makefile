@@ -99,7 +99,8 @@ gen_src_list:
 
 gen_hdr_list:
 	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(COMMON_HDR_EXC), $(CREATE_EXCLUDE_ARG)))
-	$(FIND_TOOL) $(COMMON_HDR_INC) -maxdepth 1 -type f \( -name '*.h' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/misc/hdr_list.txt
+	$(eval EXCLUDE_ARG += $(foreach EXCLUDE_FILE, $(ARCH_HDR_EXC), $(CREATE_EXCLUDE_ARG)))
+	$(FIND_TOOL) $(RAW_INCLUDE_PATHS) -maxdepth 1 -type f \( -name '*.h' \) $(EXCLUDE_ARG) > $(BUILD_PATH)/misc/hdr_list.txt
 
 
 gen_api_list:
@@ -132,7 +133,7 @@ compile_init:
 	$(eval OUTPUT = $(subst /allsrc,/obj,$@))
 	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/misc/compile_list.txt
 	@echo 'converting $(notdir $<) to $(notdir $(OUTPUT))'
-	@$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)
+	@$(BIN_PATH)/$(CC) $(COMPILER_IPATH) $(COMPILER_FLAGS) $< -o $(OUTPUT)
 	
 
 # Build targets for asm files
@@ -141,4 +142,4 @@ compile_init:
 	$(eval OUTPUT = $(subst /allsrc,/obj,$@))
 	@echo 'converting $< to $(OUTPUT)' >> $(BUILD_PATH)/misc/compile_list.txt
 	@echo 'converting $(notdir $<) to $(notdir $(OUTPUT))'
-	@$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(COMPILER_FLAGS) $< -o $(OUTPUT)
+	@$(BIN_PATH)/$(CC) $(COMPILER_IPATH) $(COMPILER_FLAGS) $< -o $(OUTPUT)

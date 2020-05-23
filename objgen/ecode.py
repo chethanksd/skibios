@@ -39,6 +39,8 @@ ERROR_SOURCE_FILE_COPY_ERROR                =   123
 ERROR_OBJECT_GENERATION_ERROR               =   124
 ERROR_BAD_XSD_SCHEMA                        =   125
 ERROR_SRC_LIST_NOT_FOUND                    =   126
+ERROR_HDR_LIST_NOT_FOUND                    =   127
+ERROR_API_LIST_NOT_FOUND                    =   128
 
 #
 # Error description
@@ -123,4 +125,10 @@ error_description[ERROR_BAD_XSD_SCHEMA] = 'Error in XSD schema. \
 Check XSD schema file inside objgen folder'
 
 error_description[ERROR_SRC_LIST_NOT_FOUND] = 'src_list.txt not found in misc folder of build path. \
-CHeck your source list in makefile'
+Check your source list in makefile'
+
+error_description[ERROR_HDR_LIST_NOT_FOUND] = 'hdr_list.txt not found in misc folder of build path. \
+Check your header list in makefile'
+
+error_description[ERROR_API_LIST_NOT_FOUND] = 'api_list.txt not found in misc folder of build path. \
+Check your api list in makefile'

@@ -30,3 +30,4 @@ COMMON_API_INC      += $(ROOT_DIR)/src/api
 
 COMMON_API_HDR_INC   = $(ROOT_DIR)/src/include/svc.h
 COMMON_API_HDR_INC  += $(ROOT_DIR)/src/include/proc_obj.h
+COMMON_API_HDR_INC  += $(ARCH_PATH)/app_support.h

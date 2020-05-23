@@ -18,4 +18,4 @@ ARCH_SRC_EXC = NULL
 
 ARCH_HDR_INC = $(ROOT_DIR)/src/arch/arm-m3m4
 
-ARCH_HDR_EXC = NULL
+ARCH_HDR_EXC = app_support.h
