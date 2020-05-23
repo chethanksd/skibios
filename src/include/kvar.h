@@ -1,7 +1,7 @@
 #ifndef KVAR_H
 #define KVAR_H
 
-#include <process.h>
+#include <proc_obj.h>
 
 #ifndef NO_KERNEL_SECTION
 #define KSECTION(str) __attribute__ ((section ("" #str "")))

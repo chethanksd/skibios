@@ -21,8 +21,3 @@ ARCH_CFLAGS += -mhard-float
 ARCH_CFLAGS += -mlsp
 ARCH_CFLAGS += -fomit-frame-pointer
 
-#
-# Arch specific Include search paths
-#
-ARCH_IPATH = -I$(ROOT_DIR)/src/arch/mpc57x8
-

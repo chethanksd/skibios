@@ -44,20 +44,27 @@ endif
 # COMMON and ARCH constant concatenation
 #
 
-COMPILER_FLAGS 	 = $(COMMON_CFLAGS) 
-COMPILER_FLAGS	+= $(ARCH_CFLAGS) 
+COMPILER_FLAGS 	 	 = $(COMMON_CFLAGS) 
+COMPILER_FLAGS		+= $(ARCH_CFLAGS) 
 
-INCLUDE_PATHS  	 = $(COMMON_IPATH)
-INCLUDE_PATHS	+= $(ARCH_IPATH)
+RAW_INCLUDE_PATHS  	 = $(COMMON_HDR_INC)
+RAW_INCLUDE_PATHS	+= $(ARCH_HDR_INC)
 
-SOURCE_PATHS	 = $(COMMON_SRC_INC)
-SOURCE_PATHS	+= $(ARCH_SRC_INC)
+SOURCE_PATHS	 	 = $(COMMON_SRC_INC)
+SOURCE_PATHS		+= $(ARCH_SRC_INC)
+
+
+#
+# Get indexed include search paths
+#
+get_include_spath:
+	$(eval INCLUDE_PATHS += $(foreach SEARCH_PATH, $(RAW_INCLUDE_PATHS), -I$(SEARCH_PATH)))
 
 #
 # symgen target
 #
 
-symgen: arg_check
+symgen: arg_check get_include_spath
 	$(BIN_PATH)/$(CC) -S $(INCLUDE_PATHS) $(COMPILER_FLAGS) $(ROOT_DIR)/src/symgen.c -o$(SYMGEN_PATH)/symgen.S
 	$(GRP_TOOL) "OFFSET_OF" $(SYMGEN_PATH)/symgen.S > $(SYMGEN_PATH)/symgen.txt
 	$(GRP_TOOL) "SIZE_OF" $(SYMGEN_PATH)/symgen.S >> $(SYMGEN_PATH)/symgen.txt
@@ -68,7 +75,7 @@ symgen: arg_check
 # UPC resource calculation target
 #
 
-resource: arg_check
+resource: arg_check get_include_spath
 	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(UPC_SKI_PARAM) $(COMPILER_FLAGS) $(ROOT_DIR)/src/kvar.c -o$(RESOURCE_PATH)/upc_kvar.o
 	$(BIN_PATH)/$(CC) $(INCLUDE_PATHS) $(UPC_SKI_PARAM) $(COMPILER_FLAGS) $(ARCH_PATH)/arch_kvar.c -o$(RESOURCE_PATH)/arch_upc_kvar.o	
 	$(BIN_PATH)/$(OD) -t $(RESOURCE_PATH)/*.o > $(RESOURCE_PATH)/resource.txt

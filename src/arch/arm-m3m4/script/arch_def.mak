@@ -20,11 +20,3 @@ ARCH_CFLAGS += -mfloat-abi=hard
 ARCH_CFLAGS += -mfpu=fpv4-sp-d16
 ARCH_CFLAGS += -mno-thumb-interwork
 ARCH_CLFAGS += -specs="nosys.specs"
-
-
-#
-# Arch specific Include search paths
-#
-ARCH_IPATH = -I$(ROOT_DIR)/src/arch/arm-m3m4
-
-

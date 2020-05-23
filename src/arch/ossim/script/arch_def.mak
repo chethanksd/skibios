@@ -16,8 +16,3 @@ SZ = size.exe
 ARCH_CFLAGS += -Wno-pointer-to-int-cast 
 ARCH_CFLAGS += -Wno-int-to-pointer-cast 
 
-#
-# Arch specific Include search paths
-#
-ARCH_IPATH = -I$(ROOT_DIR)/src/arch/ossim
-
