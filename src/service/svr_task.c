@@ -30,8 +30,8 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
     proc_obj_ptr = arguments[0];
     proc_arg = arguments[1];
 
-    /* Find Idle Process Objects */
-    if(process_count < MAX_PROCESS_COUNT) {
+    /* Find Idle Task Objects */
+    if(task_count < MAX_PROCESS_COUNT) {
 
         for(i=0;i<MAX_PROCESS_COUNT;i++) {
 
@@ -50,7 +50,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
             
         }
 
-        /* Check if Base process creation is attempted */
+        /* Check if Base task creation is attempted */
         if(((task_t*)proc_obj_ptr)->priority == 0 && first_start == true) {
 
             ((task_t*)proc_obj_ptr)->error = ERROR_INVALID_TASK_PRIORITY;
@@ -60,7 +60,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         }
 
 
-        /* Dynamically initialize the Process Stack & Check if it is successful */
+        /* Dynamically initialize the task Stack & Check if it is successful */
         if(!(PSP_Array[i] = pstack_addr + (i * PROCESS_STACK_SIZE * 4))) {
 
             ((task_t*)proc_obj_ptr)->error=ERROR_OUT_OF_MEMORY;
@@ -70,7 +70,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         }
 
 
-        /* Clear all locations of process stack */
+        /* Clear all locations of task stack */
         pheap_ptr = (uint32_t*)PSP_Array[i];
         for( j = 0; j < (PROCESS_STACK_SIZE/4); j++) {
             pheap_ptr[j] = 0;
@@ -90,15 +90,15 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         }
 
         task_obj[i] = (task_t*) proc_obj_ptr;
-        task_obj[i]->task_id = (i << 16) | (total_process_count + 1);
-        task_id[i] = (i << 16) | (total_process_count + 1);
+        task_obj[i]->task_id = (i << 16) | (total_task_count + 1);
+        task_id[i] = (i << 16) | (total_task_count + 1);
 
-        /* Set Initial Process State */
+        /* Set Initial Task State */
         if((task_obj[i]->hibernate & HIBERNATE_STATE_MASK) != HIBERNATE_STATE_MASK){
             state[i] = TASK_STATE_SLEEP;
         }
 
-        /* Set current process priority */
+        /* Set current task priority */
         priority_Array[i][TASK_PRIO_CURRENT] = task_obj[i]->priority;
 
         //use j as higher pointer of binary search
@@ -134,8 +134,8 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         arch_task_stack_init(i, (unsigned int)task_obj[i]->ptr_func, proc_arg);
 
 
-        total_process_count++;
-        process_count++;
+        total_task_count++;
+        task_count++;
 
         /* Find new max level (Priority Level) */
         for(j=0; j < MAX_PROCESS_COUNT; j++) {
@@ -151,7 +151,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
         }
 
-        /* Update Active & Hibernation Process Level Counts */
+        /* Update Active & Hibernation Task Level Counts */
         if(priority_Array[i][TASK_PRIO_CURRENT] == max_level) {
 
             if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
@@ -162,7 +162,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
         }
 
-        /* Start scheduler if there was only one process in  & start scheduler has been already executed */
+        /* Start scheduler if there was only one task & start scheduler has been already executed */
         if((alc + hlc) == 2 && first_start == true) {
             ENABLE_SCHEDULER();
         }
@@ -191,12 +191,12 @@ uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
     pid = arguments[0];
     self_kill_flag = arguments[1];
 
-    /* calculate index of the process to kill */
+    /* calculate index of the task to kill */
     i = (pid >> 16);
 
     /* if i == 0 ==> killing of BaseTask is attempted
-        * MCU should fault in this case
-        */
+     * MCU should fault in this case
+     */
 
     /* Re-calculate level_stash */
     for(j = 0; j < MAX_PROCESS_COUNT; j++) {
@@ -242,7 +242,7 @@ pkill_continue:
 
     }
 
-    process_count--;
+    task_count--;
 
     /* calculate jmp_list */
     for(j = 0; j < i; j++) {

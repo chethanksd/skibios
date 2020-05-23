@@ -20,8 +20,8 @@ volatile uint8_t   KSECTION(.kdat) alc                      = 0;
 volatile uint8_t   KSECTION(.kdat) hlc                      = 0;
 volatile uint8_t   KSECTION(.kdat) alcp                     = 0;
 volatile uint8_t   KSECTION(.kdat) hlcp                     = 0;
-volatile uint16_t  KSECTION(.kdat) process_count            = 0;
-volatile uint16_t  KSECTION(.kdat) total_process_count      = 0;
+volatile uint16_t  KSECTION(.kdat) task_count               = 0;
+volatile uint16_t  KSECTION(.kdat) total_task_count         = 0;
 volatile uint8_t   KSECTION(.kdat) lstash_ptr               = 1;
 
 volatile uint32_t  KSECTION(.kbss) pstack_addr;

@@ -110,7 +110,7 @@ uint8_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
     uint32_t merged;
 
     // there is no point in hibernating when there is only one process
-    if(process_count==1) {
+    if(task_count==1) {
 
         if(reverse == false) {
             while((*op1 - *op2) < value);

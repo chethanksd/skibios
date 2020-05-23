@@ -22,8 +22,8 @@ extern volatile uint8_t  alc;
 extern volatile uint8_t  hlc;
 extern volatile uint8_t  alcp;
 extern volatile uint8_t  hlcp;
-extern volatile uint16_t process_count;
-extern volatile uint16_t total_process_count;
+extern volatile uint16_t task_count;
+extern volatile uint16_t total_task_count;
 extern volatile uint8_t  lstash_ptr;
 
 extern volatile uint32_t  pstack_addr;
