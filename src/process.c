@@ -127,7 +127,7 @@ uint8_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
 
         for(i=0; i < MAX_PROCESS_COUNT; i++) {
 
-            if(state[i] != PROCESS_STATE_IDLE && priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
+            if(state[i] != TASK_STATE_IDLE && priority_Array[i][TASK_PRIO_CURRENT] == max_level) {
                 count++;
             }
             

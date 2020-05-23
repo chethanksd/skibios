@@ -36,7 +36,7 @@ uint8_t spin_lock(uint32_t *mutex_st, uint16_t retry){
 
         #if(ENABLE_SAFE_LOCK >= 1)
         // the process locked the resource is idle. then it probably forget to unlock
-        if(state[index] == PROCESS_STATE_IDLE) {
+        if(state[index] == TASK_STATE_IDLE) {
 
             if(*mutex_st != 0){
 

@@ -35,7 +35,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
         for(i=0;i<MAX_PROCESS_COUNT;i++) {
 
-            if(state[i] == PROCESS_STATE_IDLE) {
+            if(state[i] == TASK_STATE_IDLE) {
                 break;
             }
 
@@ -95,11 +95,11 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
         /* Set Initial Process State */
         if((proc_obj[i]->hibernate & HIBERNATE_STATE_MASK) != HIBERNATE_STATE_MASK){
-            state[i] = PROCESS_STATE_SLEEP;
+            state[i] = TASK_STATE_SLEEP;
         }
 
         /* Set current process priority */
-        priority_Array[i][PROCESS_PRIO_CURRENT] = proc_obj[i]->priority;
+        priority_Array[i][TASK_PRIO_CURRENT] = proc_obj[i]->priority;
 
         //use j as higher pointer of binary search
         j = lstash_ptr;
@@ -109,11 +109,11 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
             search_index = lower_index + ((j - lower_index)/2);
 
-            if(level_stash[search_index] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
+            if(level_stash[search_index] == priority_Array[i][TASK_PRIO_CURRENT]) {
                 goto proc_continue;
             }
 
-            if(level_stash[search_index] < priority_Array[i][PROCESS_PRIO_CURRENT]) {
+            if(level_stash[search_index] < priority_Array[i][TASK_PRIO_CURRENT]) {
                 lower_index = search_index + 1;
             } else {
                 j = search_index - 1;
@@ -125,7 +125,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
             level_stash[j] = level_stash[j-1];
         }
 
-        level_stash[search_index] = (uint32_t)priority_Array[i][PROCESS_PRIO_CURRENT];
+        level_stash[search_index] = (uint32_t)priority_Array[i][TASK_PRIO_CURRENT];
         lstash_ptr++;
         
         proc_continue:
@@ -140,9 +140,9 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         /* Find new max level (Priority Level) */
         for(j=0; j < MAX_PROCESS_COUNT; j++) {
 
-            if(priority_Array[j][PROCESS_PRIO_CURRENT] > max_level && state[j] != PROCESS_STATE_IDLE) {
+            if(priority_Array[j][TASK_PRIO_CURRENT] > max_level && state[j] != TASK_STATE_IDLE) {
 
-                max_level = priority_Array[j][PROCESS_PRIO_CURRENT];
+                max_level = priority_Array[j][TASK_PRIO_CURRENT];
                 alc=0;
                 hlc=0;
                 ENABLE_SCHEDULER();
@@ -152,7 +152,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         }
 
         /* Update Active & Hibernation Process Level Counts */
-        if(priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
+        if(priority_Array[i][TASK_PRIO_CURRENT] == max_level) {
 
             if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
                 hlc++;
@@ -205,7 +205,7 @@ uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
             continue;
         }
 
-        if(priority_Array[j][PROCESS_PRIO_CURRENT] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
+        if(priority_Array[j][TASK_PRIO_CURRENT] == priority_Array[i][TASK_PRIO_CURRENT]) {
             goto pkill_continue;
         }
 
@@ -215,7 +215,7 @@ uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
 
     for(j = 0; j < lstash_ptr; j++) {
 
-        if(level_stash[j] == priority_Array[i][PROCESS_PRIO_CURRENT]) {
+        if(level_stash[j] == priority_Array[i][TASK_PRIO_CURRENT]) {
             found = 1;
         }
 
@@ -230,7 +230,7 @@ uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
 
 pkill_continue:
 
-    state[i] = PROCESS_STATE_IDLE;
+    state[i] = TASK_STATE_IDLE;
     proc_obj[i]->process_id = 0;
     process_id[i] = 0;
     proc_obj[i] = 0;
@@ -270,15 +270,15 @@ pkill_continue:
 
     for(i=0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(priority_Array[i][PROCESS_PRIO_CURRENT] >= max_level && state[i] != PROCESS_STATE_IDLE) {
-            max_level = priority_Array[i][PROCESS_PRIO_CURRENT];
+        if(priority_Array[i][TASK_PRIO_CURRENT] >= max_level && state[i] != TASK_STATE_IDLE) {
+            max_level = priority_Array[i][TASK_PRIO_CURRENT];
         }
 
     }
 
     for(i=0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(priority_Array[i][PROCESS_PRIO_CURRENT] == max_level) {
+        if(priority_Array[i][TASK_PRIO_CURRENT] == max_level) {
 
             if((state[i] & HIBERNATE_STATE_MASK) == HIBERNATE_STATE_MASK) {
                 hlc++;
@@ -313,11 +313,11 @@ uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
     if((process_no & HIBEARNTE_REV_MASK) == HIBEARNTE_REV_MASK) {
 
         process_no = process_no & ~(HIBEARNTE_REV_MASK);
-        state[current_task] = PROCESS_STATE_HIBERNATE_L;
+        state[current_task] = TASK_STATE_HIBERNATE_L;
 
     } else {
 
-        state[current_task] = PROCESS_STATE_HIBERNATE_G;
+        state[current_task] = TASK_STATE_HIBERNATE_G;
 
     }
     
@@ -326,7 +326,7 @@ uint32_t svc_service_hibernate(uint32_t *svc_num, uint32_t *arguments) {
     hib_value[current_task] = value;
 
 
-    if(priority_Array[current_task][PROCESS_PRIO_CURRENT] == max_level) {
+    if(priority_Array[current_task][TASK_PRIO_CURRENT] == max_level) {
 
         hlc++;
         alc--;
@@ -368,10 +368,10 @@ uint32_t svc_service_priority_promote(uint32_t *svc_num, uint32_t *arguments) {
 
     mutex_stash[index] = mutex_address;
 
-    priority_Array[index][PROCESS_PRIO_STASHED] = priority_Array[index][PROCESS_PRIO_CURRENT];
-    priority_Array[index][PROCESS_PRIO_CURRENT] = max_level;
+    priority_Array[index][TASK_PRIO_STASHED] = priority_Array[index][TASK_PRIO_CURRENT];
+    priority_Array[index][TASK_PRIO_CURRENT] = max_level;
 
-    state[current_task] = PROCESS_STATE_HOLD;
+    state[current_task] = TASK_STATE_HOLD;
     op1[current_task] = (uint32_t*)mutex_address;
 
     // Enable scheduler and set normal schedule as false
@@ -386,8 +386,8 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
 
     uint32_t i;
 
-    priority_Array[current_task][PROCESS_PRIO_CURRENT] = priority_Array[current_task][PROCESS_PRIO_STASHED];
-    priority_Array[current_task][PROCESS_PRIO_STASHED] = 0;
+    priority_Array[current_task][TASK_PRIO_CURRENT] = priority_Array[current_task][TASK_PRIO_STASHED];
+    priority_Array[current_task][TASK_PRIO_STASHED] = 0;
 
     max_level--;
 
@@ -402,11 +402,11 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
 
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
 
-        if(state[i] == PROCESS_STATE_HOLD) {
+        if(state[i] == TASK_STATE_HOLD) {
 
             if((uint32_t)op1[i] == mutex_stash[current_task]){
 
-                state[i] = PROCESS_STATE_SLEEP;
+                state[i] = TASK_STATE_SLEEP;
                 break;
 
             }

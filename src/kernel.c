@@ -22,8 +22,8 @@
 #include <defines.h>
 #include <os_timer.h>
 
-#define PROCESS_PRIO_CURRENT    0
-#define PROCESS_PRIO_STASHED    1
+#define TASK_PRIO_CURRENT    0
+#define TASK_PRIO_STASHED    1
 
 
 /* Local Functions */
@@ -72,7 +72,7 @@ uint32_t kernel_init(void) {
 
     // Initialize Process states
     for(i = 0; i < MAX_PROCESS_COUNT; i++) {
-        state[i] = PROCESS_STATE_IDLE;
+        state[i] = TASK_STATE_IDLE;
     }
 
     // Get Process Stack start Address
@@ -130,7 +130,7 @@ uint32_t svc_service_hand_over(uint32_t *svc_num, uint32_t *arguments) {
 
     if(self_kill == false) {
         // set the State of current process to sleep
-        state[current_task] = PROCESS_STATE_SLEEP;
+        state[current_task] = TASK_STATE_SLEEP;
 
     } else {
 
@@ -262,7 +262,7 @@ void scheduler() {
     if(normal_schedule == true) {
 
         // Set the State of current process to sleep
-        state[current_task] = PROCESS_STATE_SLEEP;
+        state[current_task] = TASK_STATE_SLEEP;
 
     } else {
 
@@ -275,35 +275,35 @@ void scheduler() {
 
     do {
 
-        if(state[k] == PROCESS_STATE_HIBERNATE_G) {
+        if(state[k] == TASK_STATE_HIBERNATE_G) {
 
             if((*(op1[k]) - *(op2[k])) >= hib_value[k]) {
 
-                if(priority_Array[k][PROCESS_PRIO_CURRENT] == max_level) {
+                if(priority_Array[k][TASK_PRIO_CURRENT] == max_level) {
 
                     hlc--;
                     alc++;
 
                 }
 
-                state[k] = PROCESS_STATE_SLEEP;
+                state[k] = TASK_STATE_SLEEP;
 
             }
 
         }
 
-        if(state[k] == PROCESS_STATE_HIBERNATE_L) {
+        if(state[k] == TASK_STATE_HIBERNATE_L) {
 
             if((*(op1[k]) - *(op2[k])) <= hib_value[k]) {
 
-                if(priority_Array[k][PROCESS_PRIO_CURRENT] == max_level) {
+                if(priority_Array[k][TASK_PRIO_CURRENT] == max_level) {
 
                     hlc--;
                     alc++;
 
                 }
 
-                state[k] = PROCESS_STATE_SLEEP;
+                state[k] = TASK_STATE_SLEEP;
 
             }
 
@@ -326,13 +326,13 @@ void scheduler() {
             level = level_stash[lptr];
         }
 
-        if(state[next_task] == PROCESS_STATE_SLEEP && priority_Array[next_task][PROCESS_PRIO_CURRENT] == level) {
+        if(state[next_task] == TASK_STATE_SLEEP && priority_Array[next_task][TASK_PRIO_CURRENT] == level) {
             break;
         }
         
     }
 
-    state[next_task] = PROCESS_STATE_ACTIVE;
+    state[next_task] = TASK_STATE_ACTIVE;
 
     // Clear Current Register of Systick timer
     SCHEDULER_TIMER_RESET();
