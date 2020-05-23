@@ -42,7 +42,7 @@ uint32_t os_timer_config(uint32_t new_cpu_freq) {
     uint32_t systick_load;
 
     // clear & configure reload register of systick timer
-    systick_load = new_cpu_freq/PROCESS_PER_SEC;
+    systick_load = new_cpu_freq/TASK_PER_SEC;
 
     if(systick_load >= 16777216) {
 

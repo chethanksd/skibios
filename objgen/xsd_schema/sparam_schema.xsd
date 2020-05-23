@@ -29,7 +29,7 @@
                             <xs:element name="ghmb_region_size"     type="Integer"/>
 
 
-                            <xs:element name="process_stack_size"   type="Integer"/>
+                            <xs:element name="task_stack_size"      type="Integer"/>
 
                             
                             <xs:element name="enable_safe_lock"     type="Integer"/>
@@ -38,10 +38,10 @@
                             <xs:element name="disable_buffer"       type="Integer"/>
 
 
-                            <xs:element name="process_id_start"     type="Integer"/>
+                            <xs:element name="task_id_start"        type="Integer"/>
                             
                             
-                            <xs:element name="process_per_sec"      type="Integer"/>
+                            <xs:element name="task_per_sec"         type="Integer"/>
 
                         </xs:all>
                     </xs:complexType>

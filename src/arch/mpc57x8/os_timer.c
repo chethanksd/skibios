@@ -52,7 +52,7 @@ uint32_t os_timer_config(uint32_t new_cpu_freq) {
     // be pre-scaled clock source for STM
     // STM timer will freeze its timer when debugger is active
 
-    os_timer_load = new_cpu_freq/(PROCESS_PER_SEC * 10);
+    os_timer_load = new_cpu_freq/(TASK_PER_SEC * 10);
 
     if(os_timer_load > 0xFFFFFFFFUL) {
         error =  ERROR_SYSTICK_TICK_VALUE_OVERFLOW;

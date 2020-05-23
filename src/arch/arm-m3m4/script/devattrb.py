@@ -115,23 +115,23 @@ def generate_pcs_mpu_table():
     mtable_src.write("#include <os_support.h>\n")
     mtable_src.write("\n")
 
-    temp = "const uint32_t mpu_table[" + str(int(2 * sparam.max_process_count)) + "] = {" + "\n"
+    temp = "const uint32_t mpu_table[" + str(int(2 * sparam.max_task_count)) + "] = {" + "\n"
     mtable_src.write(temp)
                 
-    for i in range(int(sparam.max_process_count)):
+    for i in range(int(sparam.max_task_count)):
 
         temp = "// Process " + str(i) + "\n"
         mtable_src.write(temp)
 
-        addr = sparam.proc_heap_address + (i * sparam.slist['process_stack_size']) + 23
+        addr = sparam.proc_heap_address + (i * sparam.slist['task_stack_size']) + 23
         
         temp = hex(addr) + ",\n"
         mtable_src.write(temp)
 
-        temp = "(" + pstack_size_to_string(sparam.slist['process_stack_size']) + " << 1) | MPU_KERNEL_DEFAULT | (MPU_AP_PRW_URW << 24) | MPU_REGION_ENABLE"
+        temp = "(" + pstack_size_to_string(sparam.slist['task_stack_size']) + " << 1) | MPU_KERNEL_DEFAULT | (MPU_AP_PRW_URW << 24) | MPU_REGION_ENABLE"
         mtable_src.write(temp)
 
-        if(i != (sparam.max_process_count - 1)):
+        if(i != (sparam.max_task_count - 1)):
             mtable_src.write(",\n")
         else:
             mtable_src.write("\n")
@@ -163,7 +163,7 @@ def append_arch_constants():
     temp = "#define KERNEL_REGION_SIZE " + kernel_region_to_string(sparam.slist['kernel_section_size']) + "\n"
     param_header.write(temp)
 
-    temp = "#define MPU_PSTACK_SIZE " + pstack_size_to_string(sparam.slist['process_stack_size']) + "\n"
+    temp = "#define MPU_PSTACK_SIZE " + pstack_size_to_string(sparam.slist['task_stack_size']) + "\n"
     param_header.write(temp)
 
     temp = "#define KERNEL_REGION_SRD " + str(srd_bit) + "\n"

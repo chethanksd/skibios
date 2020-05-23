@@ -54,14 +54,14 @@ uint32_t svc_service_release_base(uint32_t *svc_num, uint32_t *arguments)  {
     }
 
     // store invocation error on hib_value of task that invocated base
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
         if(task_id[i] == invocated_task) {
             hib_value[i] = return_error;
             break;
         }
     }
 
-    if(i == MAX_PROCESS_COUNT) {
+    if(i == MAX_TASK_COUNT) {
         error = ERROR_UNKNOWN_PROCESS_ID;
         goto quit_error;
     }
@@ -93,14 +93,14 @@ uint32_t svc_service_grant_permission(uint32_t *svc_num, uint32_t *arguments) {
         goto quit_error;
     }
 
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
         if(task_id[i] == pid) {
             permissions[i] = permission;
             break;
         }
     }
 
-    if(i == MAX_PROCESS_COUNT) {
+    if(i == MAX_TASK_COUNT) {
         error =  ERROR_UNKNOWN_PROCESS_ID;
     }
 

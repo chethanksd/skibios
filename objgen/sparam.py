@@ -25,7 +25,7 @@ def parse_param_file():
     global param_gen_sym
 
     #output parameters
-    global max_process_count
+    global max_task_count
     global kernel_base_address
     global app_base_address
     global proc_heap_address

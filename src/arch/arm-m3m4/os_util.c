@@ -146,7 +146,7 @@ uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t pr
 
     uint32_t *pheap_ptr;
 
-    PSP_Array[task_index] = ((unsigned int) (PSP_Array[task_index])) + ((PROCESS_STACK_SIZE - 1) * 4) - 18 * 4;
+    PSP_Array[task_index] = ((unsigned int) (PSP_Array[task_index])) + ((TASK_STACK_SIZE - 1) * 4) - 18 * 4;
     pheap_ptr = (uint32_t*)PSP_Array[task_index];
 
     pheap_ptr[0] = 0xFFFFFFFD;

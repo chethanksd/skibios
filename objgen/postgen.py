@@ -105,9 +105,9 @@ def generate_summary_report():
     temp = ""
     temp = temp + "kernel section size      : " + str(sparam.slist['kernel_section_size']) + "\n"
     temp = temp + "upper region size        : " + str(sparam.slist['upper_region_size']) + "\n"
-    temp = temp + "process_stack_size       : " + str(sparam.slist['process_stack_size']) + "\n"
+    temp = temp + "task_stack_size       : " + str(sparam.slist['task_stack_size']) + "\n"
     temp = temp + "ghmb_region_size         : " + str(sparam.slist['ghmb_region_size']) + "\n"
-    temp = temp + "process per sec          : " + str(sparam.slist['process_per_sec']) + "\n"
+    temp = temp + "process per sec          : " + str(sparam.slist['task_per_sec']) + "\n"
 
     summary_report.write(temp)
     summary_report.write("\n\n")
@@ -118,7 +118,7 @@ def generate_summary_report():
     summary_report.write(temp)
 
     temp = ""
-    temp = temp + "max process count        : " + str(int(sparam.max_process_count)) + "\n"
+    temp = temp + "max process count        : " + str(int(sparam.max_task_count)) + "\n"
 
     summary_report.write(temp)
     summary_report.write("\n\n")

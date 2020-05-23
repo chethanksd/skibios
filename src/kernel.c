@@ -71,7 +71,7 @@ uint32_t kernel_init(void) {
     }
 
     // Initialize Process states
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
         state[i] = TASK_STATE_IDLE;
     }
 
@@ -156,7 +156,7 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
     permissions[0] = 0xFFFF;
 
     //rest of the task will have by default no permissions
-    for(i = 1; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 1; i < MAX_TASK_COUNT; i++) {
         permissions[i] = 0;
     }
 

@@ -139,7 +139,7 @@ def run_objgen():
 
         for kvar_line in kvar_lines:
 
-            if(("KSECTION" in kvar_line) and ("MAX_PROCESS_COUNT" in kvar_line)):
+            if(("KSECTION" in kvar_line) and ("MAX_TASK_COUNT" in kvar_line)):
 
                 if(columns[5] in kvar_line):
 
@@ -159,17 +159,17 @@ def run_objgen():
     temp = sparam.slist['upper_region_size'] + sparam.slist['ghmb_region_size']
     temp = sparam.slist['kernel_section_size'] - temp
     temp = temp * 1024
-    temp = temp / sparam.slist['process_stack_size']
+    temp = temp / sparam.slist['task_stack_size']
 
-    sparam.max_process_count = temp
+    sparam.max_task_count = temp
     
-    if (sparam.max_process_count < 1):
+    if (sparam.max_task_count < 1):
         diagnostics.error = ecode.ERROR_NO_MEMORY_FOR_PROCESS_STACK
         exit(1)
 
     kstack_size = 0
-    kstack_size = kstack_size + (mpc_array_kbss_size * int(sparam.max_process_count))
-    kstack_size = kstack_size + (mpc_array_kdat_size * int(sparam.max_process_count))
+    kstack_size = kstack_size + (mpc_array_kbss_size * int(sparam.max_task_count))
+    kstack_size = kstack_size + (mpc_array_kdat_size * int(sparam.max_task_count))
     kstack_size = kstack_size + (upc_kbss_size - mpc_array_kbss_size)
     kstack_size = kstack_size + (upc_kdat_size - mpc_array_kdat_size)
     kstack_size = kstack_size + (device.dlist['intcnt'] * 4)
@@ -181,9 +181,9 @@ def run_objgen():
         exit(1)
 
     actual_kbss_size = upc_kbss_size - mpc_array_kbss_size
-    actual_kbss_size = actual_kbss_size + (mpc_array_kbss_size * int(sparam.max_process_count))
+    actual_kbss_size = actual_kbss_size + (mpc_array_kbss_size * int(sparam.max_task_count))
     actual_kdat_size = upc_kdat_size - mpc_array_kdat_size
-    actual_kdat_size = actual_kdat_size + (mpc_array_kdat_size * int(sparam.max_process_count))
+    actual_kdat_size = actual_kdat_size + (mpc_array_kdat_size * int(sparam.max_task_count))
 
     #
     # OBJGEN STAGE 6: Final resource allocation calculations
@@ -319,10 +319,10 @@ def generate_param_header():
     temp = "#define NUM_OF_INTERRUPTS " + str(device.dlist['intcnt']) + "\n"
     param_header.write(temp)
 
-    temp = "#define MAX_PROCESS_COUNT " + str(int(sparam.max_process_count)) + "\n"
+    temp = "#define MAX_TASK_COUNT " + str(int(sparam.max_task_count)) + "\n"
     param_header.write(temp)
 
-    temp = "#define PROCESS_STACK_SIZE " + str(int(sparam.slist['process_stack_size'] / 4)) + "\n"
+    temp = "#define TASK_STACK_SIZE " + str(int(sparam.slist['task_stack_size'] / 4)) + "\n"
     param_header.write(temp)
 
     temp = "#define HEAP_BOOKEEPING_SIZE " + str(sparam.slist['ghmb_region_size'] * 256) + "\n"

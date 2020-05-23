@@ -31,9 +31,9 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
     proc_arg = arguments[1];
 
     /* Find Idle Task Objects */
-    if(task_count < MAX_PROCESS_COUNT) {
+    if(task_count < MAX_TASK_COUNT) {
 
-        for(i=0;i<MAX_PROCESS_COUNT;i++) {
+        for(i=0;i<MAX_TASK_COUNT;i++) {
 
             if(state[i] == TASK_STATE_IDLE) {
                 break;
@@ -61,7 +61,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
 
         /* Dynamically initialize the task Stack & Check if it is successful */
-        if(!(PSP_Array[i] = pstack_addr + (i * PROCESS_STACK_SIZE * 4))) {
+        if(!(PSP_Array[i] = pstack_addr + (i * TASK_STACK_SIZE * 4))) {
 
             ((task_t*)proc_obj_ptr)->error=ERROR_OUT_OF_MEMORY;
             error = ERROR_OUT_OF_MEMORY;
@@ -72,7 +72,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
 
         /* Clear all locations of task stack */
         pheap_ptr = (uint32_t*)PSP_Array[i];
-        for( j = 0; j < (PROCESS_STACK_SIZE/4); j++) {
+        for( j = 0; j < (TASK_STACK_SIZE/4); j++) {
             pheap_ptr[j] = 0;
         }
 
@@ -138,7 +138,7 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
         task_count++;
 
         /* Find new max level (Priority Level) */
-        for(j=0; j < MAX_PROCESS_COUNT; j++) {
+        for(j=0; j < MAX_TASK_COUNT; j++) {
 
             if(priority_Array[j][TASK_PRIO_CURRENT] > max_level && state[j] != TASK_STATE_IDLE) {
 
@@ -199,7 +199,7 @@ uint32_t svc_service_task_kill(uint32_t *svc_num, uint32_t *arguments) {
      */
 
     /* Re-calculate level_stash */
-    for(j = 0; j < MAX_PROCESS_COUNT; j++) {
+    for(j = 0; j < MAX_TASK_COUNT; j++) {
 
         if(i == j) {
             continue;
@@ -268,7 +268,7 @@ pkill_continue:
     alc = 0;
     hlc = 0;
 
-    for(i=0; i < MAX_PROCESS_COUNT; i++) {
+    for(i=0; i < MAX_TASK_COUNT; i++) {
 
         if(priority_Array[i][TASK_PRIO_CURRENT] >= max_level && state[i] != TASK_STATE_IDLE) {
             max_level = priority_Array[i][TASK_PRIO_CURRENT];
@@ -276,7 +276,7 @@ pkill_continue:
 
     }
 
-    for(i=0; i < MAX_PROCESS_COUNT; i++) {
+    for(i=0; i < MAX_TASK_COUNT; i++) {
 
         if(priority_Array[i][TASK_PRIO_CURRENT] == max_level) {
 
@@ -400,7 +400,7 @@ uint32_t svc_service_priority_demote(uint32_t *svc_num, uint32_t *arguments) {
 
     }
 
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
 
         if(state[i] == TASK_STATE_HOLD) {
 

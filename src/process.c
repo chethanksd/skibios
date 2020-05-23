@@ -21,7 +21,7 @@ uint8_t task_init(task_t *myprocess) {
     
     uint8_t i;
 
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
 
         if(task_obj[i] == myprocess) {
             return ERROR_PROCESS_ALREADY_RUNNING;
@@ -45,7 +45,7 @@ uint8_t task_start(task_t *myprocess) {
     uint8_t i;
 
     // check if process is already running
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
 
         if(task_obj[i] == myprocess) {
             return ERROR_PROCESS_ALREADY_RUNNING;
@@ -64,7 +64,7 @@ uint8_t task_start_arg(task_t *myprocess, void *arg) {
     uint8_t i;
 
     // check if process is already running
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
 
         if(task_obj[i] == myprocess) {
             return ERROR_PROCESS_ALREADY_RUNNING;
@@ -83,7 +83,7 @@ uint8_t task_kill(task_t *myprocess) {
     uint8_t i;
 
     // check if process is currently running
-    for(i = 0; i < MAX_PROCESS_COUNT; i++) {
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
 
         if(task_obj[i] == myprocess) {
             break;
@@ -125,7 +125,7 @@ uint8_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
     // there is no point in hibernating when there is one process in a level & dws is disabled
     if(enable_dws == false) {
 
-        for(i=0; i < MAX_PROCESS_COUNT; i++) {
+        for(i=0; i < MAX_TASK_COUNT; i++) {
 
             if(state[i] != TASK_STATE_IDLE && priority_Array[i][TASK_PRIO_CURRENT] == max_level) {
                 count++;
