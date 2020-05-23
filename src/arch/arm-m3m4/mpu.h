@@ -55,8 +55,4 @@
 
 #define MPU_KERNEL_DEFAULT     (MPU_SHAREABLE | MPU_CACHEABLE | MPU_EXECUTE_NEVER) 
 
-#define USER_MPU_0              0
-#define USER_MPU_1              1
-#define USER_MPU_2              2
-
 #endif
