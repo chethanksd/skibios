@@ -21,7 +21,13 @@
 // global variables
 uint32_t _proc_heap_addr = 0;
 
+// local function declaration
+static uint8_t print_welcome_message();
+
+
 uint8_t arch_kernel_init() {
+
+    print_welcome_message();
 
     // attempt to create kernel_servie_lock mutex
     // default security attributes
@@ -37,6 +43,14 @@ uint8_t arch_kernel_init() {
 
     return ERROR_NONE;
 
+}
+
+static uint8_t print_welcome_message() {
+
+    printf("***********************************************\n");
+    printf(" OSSIM Environment Version 1.0\n");
+    printf("***********************************************\n");
+    return ERROR_NONE;
 }
 
 uint8_t arch_mpu_init() {
