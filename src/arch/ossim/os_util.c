@@ -8,7 +8,6 @@
 
 
 #include <os_util.h>
-#include <access.h>
 #include <error.h>
 #include <param.h>
 #include <kvar.h>
@@ -18,11 +17,11 @@
 
 #include <stdio.h>
 
-// global variables
-uint32_t _proc_heap_addr = 0;
+// local defines
+#define TASK_STACK_START_INDEX  (UPPER_REGION_SIZE * 1024)
 
 // local function declaration
-static uint8_t print_welcome_message();
+uint8_t print_welcome_message();
 
 
 uint8_t arch_kernel_init() {
@@ -41,11 +40,17 @@ uint8_t arch_kernel_init() {
         exit(1);
     }
 
+    // initialize _proc_heap_addr
+    // this variable is used to hold address of task stack start in target device
+    // but in ossim environment we dont need task stack, but we will simulate its
+    // execution in ossim environment
+    _proc_heap_addr = ((uint32_t) &sim_kernel_region) + TASK_STACK_START_INDEX;
+
     return ERROR_NONE;
 
 }
 
-static uint8_t print_welcome_message() {
+uint8_t print_welcome_message() {
 
     printf("***********************************************\n");
     printf(" OSSIM Environment Version 1.0\n");
@@ -65,11 +70,6 @@ uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t pr
 
 }
 
-uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4) {
-
-    return ERROR_NONE;
-    
-}
 
 uint8_t vector_table_relocate() {
 

@@ -3,6 +3,14 @@
 
 #include <task_obj.h>
 
+#ifndef UPC_RESOURCE_CAL
+#include <param.h>
+#endif
+
+#ifdef OSSIM_RUN
+#define NO_KERNEL_SECTION
+#endif
+
 #ifndef NO_KERNEL_SECTION
 #define KSECTION(str) __attribute__ ((section ("" #str "")))
 #else

@@ -8,10 +8,6 @@
 #include <stdint.h>
 #include <kvar.h>
 
-#ifndef UPC_RESOURCE_CAL
-#include <param.h>
-#endif
-
 volatile uint32_t  KSECTION(.kdat) current_task             = 0;
 volatile uint32_t  KSECTION(.kdat) next_task                = 0;
 volatile uint8_t   KSECTION(.kdat) max_level                = 0;

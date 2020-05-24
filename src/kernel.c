@@ -76,7 +76,11 @@ uint32_t kernel_init(void) {
     }
 
     // Get Process Stack start Address
+    #ifdef OSSIM_RUN
+    pstack_addr = _proc_heap_addr;
+    #else
     pstack_addr = (uint32_t)&_proc_heap_addr;
+    #endif
 
     // Initialize MPU
     error = arch_mpu_init(); 
