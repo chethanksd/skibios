@@ -63,6 +63,17 @@
     
 
     <!--
+       * Natural number Data type
+       *
+       * Usage: Only positive numbers are supported
+       *
+    -->
+    <xs:simpleType name="Natural">
+        <xs:restriction base="xs:positiveInteger"/>
+    </xs:simpleType>
+
+
+    <!--
        * Integer Data type
        * 
        * usage replacement of name xs:integer

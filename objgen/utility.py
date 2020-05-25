@@ -21,6 +21,9 @@ def extract_value_xsd(value, data_type):
         if(('False' in value) or ('0' in value)):
             return_value = 0
 
+    if(data_type == 'Natural'):
+        return_value = int(value)
+
     if(data_type == 'Integer'):
         return_value = int(value)
 

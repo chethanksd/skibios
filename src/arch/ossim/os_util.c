@@ -28,7 +28,7 @@ uint8_t arch_kernel_init() {
 
     print_welcome_message();
 
-    // attempt to create kernel_servie_lock mutex
+    // attempt to create kernel_service_lock mutex
     // default security attributes
     // initially not owned
     // unnamed mutex
@@ -38,7 +38,7 @@ uint8_t arch_kernel_init() {
     {
         printf("Failed to create kernel service mutex error: %lu\n", GetLastError());
         exit(1);
-    }
+    
 
     // initialize _proc_heap_addr
     // this variable is used to hold address of task stack start in target device
@@ -115,18 +115,6 @@ uint8_t heap_init() {
 }
 
 uint8_t btask_psp_correction() {
-
-    return ERROR_NONE;
-
-}
-
-uint8_t mutex_lock() {
-
-    return ERROR_NONE;
-
-}
-
-uint8_t mutex_unlock() {
 
     return ERROR_NONE;
 

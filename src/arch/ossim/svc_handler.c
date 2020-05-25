@@ -1,5 +1,5 @@
 /*
- * os util code for arm-m3m4
+ * svc handler code for ossim
  *
  *
  * author: chetandev.ksd@gmail.com

@@ -19,4 +19,10 @@
 
     <symbol     param_name="disable_buffer"         symbol_name="DISABLE_BUFFER"/>
 
+    <symbol     param_name="kernel_section_size"    symbol_name="KERNEL_SECTION_SIZE"/>
+
+    <symbol     param_name="upper_region_size"      symbol_name="UPPER_REGION_SIZE"/>
+
+    <symbol     param_name="ghmb_region_size"       symbol_name="GHMB_REGION_SIZE"/>
+
 </param_gen>

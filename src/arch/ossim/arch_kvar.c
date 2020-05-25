@@ -17,11 +17,10 @@
 #define KERNEL_SECTON_SIZE_IN_BYTES (KERNEL_SECTION_SIZE * 1024U)
 #endif
 
-// kenel service lock mutex
-// this variable is required for synchornization between kernel service rountine
+// kernel service lock mutex
+// this variable is required for synchornization between kernel service routine,
 // scheduler and user tasks in OSSIM Environment
 HANDLE kernel_service_lock;
-
 
 // simulated kernel region as allocated in target mcu
 #ifndef UPC_RESOURCE_CAL
