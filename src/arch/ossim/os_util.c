@@ -20,8 +20,14 @@
 // local defines
 #define TASK_STACK_START_INDEX  (UPPER_REGION_SIZE * 1024)
 
+// local type definition
+typedef TASK_RETURN_T(*task_func_t)();
+
 // local function declaration
 uint8_t print_welcome_message();
+
+// external function declaration
+extern void resolve_end(void);
 
 
 uint8_t arch_kernel_init() {
@@ -38,7 +44,7 @@ uint8_t arch_kernel_init() {
     {
         printf("Failed to create kernel service mutex error: %lu\n", GetLastError());
         exit(1);
-    
+    }
 
     // initialize _proc_heap_addr
     // this variable is used to hold address of task stack start in target device
@@ -58,13 +64,39 @@ uint8_t print_welcome_message() {
     return ERROR_NONE;
 }
 
-uint8_t arch_mpu_init() {
+uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t proc_arg) {
+
+    task_func_t ptr_temp;
+    uint32_t *pheap_ptr;
+    HANDLE handle;
+
+    // simulate stack preparation as per target mcu (currently below code simulates mpc5)
+    PSP_Array[task_index] = ((unsigned int) (PSP_Array[task_index])) + ((TASK_STACK_SIZE - 1) * 4) - 22 * 4;
+    pheap_ptr = (uint32_t*)PSP_Array[task_index];
+
+    pheap_ptr[3] = ptr_func;
+    pheap_ptr[4] = 0xD000;
+    pheap_ptr[6] = (uint32_t) &resolve_end;
+    pheap_ptr[10] = proc_arg;
+
+    // this is where actual thread is created to simulate target mcu task
+    ptr_temp = (task_func_t)ptr_func;
+    handle = CreateThread(NULL, 0, ptr_temp, (LPVOID)proc_arg, CREATE_SUSPENDED, NULL);
+
+    if(handle == NULL) {
+       printf("failed to create task, error: %lu\n", GetLastError());
+       goto quit_error;
+    }
+    
+    pc_task_handle[task_index] = handle;
+
+quit_error:
 
     return ERROR_NONE;
 
 }
 
-uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t proc_arg) {
+uint8_t arch_mpu_init() {
 
     return ERROR_NONE;
 

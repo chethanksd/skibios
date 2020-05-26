@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifndef UPC_RESOURCE_CAL
+#include <param.h>
+#endif
+
 #ifdef OSSIM_RUN
 #include <windows.h>
 #endif

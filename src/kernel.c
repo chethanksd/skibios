@@ -96,7 +96,7 @@ uint32_t kernel_init(void) {
     // is in active state
     // 
     task_init(&base_task);
-    base_task.ptr_func = (void*)&BaseTask;
+    base_task.ptr_func = (TASK_RETURN_T*)&BaseTask;
     base_task.priority = 0;
     task_start(&base_task);
     

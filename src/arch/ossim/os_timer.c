@@ -31,9 +31,6 @@ quit_error:
 
 uint32_t os_timer_config(uint32_t new_cpu_freq) {
 
-    uint32_t error = ERROR_NONE;
-
-quit_error:
-
-    return error;
+    return ERROR_NONE;
+    
 }

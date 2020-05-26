@@ -2,6 +2,7 @@
 #define _OS_UTIL_H_
 
 #include <stdint.h>
+#include <task_obj.h>
 
 #ifdef __cplusplus
 extern "C" {

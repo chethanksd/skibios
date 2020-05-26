@@ -11,4 +11,6 @@ extern uint32_t sim_kernel_region[];
 
 extern uint32_t _proc_heap_addr;
 
+extern HANDLE pc_task_handle[];
+
 #endif

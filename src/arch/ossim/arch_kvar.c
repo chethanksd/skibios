@@ -27,5 +27,10 @@ HANDLE kernel_service_lock;
 uint32_t sim_kernel_region[KERNEL_SECTON_SIZE_IN_BYTES];
 #endif
 
-// process stack start address
+// task stack start address
 uint32_t _proc_heap_addr;
+
+// pc task handle array
+// this array is required to hold handle to the task which is required for 
+// controlling that task
+HANDLE pc_task_handle[MAX_TASK_COUNT];
