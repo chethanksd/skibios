@@ -55,6 +55,9 @@ uint32_t kernel_init(void) {
     uint32_t error;
     uint16_t i;
 
+    // set first start to false
+    first_start = false;
+
     // Relocate the Vector Table
     vector_table_relocate();
 
@@ -103,7 +106,6 @@ uint32_t kernel_init(void) {
     // base task should have all permissions
     permissions[0] = 0xFFFF;
     current_task = 0;
-    first_start = false;
 
     // Initialize Heap Memory
     heap_init(); 

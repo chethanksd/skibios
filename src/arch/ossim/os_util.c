@@ -23,11 +23,13 @@
 // local type definition
 typedef TASK_RETURN_T(*task_func_t)();
 
+
 // local function declaration
 uint8_t print_welcome_message();
 
 // external function declaration
 extern void resolve_end(void);
+extern void scheduler();
 
 
 uint8_t arch_kernel_init() {
@@ -69,6 +71,8 @@ uint8_t print_welcome_message() {
 }
 
 uint8_t switch_mcu_mode() {
+
+    // Create thread for kernel service routine
     
     return ERROR_NONE;
 

@@ -26,8 +26,6 @@ task_t myprocess4;
 
 int main() {
 
-    int i;
-
     kernel_init();
 
     printf("OSSIM test program\n");
@@ -54,6 +52,10 @@ int main() {
 	task_start(&myprocess4);
 
     start_scheduler();
+
+	while(1) {
+		// infinite loop
+	}
 
     return 0;
 }
