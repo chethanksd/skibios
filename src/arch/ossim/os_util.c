@@ -11,6 +11,7 @@
 #include <error.h>
 #include <param.h>
 #include <kvar.h>
+#include <svc.h>
 #include <arch_kvar.h>
 #include <interrupt.h>
 #include <os_support.h>
@@ -68,9 +69,12 @@ uint8_t print_welcome_message() {
 
 uint8_t switch_mcu_mode() {
 
-    // Create thread for kernel service routine
+    uint32_t error;
+
+    // call kernel service routine to implement START_SCHEDULER
+    error = call_kernel_service(START_SCHEDULER, 0, 0, 0, 0);
     
-    return ERROR_NONE;
+    return error;
 
 }
 

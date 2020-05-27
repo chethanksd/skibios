@@ -10,6 +10,7 @@
 #include <error.h>
 #include <kvar.h>
 #include <param.h>
+#include <arch_kvar.h>
 
 #include <stdio.h>
 
@@ -65,6 +66,8 @@ uint32_t os_timer_config(uint32_t new_cpu_freq) {
 
 VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired) {
     
+    DWORD wait_result;    
+    
     // when CreateTimerQueueTimer at os timer init is called with 
     // DueTimer=0, Period=0, this callback function is called. So,
     // we don't want any undesirable execution from this function
@@ -72,6 +75,25 @@ VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired) {
         return;
     }
 
+    // try to lock kernel service mutex
+    // attempt to lock the mutex
+    wait_result = WaitForSingleObject(kernel_service_lock, INFINITE);
+
+    switch (wait_result) {
+
+        // got ownership of kernel service lock mutex
+        case WAIT_OBJECT_0: 
+            break;
+
+        // got ownership of abandoned kernel_service lock mutex
+        case WAIT_ABANDONED: 
+            return;
+    }
+
+    // call scheduler
     printf("timer called with arg: %d\n", *((uint32_t*)lpParam));
+
+    // release kernel service lock for other task to use
+    ReleaseMutex(kernel_service_lock);
 
 }
