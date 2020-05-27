@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #ifndef UPC_RESOURCE_CAL
-#include <param.h>
+#include <app_support.h>
 #endif
 
 #ifdef OSSIM_RUN
