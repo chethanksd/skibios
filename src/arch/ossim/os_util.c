@@ -20,10 +20,6 @@
 // local defines
 #define TASK_STACK_START_INDEX  (UPPER_REGION_SIZE * 1024)
 
-// local type definition
-typedef TASK_RETURN_T(*task_func_t)();
-
-
 // local function declaration
 uint8_t print_welcome_message();
 
