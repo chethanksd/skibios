@@ -21,7 +21,7 @@
 
 
 
-uint8_t mutex_lock(uint32_t *mutex) {
+uint32_t mutex_lock(uint32_t *mutex) {
 
     return ERROR_NONE;
 

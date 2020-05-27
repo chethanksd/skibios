@@ -13,9 +13,9 @@
 #include <umpu.h>
 
 
-uint8_t user_mpu_enable(uint8_t region, uint32_t address, uint32_t attributes) {
+uint32_t user_mpu_enable(uint8_t region, uint32_t address, uint32_t attributes) {
 
-    uint8_t error = 0;
+    uint32_t error = 0;
 
     region = region + 3;
 
@@ -25,16 +25,15 @@ uint8_t user_mpu_enable(uint8_t region, uint32_t address, uint32_t attributes) {
 
 }
 
-uint8_t user_mpu_disable(uint8_t region) {
+uint32_t user_mpu_disable(uint8_t region) {
 
-    uint8_t error = 0;
+    uint32_t error = 0;
 
     region = region + 3;
 
     SVC_DISABLE_UMPU(region, error);
 
     return error;
-
 
 }
 

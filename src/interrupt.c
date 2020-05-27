@@ -17,9 +17,9 @@
 
 
 
-uint8_t interrupt_enable(uint32_t interrupt){
+uint32_t interrupt_enable(uint32_t interrupt){
 
-    uint8_t error;
+    uint32_t error;
 
     SVC_INT_ENABLE(interrupt, error);
 
@@ -28,9 +28,9 @@ uint8_t interrupt_enable(uint32_t interrupt){
 }
 
 
-uint8_t interrupt_disable(uint32_t interrupt) {
+uint32_t interrupt_disable(uint32_t interrupt) {
 
-    uint8_t error;
+    uint32_t error;
 
     SVC_INT_DISABLE(interrupt, error);
 
@@ -38,18 +38,18 @@ uint8_t interrupt_disable(uint32_t interrupt) {
     
 }
 
-uint8_t interrupt_register(uint32_t interrupt, void (*pfnHandler)(void)){
+uint32_t interrupt_register(uint32_t interrupt, void (*pfnHandler)(void)){
 
-    uint8_t error;
+    uint32_t error;
 
     SVC_INT_REGISTER(interrupt, pfnHandler, error);
 
     return error;
 }
 
-uint8_t interrupt_set_priority(uint32_t interrupt, uint8_t priority){
+uint32_t interrupt_set_priority(uint32_t interrupt, uint8_t priority){
 
-    uint8_t error;
+    uint32_t error;
 
     SVC_SET_PRIORITY(interrupt, priority, error);
 

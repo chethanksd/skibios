@@ -362,9 +362,9 @@ void scheduler() {
 
 // Update CPU Frequency function
 
-uint8_t cpu_freq_update(uint32_t frequency) {
+uint32_t cpu_freq_update(uint32_t frequency) {
 
-    uint8_t error;
+    uint32_t error;
 
     SVC_CPU_FREQ_UPDATE(frequency, error);
 
@@ -372,9 +372,9 @@ uint8_t cpu_freq_update(uint32_t frequency) {
 
 }
 
-uint8_t hwreg_write(uint32_t register_address, uint32_t value) {
+uint32_t hwreg_write(uint32_t register_address, uint32_t value) {
 
-    uint8_t error;
+    uint32_t error;
 
 
     SVC_HWREG_WRITE(register_address, value, error);
@@ -384,9 +384,9 @@ uint8_t hwreg_write(uint32_t register_address, uint32_t value) {
 
 }
 
-uint8_t hwreg_read(uint32_t register_address, uint32_t *value) {
+uint32_t hwreg_read(uint32_t register_address, uint32_t *value) {
 
-    uint8_t error;
+    uint32_t error;
 
     SVC_HWREG_READ(register_address, (uint32_t)value, error);
 
@@ -396,7 +396,7 @@ uint8_t hwreg_read(uint32_t register_address, uint32_t *value) {
 
 // Device Reset Function
 
-uint8_t device_reset() {
+uint32_t device_reset() {
 
     // only BaseTask have access to device_reset function
     if(current_task != 0) {

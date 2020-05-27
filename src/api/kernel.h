@@ -15,11 +15,11 @@ extern const uint32_t zero_ref;
 
 extern uint32_t kernel_init();
 extern void start_scheduler(void);
-extern uint8_t device_reset();
-extern uint8_t cpu_freq_update(uint32_t frequency);
+extern uint32_t device_reset();
+extern uint32_t cpu_freq_update(uint32_t frequency);
 
-extern uint8_t hwreg_write(uint32_t register_address, uint32_t value);
-extern uint8_t hwreg_read(uint32_t register_address, uint32_t *value);
+extern uint32_t hwreg_write(uint32_t register_address, uint32_t value);
+extern uint32_t hwreg_read(uint32_t register_address, uint32_t *value);
 
 #ifdef	__cplusplus
 }

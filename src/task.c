@@ -17,7 +17,7 @@
 #include <os_support.h>
 
 
-uint8_t task_init(task_t *myprocess) {
+uint32_t task_init(task_t *myprocess) {
     
     uint8_t i;
 
@@ -40,7 +40,7 @@ uint8_t task_init(task_t *myprocess) {
 
 }
     
-uint8_t task_start(task_t *myprocess) {
+uint32_t task_start(task_t *myprocess) {
 
     uint8_t i;
 
@@ -59,7 +59,7 @@ uint8_t task_start(task_t *myprocess) {
 
 }
     
-uint8_t task_start_arg(task_t *myprocess, void *arg) {
+uint32_t task_start_arg(task_t *myprocess, void *arg) {
 
     uint8_t i;
 
@@ -78,7 +78,7 @@ uint8_t task_start_arg(task_t *myprocess, void *arg) {
 
 }
 
-uint8_t task_kill(task_t *myprocess) {
+uint32_t task_kill(task_t *myprocess) {
     
     uint8_t i;
 
@@ -103,7 +103,7 @@ uint8_t task_kill(task_t *myprocess) {
 
 }
 
-uint8_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
+uint32_t hibernate(uint32_t *op1, uint32_t *op2, uint32_t value, bool reverse) {
 
     uint8_t count=0;
     uint8_t i=0;

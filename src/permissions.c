@@ -14,9 +14,9 @@
 #include <os_support.h>
 
 
-uint8_t base_run(void *args) {
+uint32_t base_run(void *args) {
 
-    uint8_t error;
+    uint32_t error;
 
     if(current_task == 0) {
         return ERROR_BASE_PROCESS;
@@ -32,7 +32,7 @@ uint8_t base_run(void *args) {
 
 }
 
-uint8_t base_release(uint8_t error) {
+uint32_t base_release(uint8_t error) {
 
     if(current_task != 0) {
         return ERROR_INSUFFICIENT_PERMISSION;
@@ -44,7 +44,7 @@ uint8_t base_release(uint8_t error) {
     
 }
 
-uint8_t get_invocation_args(uint32_t *pid, void **args) {
+uint32_t get_invocation_args(uint32_t *pid, void **args) {
 
     if(current_task != 0) {
         return ERROR_INSUFFICIENT_PERMISSION;
@@ -61,9 +61,9 @@ uint8_t get_invocation_args(uint32_t *pid, void **args) {
 
 }
 
-uint8_t grant_permission(uint32_t pid, uint16_t permission) {
+uint32_t grant_permission(uint32_t pid, uint16_t permission) {
 
-    uint8_t error = ERROR_NONE;
+    uint32_t error = ERROR_NONE;
 
     if(current_task != 0) {
         return ERROR_INSUFFICIENT_PERMISSION;

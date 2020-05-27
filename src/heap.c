@@ -114,7 +114,7 @@ void* heap_allocate(uint32_t size){
     return (void *) free_ptr;
 }
 
-uint8_t heap_release(void *ptr){
+uint32_t heap_release(void *ptr){
     
     uint32_t state = 0;
 
