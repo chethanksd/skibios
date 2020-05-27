@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <arch_kvar.h>
 
 #ifndef UPC_RESOURCE_CAL
@@ -34,3 +35,8 @@ uint32_t _proc_heap_addr;
 // this array is required to hold handle to the task which is required for 
 // controlling that task
 HANDLE pc_task_handle[MAX_TASK_COUNT];
+
+// first schedule
+// required for scheduler to setup process states at first time
+// scheduling
+bool first_schedule;

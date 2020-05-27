@@ -20,6 +20,7 @@
 #define ERROR_BASE_PROCESS                       16
 #define ERROR_NO_INVOCATION                      17
 #define ERROR_UNKNOWN_PROCESS_ID                 18
+#define ERROR_SCHEDULER_ALREADY_RUNNING          19
 
 // useful constants
 #define NULL_POINTER            0x00000000

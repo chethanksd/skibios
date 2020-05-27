@@ -52,6 +52,10 @@ uint8_t arch_kernel_init() {
     // execution in ossim environment
     _proc_heap_addr = ((uint32_t) &sim_kernel_region) + TASK_STACK_START_INDEX;
 
+
+    // arch specific init
+    first_schedule = false;
+
     return ERROR_NONE;
 
 }
@@ -62,6 +66,12 @@ uint8_t print_welcome_message() {
     printf(" OSSIM Environment Version 1.0\n");
     printf("***********************************************\n");
     return ERROR_NONE;
+}
+
+uint8_t switch_mcu_mode() {
+    
+    return ERROR_NONE;
+
 }
 
 uint8_t arch_task_stack_init(uint32_t task_index, uint32_t ptr_func, uint32_t proc_arg) {
@@ -130,12 +140,6 @@ uint8_t arch_interrupt_register(uint32_t interrupt, uint32_t handler) {
 
 uint8_t arch_interrupt_priority(uint8_t interrupt, uint8_t priority)  {
 
-    return ERROR_NONE;
-
-}
-
-uint8_t switch_mcu_mode() {
-    
     return ERROR_NONE;
 
 }

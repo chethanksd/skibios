@@ -103,6 +103,7 @@ uint32_t kernel_init(void) {
     // base task should have all permissions
     permissions[0] = 0xFFFF;
     current_task = 0;
+    first_start = false;
 
     // Initialize Heap Memory
     heap_init(); 
@@ -113,7 +114,11 @@ quit_error:
 
 }
 
-void  start_scheduler(void) {
+uint32_t  start_scheduler(void) {
+
+    if(first_start == true) {
+        return ERROR_SCHEDULER_ALREADY_RUNNING;
+    }
 
     current_task = 0;
     first_start = true;
@@ -124,9 +129,12 @@ void  start_scheduler(void) {
 
 #ifndef OSSIM_RUN
     while(1) {
-        // This part of code should never be reached
+        // This part of code should never be reached in embedded target
+        // In OSSIM environment this part of the code should be omitted
     }
 #endif
+
+    return ERROR_NONE;
 
 }
 

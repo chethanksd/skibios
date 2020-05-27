@@ -13,4 +13,6 @@ extern uint32_t _proc_heap_addr;
 
 extern HANDLE pc_task_handle[];
 
+extern bool first_schedule;
+
 #endif
