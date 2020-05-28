@@ -11,13 +11,13 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 #define svc(code) call_kernel_service(code, 0, 0, 0, 0)
 
 // Enable SYSTICK timer to run scheduler
-#define ENABLE_SCHEDULER() 
+#define ENABLE_SCHEDULER() enable_os_timer()
 
 // Disable SYSTICK timer to stop scheduler
-#define DISABLE_SCHEDULER() 
+#define DISABLE_SCHEDULER()
 
 // Trigger SYSTICK interrupt to run scheduler immediately
-#define TRIGGER_SCHEDULER() 
+#define TRIGGER_SCHEDULER() trigger_os_timer()
 
 // Clear STM timer value
 #define SCHEDULER_TIMER_RESET()  

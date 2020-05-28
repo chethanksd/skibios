@@ -26,7 +26,6 @@ uint8_t print_welcome_message();
 
 // external function declaration
 extern void resolve_end(void);
-extern void scheduler();
 
 
 uint8_t arch_kernel_init() {

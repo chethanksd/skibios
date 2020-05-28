@@ -53,6 +53,10 @@ int main() {
 
     start_scheduler();
 
+	while(1) {
+		// infinite loop
+	}
+
     return 0;
 }
 

@@ -145,7 +145,10 @@ uint32_t svc_service_task_create(uint32_t *svc_num, uint32_t *arguments) {
                 max_level = priority_Array[j][TASK_PRIO_CURRENT];
                 alc=0;
                 hlc=0;
-                ENABLE_SCHEDULER();
+                
+                if(first_start == true) {
+                    ENABLE_SCHEDULER();
+                }
 
             }
 

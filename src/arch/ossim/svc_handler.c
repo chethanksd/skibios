@@ -93,6 +93,9 @@ uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, ui
         exit(1);
     }
 
+    // release kernel service lock for other task to use
+    ReleaseMutex(kernel_service_lock);
+
     return error;
 
 }
@@ -128,9 +131,6 @@ TASK_RETURN_T svc_handler(svc_handler_param_t *svc_param) {
         error = (*svc_service)(&svc_current, arguments);
 
     } while(svc_stash != svc_current);
-
-    // release kernel service lock for other task to use
-    ReleaseMutex(kernel_service_lock);
 
     return error;
 

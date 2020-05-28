@@ -11,6 +11,7 @@
 #include <kvar.h>
 #include <param.h>
 #include <arch_kvar.h>
+#include <os_util.h>
 
 #include <stdio.h>
 
@@ -20,7 +21,11 @@ static VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired);
 // local global variable declaratio
 static HANDLE timer_queue_handler = NULL;
 static HANDLE timer_handler = NULL;
-uint32_t arg = 1000;
+uint32_t timer_code = 0;
+uint32_t schedule_count = 0;
+
+// externel functions
+extern void scheduler();
 
 
 uint32_t os_timer_init(uint32_t new_cpu_freq) {
@@ -32,17 +37,6 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
     if(timer_queue_handler == NULL)
     {
         printf("CreateTimerQueue failed (%lu)\n", GetLastError());
-        exit(1);
-    }
-
-    if (!CreateTimerQueueTimer(&timer_handler, 
-                                timer_queue_handler, 
-                                (WAITORTIMERCALLBACK)timer_routine, 
-                                &arg, 
-                                0, 
-                                0, 
-                                0)) {
-        printf("CreateTimerQueueTimer failed (%lu)\n", GetLastError());
         exit(1);
     }
 
@@ -61,7 +55,43 @@ quit_error:
 uint32_t os_timer_config(uint32_t new_cpu_freq) {
 
     return ERROR_NONE;
+ 
+}
+
+uint32_t enable_os_timer() {
     
+    uint32_t timer_load;
+
+    timer_load = ((float)(1000.0/TASK_PER_SEC));
+
+    if (!CreateTimerQueueTimer(&timer_handler, 
+                                timer_queue_handler, 
+                                (WAITORTIMERCALLBACK)timer_routine, 
+                                &timer_code, 
+                                timer_load, 
+                                0, 
+                                0)) {
+        printf("os timer enable CreateTimerQueueTimer failed (%lu)\n", GetLastError());
+    }
+
+    return ERROR_NONE;
+
+}
+
+uint32_t trigger_os_timer() {
+
+    if (!CreateTimerQueueTimer(&timer_handler, 
+                                timer_queue_handler, 
+                                (WAITORTIMERCALLBACK)timer_routine, 
+                                &timer_code, 
+                                0, 
+                                0, 
+                                0)) {
+        printf("os timer trigger CreateTimerQueueTimer failed (%lu)\n", GetLastError());
+    }
+
+    return ERROR_NONE;
+
 }
 
 VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired) {
@@ -91,7 +121,10 @@ VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired) {
     }
 
     // call scheduler
-    printf("timer called with arg: %d\n", *((uint32_t*)lpParam));
+    scheduler();
+    schedule_count++;
+    printf("schedule_count: %d, current_task: %d, next_task: %d\n", schedule_count, current_task, next_task);
+    current_task = next_task;
 
     // release kernel service lock for other task to use
     ReleaseMutex(kernel_service_lock);
