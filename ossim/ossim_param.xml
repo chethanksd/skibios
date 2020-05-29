@@ -5,11 +5,11 @@
         <kernel_section_size>16</kernel_section_size>
         <upper_region_size>3</upper_region_size>
         <ghmb_region_size>1</ghmb_region_size>
-        <process_stack_size>512</process_stack_size>
+        <task_stack_size>512</task_stack_size>
         <enable_safe_lock>0</enable_safe_lock>
         <disable_buffer>0</disable_buffer>
-        <process_id_start>1000</process_id_start>
-        <process_per_sec>100</process_per_sec>
+        <task_id_start>1000</task_id_start>
+        <task_per_sec>1</task_per_sec>
     </basic>   
 
     <objgen_debug>
@@ -20,5 +20,9 @@
         <skip_objgen>0</skip_objgen>
         <version>0</version>
     </objgen_debug>
+
+    <objgen_config>
+        <skip_compile>0</skip_compile>
+    </objgen_config>
 
 </param>
