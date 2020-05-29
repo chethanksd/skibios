@@ -109,6 +109,26 @@ quit_error:
 
 }
 
+uint32_t ossim_suspend_task(uint32_t task) {
+
+    if(first_schedule == true) {
+        SuspendThread(pc_task_handle[task]);
+    } else {
+        first_schedule = true;
+    }
+
+    return ERROR_NONE;
+
+}
+
+uint32_t ossim_resume_task(uint32_t task) {
+    
+    ResumeThread(pc_task_handle[task]);
+
+    return ERROR_NONE;
+
+}
+
 uint8_t arch_mpu_init() {
 
     return ERROR_NONE;

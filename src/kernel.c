@@ -123,7 +123,6 @@ uint32_t  start_scheduler(void) {
     }
 
     current_task = 0;
-    first_start = true;
 
     // call arch defined function to switch mcu mode from supervisor
     // to user mode and then call kernel service START_SCHEDULER
@@ -183,7 +182,7 @@ uint32_t svc_service_start_scheduler(uint32_t *svc_num, uint32_t *arguments) {
     // psp correction needs to be applied
     btask_psp_correction();
 
-
+    first_start = true;
     self_kill = false;
     *svc_num = HAND_OVER;
     
@@ -286,6 +285,10 @@ void scheduler() {
 
     }
 
+    #ifdef OSSIM_RUN
+    ossim_suspend_task(current_task);
+    #endif
+
     // Check the Hibernating condition of all Hibernating function
     k = next_task;
 
@@ -350,11 +353,14 @@ void scheduler() {
 
     state[next_task] = TASK_STATE_ACTIVE;
 
-    // Clear Current Register of Systick timer
+    #ifdef OSSIM_RUN
+    ossim_resume_task(next_task);
+    #endif
+
+    // Clear Current Register of os timer
     SCHEDULER_TIMER_RESET();
 
     // Disable the scheduler if there is only one process i.e, only Base Proccess is present
-
     if(alc == 1 && hlc == 0) {
         DISABLE_SCHEDULER();
     }else{
@@ -365,7 +371,8 @@ void scheduler() {
         ENABLE_SCHEDULER();
     }
 
-    // Set PendSV Pending for context switching
+    // set context_swtich handler to pending to perform context switch
+    // when this scheduler exits
     TRIGGER_CONTEXT_SWITCH();
 
 }

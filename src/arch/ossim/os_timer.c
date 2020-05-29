@@ -122,8 +122,9 @@ VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired) {
 
     // call scheduler
     scheduler();
+
+    // simulate one of the context switch action
     schedule_count++;
-    printf("schedule_count: %d, current_task: %d, next_task: %d\n", schedule_count, current_task, next_task);
     current_task = next_task;
 
     // release kernel service lock for other task to use
