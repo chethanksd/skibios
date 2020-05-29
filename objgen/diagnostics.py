@@ -10,7 +10,7 @@ import sparam
 import device
 
 OBJGEN_VERSION_MAJOR = 1
-OBJGEN_VERSION_MINOR = 0
+OBJGEN_VERSION_MINOR = 1
 
 start_stage     = 0
 pregen_stage    = 0
