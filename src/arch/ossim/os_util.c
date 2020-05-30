@@ -21,16 +21,11 @@
 // local defines
 #define TASK_STACK_START_INDEX  (UPPER_REGION_SIZE * 1024)
 
-// local function declaration
-uint8_t print_welcome_message();
-
 // external function declaration
 extern void resolve_end(void);
 
 
 uint8_t arch_kernel_init() {
-
-    print_welcome_message();
 
     // attempt to create kernel_service_lock mutex
     // default security attributes
@@ -56,14 +51,6 @@ uint8_t arch_kernel_init() {
 
     return ERROR_NONE;
 
-}
-
-uint8_t print_welcome_message() {
-
-    printf("***********************************************\n");
-    printf(" OSSIM Environment Version 1.0\n");
-    printf("***********************************************\n");
-    return ERROR_NONE;
 }
 
 uint8_t switch_mcu_mode() {

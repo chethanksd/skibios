@@ -9,8 +9,8 @@
 #include <stdio.h>
 #include <conio.h>
 
-#include <kernel.h>
 #include <task.h>
+#include <init.h>
 
 
 void task1(void);
@@ -24,11 +24,7 @@ task_t mytask3;
 task_t mytask4;
 
 
-int main() {
-
-    kernel_init();
-
-    printf("OSSIM test program\n");
+uint32_t user_init() {
 
 	task_init(&mytask1);
 	mytask1.ptr_func=(void*)&task1;
@@ -50,13 +46,8 @@ int main() {
 	mytask4.priority=1;
 	task_start(&mytask4);
 
-    start_scheduler();
-
-	while(1) {
-		// infinite loop
-	}
-
     return 0;
+
 }
 
 // task1 thread
