@@ -24,7 +24,7 @@ TC_CFLAGS += -Wno-pointer-to-int-cast
 TC_CFLAGS += -Wno-int-to-pointer-cast 
 
 
-tconsole:
+tconsole: arg_check
 	$(TC_BIN)/$(TC_CC) $(TC_CFLAGS) ./task_console.c
 	$(TC_BIN)/$(TC_CC) -Wl,--gc-sections -o./task_console.exe ./task_console.o
 	rm ./task_console.o

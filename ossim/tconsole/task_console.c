@@ -10,117 +10,98 @@
 #include <stdio.h>
 #include <strsafe.h>
 
-// global variable
-HANDLE hSlot;
-LPCTSTR SlotName = TEXT("\\\\.\\mailslot\\console_task");
+#define MAX_READ_BUFFER_SIZE        512
 
-BOOL ReadSlot() 
-{ 
-    DWORD cbMessage, cMessage, cbRead; 
-    BOOL fResult; 
-    LPTSTR lpszBuffer; 
-    TCHAR achID[80]; 
-    DWORD cAllMessages; 
-    HANDLE hEvent;
+// global variable
+HANDLE mslot_handle;
+LPCTSTR slot_name = TEXT("\\\\.\\mailslot\\console_task");
+
+char msg_buffer[MAX_READ_BUFFER_SIZE];
+
+BOOL read_slot() 
+{   
+    HANDLE event_handle;
+    DWORD msg_size, msg_idx, read; 
+    BOOL result;  
     OVERLAPPED ov;
  
-    cbMessage = cMessage = cbRead = 0; 
+    msg_size = msg_idx = read = 0; 
 
-    hEvent = CreateEvent(NULL, FALSE, FALSE, TEXT("ExampleSlot"));
-    if( NULL == hEvent )
+    event_handle = CreateEvent(NULL, FALSE, FALSE, TEXT("console_slot"));
+    if(event_handle == NULL) {
         return FALSE;
+    }
+
     ov.Offset = 0;
     ov.OffsetHigh = 0;
-    ov.hEvent = hEvent;
+    ov.hEvent = event_handle;
  
-    fResult = GetMailslotInfo( hSlot, // mailslot handle 
+    result = GetMailslotInfo( mslot_handle, // mailslot handle 
         (LPDWORD) NULL,               // no maximum message size 
-        &cbMessage,                   // size of next message 
-        &cMessage,                    // number of messages 
+        &msg_size,                   // size of next message 
+        &msg_idx,                    // number of messages 
         (LPDWORD) NULL);              // no read time-out 
  
-    if (!fResult) 
+    if (!result) 
     { 
-        printf("GetMailslotInfo failed with %d.\n", GetLastError()); 
+        printf("GetMailslotInfo failed with %lu.\n", GetLastError()); 
         return FALSE; 
     } 
  
-    if (cbMessage == MAILSLOT_NO_MESSAGE) 
+    if (msg_size == MAILSLOT_NO_MESSAGE) 
     { 
         return TRUE; 
     } 
  
-    cAllMessages = cMessage; 
- 
-    while (cMessage != 0)  // retrieve all messages
+    while (msg_idx != 0)  // retrieve all messages
     { 
-        // Create a message-number string. 
- 
-        StringCchPrintf((LPTSTR) achID, 
-            80,
-            TEXT("\nMessage #%d of %d\n"), 
-            cAllMessages - cMessage + 1, 
-            cAllMessages); 
 
-        // Allocate memory for the message. 
- 
-        lpszBuffer = (LPTSTR) GlobalAlloc(GPTR, 
-            lstrlen((LPTSTR) achID)*sizeof(TCHAR) + cbMessage); 
-        if( NULL == lpszBuffer )
-            return FALSE;
-        lpszBuffer[0] = '\0'; 
- 
-        fResult = ReadFile(hSlot, 
-            lpszBuffer, 
-            cbMessage, 
-            &cbRead, 
+        memset(&msg_buffer[0], 0, MAX_READ_BUFFER_SIZE);
+        result = ReadFile(mslot_handle, 
+            msg_buffer, 
+            msg_size, 
+            &read, 
             &ov); 
  
-        if (!fResult) 
+        if (!result) 
         { 
-            printf("ReadFile failed with %d.\n", GetLastError()); 
-            GlobalFree((HGLOBAL) lpszBuffer); 
+            printf("ReadFile failed with %lu.\n", GetLastError()); 
             return FALSE; 
         } 
- 
-        // Concatenate the message and the message-number string. 
- 
-        StringCbCat(lpszBuffer, 
-                    lstrlen((LPTSTR) achID)*sizeof(TCHAR)+cbMessage, 
-                    (LPTSTR) achID); 
+
  
         // Display the message. 
+        printf("%s", msg_buffer); 
  
-        _tprintf(TEXT("Contents of the mailslot: %s\n"), lpszBuffer); 
  
-        GlobalFree((HGLOBAL) lpszBuffer); 
- 
-        fResult = GetMailslotInfo(hSlot,  // mailslot handle 
+        result = GetMailslotInfo(mslot_handle,  // mailslot handle 
             (LPDWORD) NULL,               // no maximum message size 
-            &cbMessage,                   // size of next message 
-            &cMessage,                    // number of messages 
+            &msg_size,                   // size of next message 
+            &msg_idx,                    // number of messages 
             (LPDWORD) NULL);              // no read time-out 
  
-        if (!fResult) 
+        if (!result) 
         { 
-            printf("GetMailslotInfo failed (%d)\n", GetLastError());
+            printf("GetMailslotInfo failed (%lu)\n", GetLastError());
             return FALSE; 
         } 
     } 
-    CloseHandle(hEvent);
+
+    CloseHandle(event_handle);
+
     return TRUE; 
 }
 
-BOOL WINAPI MakeSlot(LPCTSTR lpszSlotName) 
+BOOL WINAPI make_slot(LPCTSTR lpszSlotName) 
 { 
-    hSlot = CreateMailslot(lpszSlotName, 
+    mslot_handle = CreateMailslot(lpszSlotName, 
         0,                             // no maximum message size 
         MAILSLOT_WAIT_FOREVER,         // no time-out for operations 
         (LPSECURITY_ATTRIBUTES) NULL); // default security
  
-    if (hSlot == INVALID_HANDLE_VALUE) 
+    if (mslot_handle == INVALID_HANDLE_VALUE) 
     { 
-        printf("CreateMailslot failed with %d\n", GetLastError());
+        printf("CreateMailslot failed with %lu\n", GetLastError());
         return FALSE; 
     } 
     return TRUE; 
@@ -128,11 +109,11 @@ BOOL WINAPI MakeSlot(LPCTSTR lpszSlotName)
 
 int main(int argc, char *argv[], char *envp[]) {
     
-    MakeSlot(SlotName);
+    make_slot(slot_name);
 
     while(TRUE)
     {
-        ReadSlot();
+        read_slot();
     }
 
     return 0;
