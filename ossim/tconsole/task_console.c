@@ -102,13 +102,18 @@ int main() {
 
     DWORD wait_result;
 
+    // create mailslot
     make_slot();
 
+    // create event for readfile
     event_handle = CreateEvent(NULL, FALSE, FALSE, "console_slot");
     if(event_handle == NULL) {
         printf("failed to create event (%lu)\n", GetLastError());
         return 0;
     }
+
+    // change console windoe title
+    SetConsoleTitle("Task Console");
 
     while(1) {
 

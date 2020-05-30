@@ -39,6 +39,9 @@ char *slot_name = "\\\\.\\mailslot\\console_task";
 
 uint32_t adapter_init() {
 
+    // change console window title
+    SetConsoleTitle("OSSIM Adapter");
+
     // string concat task console path with self path
     memset(&task_console_path[0], 0, TASK_CONSOLE_PATH_SIZE);
     memcpy(task_console_path, self_path, SELF_PATH_BUFFER_SIZE);
@@ -81,6 +84,14 @@ uint32_t adapter_init() {
                                 (HANDLE) NULL); 
     
     } while (mslot_file == INVALID_HANDLE_VALUE);
+
+    return ERROR_NONE;
+
+}
+
+uint32_t close_task_console() {
+
+    TerminateProcess(task_console_pi.hProcess, 1);
 
     return ERROR_NONE;
 
