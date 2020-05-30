@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <conio.h>
 
+#include <Windows.h>
 #include <kernel.h>
 #include <task.h>
 #include <ossim.h>
@@ -42,7 +43,8 @@ int main() {
     start_scheduler();
 
 	while(1) {
-		// infinite loop
+        WriteSlot(TEXT("Hello world!\n"));
+		Sleep(1000);
 	}
 
     return 0;

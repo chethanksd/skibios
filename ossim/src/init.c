@@ -10,6 +10,7 @@
 #include <conio.h>
 #include <stdarg.h>
 #include <windows.h>
+#include <winbase.h>
 
 #include <kernel.h>
 #include <task.h>
@@ -20,20 +21,21 @@
 // define
 #define TASK_CONSOLE_PATH_SIZE      400
 
-
 // external global variables
 extern char self_path[];
 
 // local global functions
 DWORD task_console_pid;
 DWORD current_console_pid;
+HANDLE mslot_file; 
+HANDLE mslot_handle;
 static STARTUPINFO task_console_si;
 static PROCESS_INFORMATION task_console_pi;
 static char task_console_path[TASK_CONSOLE_PATH_SIZE];
 
-uint32_t adapter_init() {
+LPCTSTR slot_name =  TEXT("\\\\.\\mailslot\\console_task");
 
-    uint32_t error;
+uint32_t adapter_init() {
 
     // string concat task console path with self path
     memset(&task_console_path[0], 0, TASK_CONSOLE_PATH_SIZE);
@@ -54,11 +56,9 @@ uint32_t adapter_init() {
                         NULL,                   // Use parent's environment block.
                         NULL,                   // Use parent's starting directory.
                         &task_console_si,       // Pointer to STARTUPINFO structure.
-                        &task_console_pi)       // Pointer to PROCESS_INFORMATION structure.
-                        ){
-    error = GetLastError();
-    printf( "CreateProcess failed (%d).\n", error);
-    goto quit_error;
+                        &task_console_pi)){     // Pointer to PROCESS_INFORMATION structure.
+    printf( "CreateProcess failed (%lu).\n", GetLastError());
+    exit(1);
     }
 
     // get pid of task console thraad
@@ -67,8 +67,39 @@ uint32_t adapter_init() {
     // get pid of ossim adapter console
     current_console_pid = GetCurrentProcessId();
 
-quit_error:
+    // wait unitil task console creates mailbox
+    // CreateFile will fail unitl mailbox is created
+    do {
+        mslot_file = CreateFile(slot_name, 
+                                GENERIC_WRITE, 
+                                FILE_SHARE_READ,
+                                (LPSECURITY_ATTRIBUTES) NULL, 
+                                OPEN_EXISTING, 
+                                FILE_ATTRIBUTE_NORMAL, 
+                                (HANDLE) NULL); 
+    
+    } while (mslot_file == INVALID_HANDLE_VALUE);
+
     return ERROR_NONE;
+
+}
+
+uint32_t WriteSlot(char *message) {
+   BOOL result; 
+   DWORD written; 
+ 
+   result = WriteFile(mslot_file, 
+                        message, 
+                        (DWORD) (lstrlen(message)+1)*sizeof(TCHAR),  
+                        &written, 
+                        (LPOVERLAPPED) NULL); 
+ 
+   if (!result) { 
+      printf("WriteFile failed with %lu.\n", GetLastError()); 
+      return 1; 
+   } 
+
+   return 0;
 
 }
 
