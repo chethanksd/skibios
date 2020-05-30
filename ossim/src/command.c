@@ -31,6 +31,7 @@ static void process_zero_arg_command();
 // extern global variables
 extern bool ossim_started;
 extern uint32_t schedule_count;
+extern bool halt_scheduler;
 
 
 // local global variables
@@ -133,6 +134,45 @@ void process_zero_arg_command() {
         }
 
         printf("OSSIM already running\n\n");
+
+    }
+
+    // stop command
+    if(strcmp(&command[0], "stop") == 0) {
+
+        if(ossim_started == false){
+            printf("OSSIM not started!\n\n");
+            goto quit;
+        }
+        
+        if(halt_scheduler == true) {
+            printf("scheduler already halted!\n\n");
+            goto quit;
+        }
+
+        halt_scheduler = true;
+        printf("\n");
+        goto quit;
+
+    }
+
+    // resume command
+    if(strcmp(&command[0], "resume") == 0) {
+
+        if(ossim_started == false){
+            printf("OSSIM not started!\n\n");
+            goto quit;
+        }
+
+        if(halt_scheduler == false) {
+            printf("scheduler already running!\n\n");
+
+            goto quit;
+        }
+
+        halt_scheduler = false;
+        printf("\n");
+        goto quit;
 
     }
 

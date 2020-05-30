@@ -15,17 +15,21 @@
 
 #include <stdio.h>
 
+// externel functions
+extern void scheduler();
+
 // local function declaration
 static VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired);
 
 // local global variable declaratio
 static HANDLE timer_queue_handler = NULL;
 static HANDLE timer_handler = NULL;
+
+// global variables
 uint32_t timer_code = 0;
 uint32_t schedule_count = 0;
+bool halt_scheduler = false;
 
-// externel functions
-extern void scheduler();
 
 
 uint32_t os_timer_init(uint32_t new_cpu_freq) {
@@ -63,6 +67,10 @@ uint32_t enable_os_timer() {
     uint32_t timer_load;
 
     timer_load = ((float)(1000.0/TASK_PER_SEC));
+
+    while(halt_scheduler == true) {
+        // wait here until halt_scheduler is true;
+    }
 
     if (!CreateTimerQueueTimer(&timer_handler, 
                                 timer_queue_handler, 

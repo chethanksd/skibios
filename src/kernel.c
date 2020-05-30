@@ -353,10 +353,6 @@ void scheduler() {
 
     state[next_task] = TASK_STATE_ACTIVE;
 
-    #ifdef OSSIM_RUN
-    ossim_resume_task(next_task);
-    #endif
-
     // Clear Current Register of os timer
     SCHEDULER_TIMER_RESET();
 
@@ -370,6 +366,10 @@ void scheduler() {
     if(level != max_level) {
         ENABLE_SCHEDULER();
     }
+
+    #ifdef OSSIM_RUN
+    ossim_resume_task(next_task);
+    #endif
 
     // set context_swtich handler to pending to perform context switch
     // when this scheduler exits
