@@ -60,7 +60,7 @@ void task1(void) {
 		for(i = 0; i < 0x08000000; i++) {
 
 		}
-		printf("Task1 count=%d\r\n", count);
+		debugf("Task1 count=%d\r\n", count);
 	}
 }
 

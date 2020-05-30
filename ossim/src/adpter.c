@@ -43,8 +43,7 @@ int main() {
     start_scheduler();
 
 	while(1) {
-        WriteSlot(TEXT("Hello world!\n"));
-		Sleep(1000);
+        // infinite loop
 	}
 
     return 0;

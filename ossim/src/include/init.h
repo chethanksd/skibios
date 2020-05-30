@@ -7,7 +7,8 @@ extern "C" {
 
 extern uint32_t adapter_init();
 extern uint32_t get_self_path(char *path_buffer, uint32_t size);
-extern uint32_t WriteSlot(char *message);
+extern void debugf(const char* format, ...);
+extern uint32_t write_slot(char *message);
 
 #ifdef	__cplusplus
 }

@@ -20,6 +20,7 @@
 
 // define
 #define TASK_CONSOLE_PATH_SIZE      400
+#define TASK_CONSOLE_MSG_SIZE       512
 
 // external global variables
 extern char self_path[];
@@ -32,8 +33,9 @@ HANDLE mslot_handle;
 static STARTUPINFO task_console_si;
 static PROCESS_INFORMATION task_console_pi;
 static char task_console_path[TASK_CONSOLE_PATH_SIZE];
+static char task_console_msg[TASK_CONSOLE_MSG_SIZE];
 
-LPCTSTR slot_name =  TEXT("\\\\.\\mailslot\\console_task");
+char *slot_name = "\\\\.\\mailslot\\console_task";
 
 uint32_t adapter_init() {
 
@@ -84,7 +86,7 @@ uint32_t adapter_init() {
 
 }
 
-uint32_t WriteSlot(char *message) {
+uint32_t write_slot(char *message) {
    BOOL result; 
    DWORD written; 
  
@@ -131,5 +133,19 @@ uint32_t get_self_path(char *path_buffer, uint32_t size) {
     }
 
     return ERROR_NONE;
+
+}
+
+void debugf(const char* format, ...) {
+
+    va_list args;
+
+    va_start(args, format);
+    memset(&task_console_msg[0], 0, TASK_CONSOLE_MSG_SIZE);
+    vsnprintf (&task_console_msg[0], TASK_CONSOLE_MSG_SIZE, format, args);
+    
+    write_slot(task_console_msg);
+  
+    va_end(args); 
 
 }

@@ -10,16 +10,18 @@
 #include <stdio.h>
 #include <strsafe.h>
 
+// local define
 #define MAX_READ_BUFFER_SIZE        512
 
 // global variable
 HANDLE mslot_handle;
-LPCTSTR slot_name = TEXT("\\\\.\\mailslot\\console_task");
+char *slot_name = "\\\\.\\mailslot\\console_task";
 
 char msg_buffer[MAX_READ_BUFFER_SIZE];
 
-BOOL read_slot() 
-{   
+
+
+static void read_slot() {   
     HANDLE event_handle;
     DWORD msg_size, msg_idx, read; 
     BOOL result;  
@@ -27,34 +29,34 @@ BOOL read_slot()
  
     msg_size = msg_idx = read = 0; 
 
-    event_handle = CreateEvent(NULL, FALSE, FALSE, TEXT("console_slot"));
+    event_handle = CreateEvent(NULL, FALSE, FALSE, "console_slot");
     if(event_handle == NULL) {
-        return FALSE;
+        return;
     }
 
     ov.Offset = 0;
     ov.OffsetHigh = 0;
     ov.hEvent = event_handle;
+    
+    // check if there is any message in mailslot
+    // if there is a message then retrive it
+    result = GetMailslotInfo(mslot_handle,          // mailslot handle 
+                            (LPDWORD) NULL,         // no maximum message size 
+                            &msg_size,              // size of next message 
+                            &msg_idx,               // number of messages 
+                            (LPDWORD) NULL);        // no read time-out 
  
-    result = GetMailslotInfo( mslot_handle, // mailslot handle 
-        (LPDWORD) NULL,               // no maximum message size 
-        &msg_size,                   // size of next message 
-        &msg_idx,                    // number of messages 
-        (LPDWORD) NULL);              // no read time-out 
- 
-    if (!result) 
-    { 
+    if (!result) { 
         printf("GetMailslotInfo failed with %lu.\n", GetLastError()); 
-        return FALSE; 
+        return ; 
     } 
  
-    if (msg_size == MAILSLOT_NO_MESSAGE) 
-    { 
-        return TRUE; 
+    if (msg_size == MAILSLOT_NO_MESSAGE) { 
+        return; 
     } 
  
-    while (msg_idx != 0)  // retrieve all messages
-    { 
+    // retrieve all messages
+    while (msg_idx != 0)  { 
 
         memset(&msg_buffer[0], 0, MAX_READ_BUFFER_SIZE);
         result = ReadFile(mslot_handle, 
@@ -63,56 +65,51 @@ BOOL read_slot()
             &read, 
             &ov); 
  
-        if (!result) 
-        { 
+        if (!result) { 
             printf("ReadFile failed with %lu.\n", GetLastError()); 
-            return FALSE; 
+            return; 
         } 
 
  
-        // Display the message. 
+        // display the message. 
         printf("%s", msg_buffer); 
  
+        // get next message from mailslot
+        result = GetMailslotInfo(mslot_handle,      // mailslot handle 
+                                (LPDWORD) NULL,     // no maximum message size 
+                                &msg_size,          // size of next message 
+                                &msg_idx,           // number of messages 
+                                (LPDWORD) NULL);    // no read time-out 
  
-        result = GetMailslotInfo(mslot_handle,  // mailslot handle 
-            (LPDWORD) NULL,               // no maximum message size 
-            &msg_size,                   // size of next message 
-            &msg_idx,                    // number of messages 
-            (LPDWORD) NULL);              // no read time-out 
- 
-        if (!result) 
-        { 
+        if (!result) { 
             printf("GetMailslotInfo failed (%lu)\n", GetLastError());
-            return FALSE; 
+            return; 
         } 
     } 
 
     CloseHandle(event_handle);
 
-    return TRUE; 
 }
 
-BOOL WINAPI make_slot(LPCTSTR lpszSlotName) 
-{ 
-    mslot_handle = CreateMailslot(lpszSlotName, 
-        0,                             // no maximum message size 
-        MAILSLOT_WAIT_FOREVER,         // no time-out for operations 
-        (LPSECURITY_ATTRIBUTES) NULL); // default security
+static void make_slot() {
+
+    mslot_handle = CreateMailslot(slot_name, 
+                                    0,                             // no maximum message size 
+                                    MAILSLOT_WAIT_FOREVER,         // no time-out for operations 
+                                    (LPSECURITY_ATTRIBUTES) NULL); // default security
  
-    if (mslot_handle == INVALID_HANDLE_VALUE) 
-    { 
+    if (mslot_handle == INVALID_HANDLE_VALUE) { 
         printf("CreateMailslot failed with %lu\n", GetLastError());
-        return FALSE; 
-    } 
-    return TRUE; 
+        return; 
+    }
+ 
 }
 
-int main(int argc, char *argv[], char *envp[]) {
+int main() {
     
-    make_slot(slot_name);
+    make_slot();
 
-    while(TRUE)
-    {
+    while(1) {
         read_slot();
     }
 
