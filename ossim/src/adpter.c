@@ -64,7 +64,11 @@ uint32_t print_welcome_message() {
     printf("***********************************************\n");
     printf(" OSSIM Environment Version 1.0\n");
     printf("***********************************************\n\n");
-    printf("type in [start] to being OSSIM\n");
+    
+    if(ossim_started == false) {
+        printf("type in [start] to being OSSIM\n");
+    }
+
     printf("type in [exit] to quit\n\n");
 
     return 0;

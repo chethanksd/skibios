@@ -9,7 +9,7 @@
         <enable_safe_lock>0</enable_safe_lock>
         <disable_buffer>0</disable_buffer>
         <task_id_start>1000</task_id_start>
-        <task_per_sec>1</task_per_sec>
+        <task_per_sec>100</task_per_sec>
     </basic>   
 
     <objgen_debug>

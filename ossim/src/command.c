@@ -8,19 +8,29 @@
 
 #include <stdio.h>
 #include <conio.h>
+#include <stdlib.h> 
 #include <windows.h>
 
 
 #include <kernel.h>
 #include <task.h>
 #include <init.h>
+#include <kvar.h>
 #include <ossim.h>
 #include <error.h>
 #include <command.h>
 
 
+// external functions
+extern uint32_t print_welcome_message();
+
+// local functions
+static void process_command();
+
 // extern global variables
 extern bool ossim_started;
+extern uint32_t schedule_count;
+
 
 // local global variables
 static char command_line[MAX_COMMAND_LINE_SIZE];
@@ -41,13 +51,13 @@ uint32_t run_command_processor() {
 
     if(result == NULL) {
         printf("command length exceeds set limite\n\n");
-        goto quit_error;
+        goto quit;
     }
 
     command_line[strcspn(command_line, "\n")] = 0;
 
     if(strcmp(&command_line[0], "") == 0) {
-        goto quit_error;
+        goto quit;
     }
 
     // get command
@@ -71,30 +81,68 @@ uint32_t run_command_processor() {
     token = strtok(NULL, " ");
     if(token != NULL) {
         printf("so many arguments.only one arugment supported\n\n");
-        goto quit_error;
+        goto quit;
     }
 
+    process_command();
+
+quit:
+
+    return 0;
+
+}
+
+
+void process_command() {
+
+    // exit command
     if(strcmp(&command[0], "exit") == 0) {
         close_task_console();
         exit(0);
     }
 
+    // start command
     if(strcmp(&command[0], "start") == 0) {
         
         if(ossim_started == false) {
             ossim_started = true;
             printf("\n");
-            return 0;
+            goto quit;
         }
 
         printf("OSSIM already running\n\n");
 
     }
 
+    // clr command
+    if(strcmp(&command[0], "clr") == 0) {
+        system("cls");
+        print_welcome_message();
+        goto quit;
+    }
+
+    // csc command
+    if(strcmp(&command[0], "csc") == 0) {
+        printf("current scheduler count: %d\n\n", schedule_count);
+        goto quit;
+    }
+
+    // ttc command
+    if(strcmp(&command[0], "ttc") == 0) {
+        printf("total task count: %d\n\n", total_task_count);
+        goto quit;
+    }
+
+    // ctc command
+    if(strcmp(&command[0], "ctc") == 0) {
+        printf("current task count: %d\n\n", task_count);
+        goto quit;
+    }
+
     printf("unknown command: %s\n\n", command_line);
 
-quit_error:
+quit:
 
-    return 0;
+    return;
 
 }
