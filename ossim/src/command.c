@@ -26,6 +26,7 @@ extern uint32_t print_welcome_message();
 
 // local functions
 static void process_command();
+static void process_zero_arg_command();
 
 // extern global variables
 extern bool ossim_started;
@@ -36,6 +37,7 @@ extern uint32_t schedule_count;
 static char command_line[MAX_COMMAND_LINE_SIZE];
 static char command [MAX_COMMAND_SIZE];
 static char argument[MAX_ARGUMENT_SIZE];
+
 
 uint32_t run_command_processor() {
 
@@ -94,6 +96,26 @@ quit:
 
 
 void process_command() {
+
+    // any command after here will be single argument command
+    // so check if argument is empty
+    if(strcmp(argument, "") != 0) {
+        printf("argument unexpected!\n\n");
+        goto quit;
+    } else {
+        process_zero_arg_command();
+        goto quit;
+    }
+
+    printf("bad argument\n\n");
+
+quit:
+
+    return;
+
+}
+
+void process_zero_arg_command() {
 
     // exit command
     if(strcmp(&command[0], "exit") == 0) {
