@@ -30,6 +30,7 @@ DWORD task_console_pid;
 DWORD current_console_pid;
 HANDLE mslot_file; 
 HANDLE mslot_handle;
+HANDLE task_console_lock;
 static STARTUPINFO task_console_si;
 static PROCESS_INFORMATION task_console_pi;
 static char task_console_path[TASK_CONSOLE_PATH_SIZE];
@@ -139,6 +140,21 @@ uint32_t get_self_path(char *path_buffer, uint32_t size) {
 void debugf(const char* format, ...) {
 
     va_list args;
+    DWORD wait_result;
+
+    // attempt to lock the mutex
+    wait_result = WaitForSingleObject(task_console_lock, INFINITE);
+
+    switch (wait_result) {
+
+        // got ownership of task console lock mutex
+        case WAIT_OBJECT_0: 
+            break;
+
+        // got ownership of abandoned task console lock mutex
+        case WAIT_ABANDONED: 
+            return;
+    }
 
     va_start(args, format);
     memset(&task_console_msg[0], 0, TASK_CONSOLE_MSG_SIZE);
@@ -146,6 +162,9 @@ void debugf(const char* format, ...) {
     
     write_slot(task_console_msg);
   
-    va_end(args); 
+    va_end(args);
+
+    // release task console lock for other task to use
+    ReleaseMutex(task_console_lock); 
 
 }

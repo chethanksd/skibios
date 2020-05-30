@@ -75,7 +75,7 @@ void task2(void) {
 
 		}
 		count++;
-		printf("Task2 count=%d\r\n", count);
+		debugf("Task2 count=%d\r\n", count);
 	}
 }
 
@@ -90,7 +90,7 @@ void task3(void) {
 
 		}
 		count++;
-		printf("Task3 count=%d\r\n", count);
+		debugf("Task3 count=%d\r\n", count);
 	}
 }
 
@@ -104,6 +104,6 @@ void task4(void) {
 
 		}
 		count++;
-		printf("Task4 count=%d\r\n", count);
+		debugf("Task4 count=%d\r\n", count);
 	}
 }

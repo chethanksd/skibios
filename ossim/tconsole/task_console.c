@@ -15,6 +15,7 @@
 
 // global variable
 HANDLE mslot_handle;
+HANDLE event_handle;
 char *slot_name = "\\\\.\\mailslot\\console_task";
 
 char msg_buffer[MAX_READ_BUFFER_SIZE];
@@ -22,17 +23,11 @@ char msg_buffer[MAX_READ_BUFFER_SIZE];
 
 
 static void read_slot() {   
-    HANDLE event_handle;
     DWORD msg_size, msg_idx, read; 
     BOOL result;  
     OVERLAPPED ov;
  
     msg_size = msg_idx = read = 0; 
-
-    event_handle = CreateEvent(NULL, FALSE, FALSE, "console_slot");
-    if(event_handle == NULL) {
-        return;
-    }
 
     ov.Offset = 0;
     ov.OffsetHigh = 0;
@@ -87,8 +82,6 @@ static void read_slot() {
         } 
     } 
 
-    CloseHandle(event_handle);
-
 }
 
 static void make_slot() {
@@ -106,11 +99,37 @@ static void make_slot() {
 }
 
 int main() {
-    
+
+    DWORD wait_result;
+
     make_slot();
 
+    event_handle = CreateEvent(NULL, FALSE, FALSE, "console_slot");
+    if(event_handle == NULL) {
+        printf("failed to create event (%lu)\n", GetLastError());
+        return 0;
+    }
+
     while(1) {
+
         read_slot();
+        
+        wait_result = WaitForSingleObject(event_handle, 10);
+
+        switch (wait_result)  {
+
+            // Event object was signaled
+            case WAIT_OBJECT_0: 
+                CloseHandle(event_handle);
+
+                event_handle = CreateEvent(NULL, FALSE, FALSE, "console_slot");
+                if(event_handle == NULL) {
+                    printf("failed to create event (%lu)\n", GetLastError());
+                    return 0;
+                }
+
+                break; 
+        }
     }
 
     return 0;
