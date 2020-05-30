@@ -34,7 +34,6 @@ HANDLE task_console_lock;
 static STARTUPINFO task_console_si;
 static PROCESS_INFORMATION task_console_pi;
 static char task_console_path[TASK_CONSOLE_PATH_SIZE];
-static char task_console_msg[TASK_CONSOLE_MSG_SIZE];
 
 char *slot_name = "\\\\.\\mailslot\\console_task";
 
@@ -140,21 +139,7 @@ uint32_t get_self_path(char *path_buffer, uint32_t size) {
 void debugf(const char* format, ...) {
 
     va_list args;
-    DWORD wait_result;
-
-    // attempt to lock the mutex
-    wait_result = WaitForSingleObject(task_console_lock, INFINITE);
-
-    switch (wait_result) {
-
-        // got ownership of task console lock mutex
-        case WAIT_OBJECT_0: 
-            break;
-
-        // got ownership of abandoned task console lock mutex
-        case WAIT_ABANDONED: 
-            return;
-    }
+    char task_console_msg[TASK_CONSOLE_MSG_SIZE];
 
     va_start(args, format);
     memset(&task_console_msg[0], 0, TASK_CONSOLE_MSG_SIZE);
@@ -163,8 +148,5 @@ void debugf(const char* format, ...) {
     write_slot(task_console_msg);
   
     va_end(args);
-
-    // release task console lock for other task to use
-    ReleaseMutex(task_console_lock); 
 
 }
