@@ -7,7 +7,6 @@ extern "C" {
 
 // defines
 #define SELF_PATH_BUFFER_SIZE       300
-#define MAX_COMMAND_SIZE            300
 
 extern uint32_t user_init(void);
 
