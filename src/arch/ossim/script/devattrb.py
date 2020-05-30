@@ -6,6 +6,7 @@
 #
 
 import sys, os
+import shutil
 
 import svar
 import ecode
@@ -27,6 +28,11 @@ def arch_specific_objgen():
 
     append_arch_constants()
 
+    #
+    # STAGE 2: Copy task console.exe to build path
+    #
+    #
+    shutil.copyfile(svar.repo_path + "/ossim/tconsole/task_console.exe", svar.build_path + "/../task_console.exe")
 
 #
 # Local function: function to append arch specific symbolic constants to param header

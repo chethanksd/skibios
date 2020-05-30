@@ -40,7 +40,7 @@ uint32_t adapter_init() {
     // string concat task console path with self path
     memset(&task_console_path[0], 0, TASK_CONSOLE_PATH_SIZE);
     memcpy(task_console_path, self_path, SELF_PATH_BUFFER_SIZE);
-    strcat(task_console_path, "\\..\\test\\task_console.exe");
+    strcat(task_console_path, "\\task_console.exe");
 
     // create task console process
     ZeroMemory(&task_console_si, sizeof(task_console_si));
