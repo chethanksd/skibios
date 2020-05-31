@@ -66,7 +66,7 @@ uint32_t print_welcome_message() {
     printf("***********************************************\n\n");
     
     if(ossim_started == false) {
-        printf("type in [start] to being OSSIM\n");
+        printf("type in [start] to begin OSSIM\n");
     }
 
     printf("type in [exit] to quit\n\n");

@@ -27,8 +27,9 @@ static HANDLE timer_handler = NULL;
 
 // global variables
 uint32_t timer_code = 0;
-uint32_t schedule_count = 0;
-bool halt_scheduler = false;
+volatile uint32_t schedule_count = 0;
+volatile uint32_t scheduler_step = 0;
+volatile bool halt_scheduler = false;
 
 
 
@@ -68,8 +69,12 @@ uint32_t enable_os_timer() {
 
     timer_load = ((float)(1000.0/TASK_PER_SEC));
 
-    while(halt_scheduler == true) {
+    while((halt_scheduler == true) && (scheduler_step == 0)) {
         // wait here until halt_scheduler is true;
+    }
+
+    if(scheduler_step != 0) {
+        scheduler_step--;
     }
 
     if (!CreateTimerQueueTimer(&timer_handler, 

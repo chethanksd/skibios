@@ -30,9 +30,9 @@ static void process_zero_arg_command();
 
 // extern global variables
 extern bool ossim_started;
-extern uint32_t schedule_count;
-extern bool halt_scheduler;
-
+extern volatile uint32_t schedule_count;
+extern volatile uint32_t scheduler_step;
+extern volatile bool halt_scheduler;
 
 // local global variables
 static char command_line[MAX_COMMAND_LINE_SIZE];
@@ -98,6 +98,48 @@ quit:
 
 void process_command() {
 
+    uint32_t value;
+    char *endptr;
+
+    // step command
+    if(strcmp(&command[0], "step") == 0) {
+
+        if(ossim_started == false){
+            printf("OSSIM not started!\n\n");
+            goto quit;
+        }
+
+        if(halt_scheduler == false) {
+            printf("scheduler not halted!\n\n");
+            goto quit;
+        } 
+
+        if(scheduler_step != 0) {
+            printf("scheduler step execution in progress\n\n");
+            goto quit;
+        }   
+
+        if(strcmp(&argument[0], "") == 0) {
+            scheduler_step = 1;
+            printf("\n");
+            goto quit;
+        }
+
+        value = strtol(&argument[0], &endptr, 10);
+        
+        // endptr points to null for failed conversion
+        if(*endptr) {
+            printf("Bad argument, unable to convert to integer!\n\n");
+            goto quit;
+        }
+
+        scheduler_step = value;
+        printf("\n");
+
+        goto quit;
+
+    }
+
     // any command after here will be single argument command
     // so check if argument is empty
     if(strcmp(argument, "") != 0) {
@@ -134,6 +176,7 @@ void process_zero_arg_command() {
         }
 
         printf("OSSIM already running\n\n");
+        goto quit;
 
     }
 
@@ -166,9 +209,13 @@ void process_zero_arg_command() {
 
         if(halt_scheduler == false) {
             printf("scheduler already running!\n\n");
-
             goto quit;
         }
+
+        if(scheduler_step != 0) {
+            printf("scheduler step execution in progress\n\n");
+            goto quit;
+        } 
 
         halt_scheduler = false;
         printf("\n");
