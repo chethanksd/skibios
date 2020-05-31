@@ -21,12 +21,16 @@ extern void scheduler();
 // local function declaration
 static VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired);
 
-// local global variable declaratio
+// externel global variables
+extern volatile bool hand_over_lock;
+
+// local global variable declaration
 static HANDLE timer_queue_handler = NULL;
 static HANDLE timer_handler = NULL;
 
 // global variables
 uint32_t timer_code = 0;
+volatile uint32_t scheduler_on = false;
 volatile uint32_t schedule_count = 0;
 volatile uint32_t scheduler_step = 0;
 volatile bool halt_scheduler = false;
@@ -45,11 +49,16 @@ uint32_t os_timer_init(uint32_t new_cpu_freq) {
         exit(1);
     }
 
+    // call dummy os_timer_config
+    // requird for change CPU_FREQ svc code
     error = os_timer_config(new_cpu_freq);
 
     if(error) {
         goto quit_error;
     }
+
+    // initialize variables
+    scheduler_on = false;
 
 quit_error:
 
@@ -85,6 +94,8 @@ uint32_t enable_os_timer() {
                                 0, 
                                 0)) {
         printf("os timer enable CreateTimerQueueTimer failed (%lu)\n", GetLastError());
+    } else {
+        scheduler_on = true;
     }
 
     return ERROR_NONE;
@@ -92,6 +103,18 @@ uint32_t enable_os_timer() {
 }
 
 uint32_t trigger_os_timer() {
+
+    // set hand_over_lock to true
+    // only hand over, hibernat, priority promote/demote
+    // will be calling this function
+    hand_over_lock = true;
+    
+    // if scheduler is already on
+    // then no need to trigger it or else mutiple timer callbacks
+    // will be execcuted
+    if(scheduler_on == true) {
+        return ERROR_NONE;  
+    }
 
     if (!CreateTimerQueueTimer(&timer_handler, 
                                 timer_queue_handler, 
@@ -101,7 +124,17 @@ uint32_t trigger_os_timer() {
                                 0, 
                                 0)) {
         printf("os timer trigger CreateTimerQueueTimer failed (%lu)\n", GetLastError());
+    } else {
+        scheduler_on = true;
     }
+
+    return ERROR_NONE;
+
+}
+
+uint32_t disable_os_timer() {
+    
+    scheduler_on = false;
 
     return ERROR_NONE;
 
@@ -139,6 +172,9 @@ VOID CALLBACK timer_routine(PVOID lpParam, BOOLEAN TimerOrWaitFired) {
     // simulate one of the context switch action
     schedule_count++;
     current_task = next_task;
+
+    // remove hand_over_lock unconditionally
+    hand_over_lock = false;
 
     // release kernel service lock for other task to use
     ReleaseMutex(kernel_service_lock);

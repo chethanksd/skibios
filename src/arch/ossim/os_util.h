@@ -15,6 +15,7 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 
 extern uint32_t enable_os_timer();
 extern uint32_t trigger_os_timer();
+extern uint32_t disable_os_timer();
 
 extern uint32_t ossim_suspend_task(uint32_t task);
 extern uint32_t ossim_resume_task(uint32_t task);

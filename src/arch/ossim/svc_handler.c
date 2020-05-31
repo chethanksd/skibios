@@ -30,8 +30,11 @@ TASK_RETURN_T svc_handler(svc_handler_param_t *svc_param);
 // extern variables
 const uint32_t TOTAL_SVC_COUNT;
 
-// local variables
+// local global variables
 static uint32_t (*svc_service)(uint32_t *svc_code, uint32_t *arguments);
+
+// global variables
+bool volatile hand_over_lock = false;
 
 
 uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4) {
@@ -95,6 +98,12 @@ uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, ui
 
     // release kernel service lock for other task to use
     ReleaseMutex(kernel_service_lock);
+
+    // if current task has hand_overed, hibernated etc..
+    // wait for scheduler to release hand_over_lock
+    while(hand_over_lock == true) {
+        // wait until hand_over lock is released
+    }
 
     return error;
 

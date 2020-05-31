@@ -10,7 +10,7 @@
 
 ARCH_SRC_INC   = $(ARCH_PATH)
 ARCH_SRC_INC  += $(ROOT_DIR)/ossim/src
-ARCH_SRC_INC  += $(ROOT_DIR)/ossim/test/basic.c
+ARCH_SRC_INC  += $(ROOT_DIR)/ossim/test/hand_over.c
 
 ARCH_SRC_EXC  = startup.c
 ARCH_SRC_EXC += heap.c

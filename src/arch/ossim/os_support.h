@@ -14,7 +14,7 @@ extern uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t a
 #define ENABLE_SCHEDULER() enable_os_timer()
 
 // Disable SYSTICK timer to stop scheduler
-#define DISABLE_SCHEDULER()
+#define DISABLE_SCHEDULER() disable_os_timer() 
 
 // Trigger SYSTICK interrupt to run scheduler immediately
 #define TRIGGER_SCHEDULER() trigger_os_timer()
