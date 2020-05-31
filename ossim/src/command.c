@@ -18,6 +18,7 @@
 #include <kvar.h>
 #include <ossim.h>
 #include <error.h>
+#include <param.h>
 #include <command.h>
 
 
@@ -33,6 +34,7 @@ extern bool ossim_started;
 extern volatile uint32_t schedule_count;
 extern volatile uint32_t scheduler_step;
 extern volatile bool halt_scheduler;
+extern volatile uint8_t ossim_real_task_state[];
 
 // local global variables
 static char command_line[MAX_COMMAND_LINE_SIZE];
@@ -60,6 +62,7 @@ uint32_t run_command_processor() {
     command_line[strcspn(command_line, "\n")] = 0;
 
     if(strcmp(&command_line[0], "") == 0) {
+        printf("\n");
         goto quit;
     }
 
@@ -160,6 +163,8 @@ quit:
 
 void process_zero_arg_command() {
 
+    uint32_t i = 0;
+
     // exit command
     if(strcmp(&command[0], "exit") == 0) {
         close_task_console();
@@ -246,6 +251,19 @@ void process_zero_arg_command() {
     if(strcmp(&command[0], "ctc") == 0) {
         printf("current task count: %d\n\n", task_count);
         goto quit;
+    }
+
+    // grts command
+    if(strcmp(&command[0], "grts") == 0) {
+
+        printf("current task state: ");
+        for(i = 0; i < MAX_TASK_COUNT; i++) {
+            printf("%d, ", ossim_real_task_state[i]);
+        }
+
+        printf("\n\n");
+        goto quit;
+
     }
 
     printf("unknown command: %s\n\n", command_line);

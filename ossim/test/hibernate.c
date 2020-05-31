@@ -1,5 +1,5 @@
 /*
- * OSSIM test program
+ * OSSIM Hiberate test program
  *
  * author: chetandev.ksd@gmail.com
  *
@@ -24,6 +24,8 @@ task_t mytask2;
 task_t mytask3;
 task_t mytask4;
 
+uint32_t task4_count;
+uint32_t task1_count;
 
 uint32_t user_init() {
 
@@ -58,11 +60,17 @@ void task1(void) {
 
 	while(1) {
 		count++;
+        task1_count++;
 		for(i = 0; i < 0x08000000; i++) {
 
 		}
 		debugf("Task1 count=%d\r\n", count);
-		svc(HAND_OVER);
+		
+        // wait up to 10 counts, then try enanble hibernation if needed
+        if((task1_count > task4_count) && (task1_count > 10)) {
+            hibernate(&task4_count,  (uint32_t*)&zero_ref, task1_count, false);
+        }
+
 	}
 }
 
@@ -78,7 +86,6 @@ void task2(void) {
 		}
 		count++;
 		debugf("Task2 count=%d\r\n", count);
-		svc(HAND_OVER);
 	}
 }
 
@@ -94,7 +101,6 @@ void task3(void) {
 		}
 		count++;
 		debugf("Task3 count=%d\r\n", count);
-		svc(HAND_OVER);
 	}
 }
 
@@ -108,7 +114,7 @@ void task4(void) {
 
 		}
 		count++;
+        task4_count++;
 		debugf("Task4 count=%d\r\n", count);
-		svc(HAND_OVER);
 	}
 }

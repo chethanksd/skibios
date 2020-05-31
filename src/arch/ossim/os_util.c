@@ -24,8 +24,13 @@
 // external function declaration
 extern void resolve_end(void);
 
+// global variables
+volatile uint8_t ossim_real_task_state[MAX_TASK_COUNT];
+
 
 uint8_t arch_kernel_init() {
+
+    uint32_t i;
 
     // attempt to create kernel_service_lock mutex
     // default security attributes
@@ -48,6 +53,10 @@ uint8_t arch_kernel_init() {
 
     // arch specific init
     first_schedule = false;
+
+    for(i = 0; i < MAX_TASK_COUNT; i++) {
+        ossim_real_task_state[i] = 0;
+    }
 
     return ERROR_NONE;
 
@@ -100,6 +109,7 @@ uint32_t ossim_suspend_task(uint32_t task) {
 
     if(first_schedule == true) {
         SuspendThread(pc_task_handle[task]);
+        ossim_real_task_state[task] = 0;
     } else {
         first_schedule = true;
     }
@@ -111,6 +121,7 @@ uint32_t ossim_suspend_task(uint32_t task) {
 uint32_t ossim_resume_task(uint32_t task) {
     
     ResumeThread(pc_task_handle[task]);
+    ossim_real_task_state[task] = 1;
 
     return ERROR_NONE;
 

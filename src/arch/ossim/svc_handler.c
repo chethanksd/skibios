@@ -21,7 +21,7 @@
 // local type declaration
 typedef struct{
     uint32_t svc_code;
-    uint32_t arguments[0];
+    uint32_t arguments[4];
 }svc_handler_param_t;
 
 // local function declaration
@@ -50,8 +50,8 @@ uint32_t call_kernel_service(uint32_t svc_code, uint32_t arg1, uint32_t arg2, ui
     svc_param.svc_code = svc_code;
     svc_param.arguments[0] = arg1;
     svc_param.arguments[1] = arg2;
-    svc_param.arguments[3] = arg3;
-    svc_param.arguments[4] = arg4;
+    svc_param.arguments[2] = arg3;
+    svc_param.arguments[3] = arg4;
 
     // attempt to lock the mutex
     wait_result = WaitForSingleObject(kernel_service_lock, INFINITE);
